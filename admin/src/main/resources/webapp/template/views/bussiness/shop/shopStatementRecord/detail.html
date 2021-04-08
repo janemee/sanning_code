@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- 样式文件加载开始 -->
+    <#include "/include/res.html" >
+    <!-- 样式文件加载结束 -->
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <form class="form-horizontal m-t" id="sub_form">
+                        <div class="col-sm-12 form-group">
+                            <div class="col-sm-8 form-group">
+                                <div class="col-sm-2 padding-top-5">
+                                    <label class="input-group-addon no-border-left-0"
+                                           style="border:0; margin-left: 0; padding-left: 0;">订单编号</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <input type="text" name="orderNo" placeholder="请输入订单号进行查询"
+                                           class="form-control search-input" id="search-input">
+                                </div>
+
+                                <div class="col-sm-2">
+                                <span class="input-group-btn search-span">
+                                        <button class="btn btn-white btn-sm " type="button"
+                                                onclick="dropdownSearchFun(this)"
+                                                data-url="${cxt!}/s/shop/shopStatementRecord/detail_list_json"
+                                                data-tid="sub_table_jq" id="search-btn"><i class="fa fa-search"></i> 查询
+                                        </button>
+                                </span>
+                                </div>
+                            </div>
+                        </div>
+                        <input id="recordId" type="hidden" name="recordId" value="${(recordId)!}">
+                    </form>
+                </div>
+                <div class="ibox-content">
+                    <table id="sub_table_jq"></table>
+                    <div id="sub_pager_jq"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- js加载开始 -->
+<#include "/include/js.html">
+<!--<script type="text/javascript" src="${cxt!}/ui/js/hm/shop.js"></script>-->
+<script type="text/javascript">
+    var jqGridId = "#sub_table_jq",
+        winname = "${winname!}",
+        jqPageId = "#sub_pager_jq",
+        formId = "#sub_form";
+    // var dataUrl = "/s/shop/shopStatementDetail/detail_list_json?shopId=" + $("#sub_shopId").val() + "&startTime=" + encodeURIComponent($("#sub_startTime").val()) + "&endTime=" + encodeURIComponent($("#sub_endTime").val()),
+    var dataUrl = "/s/shop/shopStatementRecord/detail_list_json";
+
+
+    $(function () {
+        $.jgrid.defaults.styleUI = "Bootstrap";
+        $(jqGridId).jqGrid({
+            url: dataUrl,
+            datatype: "json",
+            colNames: ['ID', '订单编号', '成本价(元)', '运费(元)', '支付时间', '订单完成时间'],
+            colModel: [
+                {
+                    name: 'id',
+                    index: 'id',
+                    width: 1,
+                    hidden: true,
+                    key: true
+                },
+                {
+                    name: 'orderNo',
+                    index: 'orderNo',
+                    width: '150'
+                },
+                {
+                    name: 'costAmount',
+                    index: 'costAmount',
+                    width: '100'
+                },
+                {
+                    name: 'freightAmount',
+                    index: 'freightAmount',
+                    width: '100'
+                },
+                {
+                    name: 'orderPayTime',
+                    index: 'orderPayTime',
+                    width: '150'
+                },
+                {
+                    name: 'orderOverTime',
+                    index: 'orderOverTime',
+                    width: '150'
+                }
+
+            ],
+
+            autowidth: true,
+            height: "100%",    // 设为具体数值则会根据实际记录数出现垂直滚动条
+            width: "100%",
+            rowNum: 20,
+            rowList: [20, 30, 50],
+            pager: jqPageId,
+            mtype: "post",
+            postData: {
+                "recordId": $("#recordId").val(),
+            },
+            viewrecords: true,
+            rownumbers: true,
+            rownumWidth: 50,
+            multiselect: false,
+            cellsubmit: "clientArray",
+            onSelectRow: function (id) {
+                if (id && id !== lastsel) {
+                    jQuery(jqGridId).jqGrid('restoreRow', lastsel);
+                    jQuery(jqGridId).jqGrid('editRow', id, true);
+                    lastsel = id;
+                }
+            },
+            jsonReader: {
+                root: "exhibitDatas",
+                page: "nowPage",
+                total: "pageCount",
+                records: "recordCount",
+                repeatitems: false,
+                id: "0"
+            }
+        });
+
+        jQuery(jqGridId).jqGrid('setLabel', 'rn', '序号', {
+            'text-align': 'center',
+            'vertical-align': 'middle',
+            'width': '50'
+        }, '');
+
+        jQuery(jqGridId).jqGrid('navGrid', jqPageId, {
+                add: false,
+                del : false,
+                edit : false,
+                search: false,
+                position: 'right'
+            },
+            {},
+            {},
+            {},
+            {});
+    });
+
+    function validateForm() {
+        $(formId).submit();
+    }
+
+
+
+
+</script>
+</body>
+
+</html>

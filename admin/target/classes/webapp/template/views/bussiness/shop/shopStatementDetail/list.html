@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- 样式文件加载开始 -->
+    <#include "/include/res.html" >
+    <!-- 样式文件加载结束 -->
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title" style="padding:3px 15px 0 20px;min-height: 128px;">
+                    <div class="col-md-12">
+                        <div class="form-group" style="padding-top: 5px;">
+                            <form>
+                                <div class="col-sm-12 form-group">
+                                    <div class="col-sm-4 form-group">
+                                        <label class="col-sm-4" style="padding-top: 5px; font-size: 14px; padding-right: 0;">厂家名/业务员:</label>
+                                        <div class="col-sm-8" style="padding-left: 0">
+                                            <input type="text" name="searchVal" placeholder="输入厂家名/业务员进行搜索"
+                                                   class="form-control search-input" id="search-input">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 form-group">
+                                        <div class="col-sm-3 padding-top-5">
+                                            <label class="input-group-addon no-border-left-0">时间:</label>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <input id="searchStartTime" type="text" name="searchStartTime" value=""
+                                                   class="form-control">
+                                        </div>
+                                        <div class="col-sm-1 padding-top-5">
+                                            <p class="text-center">-</p>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <input id="searchEndTime" type="text" name="searchEndTime" value=""
+                                                   class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 form-group">
+                                    <div class="col-sm-6 form-group">
+                                    </div>
+                                    <div class="col-sm-6 form-group">
+                                        <div class="col-sm-3">
+                                        <span class="input-group-btn search-span">
+                                            <button class="btn btn-white btn-sm " type="button"
+                                                    onclick="bSettleMent()"
+                                                    data-url="${cxt!}/s/account/accountRecharge/list_json"
+                                                    data-tid="table_jq" id="settle-btn">&nbsp;&nbsp;&nbsp;结算&nbsp;&nbsp&nbsp;
+                                            </button>
+                                        </span>
+                                        </div>
+                                        <div class="col-sm-3">
+                                        <span class="input-group-btn search-span">
+                                            <button class="btn btn-white btn-sm " type="button"
+                                                    onclick="dropdownSearchFun(this)"
+                                                    data-url="${cxt!}/s/shop/shopStatementDetail/list_json"
+                                                    data-tid="table_jq" id="search-btn"><i class="fa fa-search"></i>&nbsp;查询&nbsp;
+                                            </button>
+                                        </span>
+                                        </div>
+                                        <div class="col-sm-3">
+                                        <span class="input-group-btn search-span">
+                                            <button class="btn btn-white btn-sm " type="button"
+                                                    onclick="resetValue()"
+                                                    data-tid="table_jq" id="reset-btn">&nbsp;&nbsp;&nbsp;重置&nbsp;&nbsp;&nbsp;
+                                            </button>
+                                        </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <table id="table_jq"></table>
+                    <div id="pager_jq"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- js加载-->
+<#include "/include/js.html">
+<!--<script type="text/javascript" src="${cxt!}/ui/js/hm/administrator.js"></script>-->
+<!-- Page-Level Scripts -->
+<script>
+    var winname = window.name;
+    var winWidth = '850px',
+        winHeight = '500px',
+        addTitle = "添加",
+        addUrl = "/s/shop/shopStatementDetail/add",
+        detailTitle = "详情",
+        detailUrl = "/s/shop/shopStatementDetail/showDetail",
+        editTitle = "编辑",
+        editUrl = "/s/shop/shopStatementDetail/edit",
+        jqGridId = "#table_jq",
+        jqPageId = "#pager_jq",
+        dataUrl = "/s/shop/shopStatementDetail/list_json",
+        settleMentUrl = "/s/shop/shopStatementDetail/settleMent",
+        formId = "#form";
+
+    $(function () {
+        $.jgrid.defaults.styleUI = "Bootstrap";
+        $(jqGridId).jqGrid({
+            url: dataUrl,
+            datatype: "json",
+            colNames: ['ID', '开始时间', '结束时间', '时间', '厂家', '业务员', '成本价(元)', '运费(元)', '操作'],
+            colModel: [
+                {
+                    name: 'shopId',
+                    index: 'shopId',
+                    width: 1,
+                    hidden: true,
+                    key: true
+                },
+                {
+                    name: 'startTime',
+                    index: 'startTime',
+                    width: 1,
+                    hidden: true,
+                    key: false
+                },
+                {
+                    name: 'endTime',
+                    index: 'endTime',
+                    width: 1,
+                    hidden: true,
+                    key: false
+                },
+                {
+                    width: '300',
+                    formatter: function (cellvalue, options, rowObject) {
+                        var str = rowObject.startTime + "至" + rowObject.endTime;
+                        return str;
+                    }
+                },
+                {
+                    name: 'shopName',
+                    index: 'shopName',
+                    width: '150'
+                },
+                {
+                    name: 'salesman',
+                    index: 'salesman',
+                    width: '150'
+                },
+                {
+                    name: 'costAmount',
+                    index: 'costAmount',
+                    width: '100'
+                },
+                {
+                    name: 'freightAmount',
+                    index: 'freightAmount',
+                    width: '100'
+                },
+                {
+                    width: '150',
+                    formatter: function (cellvalue, options, rowObject) {
+                        console.log(rowObject.shopId);
+                        var str = "<div>" +
+                            "&nbsp;<a onclick='settleMent(" + rowObject.shopId + ",\"" + rowObject.startTime + "\",\"" + rowObject.endTime + "\")'>结算</a>&nbsp;&nbsp;" +
+                            "<a onclick='showDetail(" + rowObject.shopId + ",\"" + rowObject.startTime + "\",\"" + rowObject.endTime + "\")'>订单详情</a>&nbsp;&nbsp;" +
+                            "</div>";
+
+                        return str;
+                    }
+                }
+
+            ],
+
+            autowidth: true,
+            height: "100%",    // 设为具体数值则会根据实际记录数出现垂直滚动条
+            width: "100%",
+            rowNum: 20,
+            rowList: [20, 30, 50],
+            pager: jqPageId,
+            mtype: "post",
+            postData: {"searchStatus": "T1"},
+            viewrecords: true,
+            rownumbers: true,
+            rownumWidth: 50,
+            multiselect: true,
+            cellsubmit: "clientArray",
+            editurl: editUrl,
+            onSelectRow: function (id) {
+                if (id && id !== lastsel) {
+                    jQuery(jqGridId).jqGrid('restoreRow', lastsel);
+                    jQuery(jqGridId).jqGrid('editRow', id, true);
+                    lastsel = id;
+                }
+            },
+            jsonReader: {
+                root: "exhibitDatas",
+                page: "nowPage",
+                total: "pageCount",
+                records: "recordCount",
+                repeatitems: false,
+                id: "0"
+            }
+        });
+
+        jQuery(jqGridId).jqGrid('setLabel', 'rn', '序号', {
+            'text-align': 'center',
+            'vertical-align': 'middle',
+            'width': '50'
+        }, '');
+
+        jQuery(jqGridId).jqGrid('navGrid', jqPageId, {
+                add: false,
+                del: false,
+                edit: false,
+                search: false,
+                position: 'right'
+            },
+            {},
+            {},
+            {},
+            {});
+    });
+
+
+    $(window).bind("resize", function () {
+        var width = $(".ibox-content").width();
+        $("#table_jq").setGridWidth(width);
+    });
+
+    /** 修改弹窗 */
+    jQuery("#Edit").click(function () {
+        var ids = jQuery(jqGridId).jqGrid('getGridParam', 'selarrrow');
+        if (ids == '') {
+            parent.notifications('error', "请选择一条数据");
+            return false;
+        }
+        if (ids.length > 1) {
+            parent.notifications('error', "只能选择一条数据");
+            return false;
+        }
+        hm_fn_editFun(editTitle, winWidth, winHeight, editUrl, ids, winname);
+    });
+
+    /** 详情 */
+    function showDetail(shopId, startTime, endTime) {
+        var url = detailUrl + "?startTimeStr=" + encodeURIComponent(startTime) + "&endTimeStr=" + encodeURIComponent(endTime) + "&searchStatus=T1";
+        hm_fn_viewFun2(detailTitle, winWidth, winHeight, url, shopId, winname);
+    }
+
+    /** 结算 */
+    function settleMent(shopId, startTime, endTime) {
+        var dataArr = [];
+        dataArr.push({
+            "shopId": shopId,
+            "startTime": startTime,
+            "endTime": endTime
+        });
+        var title = "结算";
+        var url = "/s/shop/shopStatementDetail/settleMent";
+        hm_fn_doSettle(jqGridId, dataUrl, url, JSON.stringify(dataArr), title);
+        // $.ajax({
+        //     type: "POST",
+        //     async: false,
+        //     // data: JSON.stringify({dataTitle:dataContent}),
+        //     data: {
+        //         "modelListJson": JSON.stringify(dataArr),
+        //     },
+        //     url: "/s/shop/shopStatementDetail/settleMent",
+        //     success: function (data) {
+        //         var successMsg = data.message || "操作成功!",
+        //             failedMsg = data.message || "操作失败!";
+        //         var title = "系统提示";
+        //         if (data.code === 200) {
+        //             parent.notifications('success', successMsg, title);
+        //         } else {
+        //             parent.notifications('error', failedMsg, title);
+        //         }
+        //     },
+        //     error: function (XMLHttpRequest, textStatus, errorThrown) {
+        //         parent.notifications('error', "操作失败,请检查网络!", title);
+        //     }
+        // });
+    }
+
+    /**
+     * 批量结算
+     */
+    function bSettleMent() {
+        var ids = jQuery(jqGridId).jqGrid('getGridParam', 'selarrrow');
+        if (ids.length<1){
+            parent.notifications('error', "请勾选要结算的厂家", "结算失败");
+            return;
+        }
+        var dataArr = [];
+        ids.forEach(function (id) {
+            console.log(jQuery(jqGridId).getRowData(id)["startTime"]);
+            dataArr.push({
+                "shopId": id,
+                "startTime": jQuery(jqGridId).getRowData(id)["startTime"],
+                "endTime": jQuery(jqGridId).getRowData(id)["endTime"]
+            });
+        });
+
+        var title = "结算";
+        var url = "/s/shop/shopStatementDetail/settleMent";
+        hm_fn_doSettle(jqGridId, dataUrl, url, JSON.stringify(dataArr), title);
+        // var title = "结算";
+        // $.ajax({
+        //     type: "POST",
+        //     async: false,
+        //     // data: JSON.stringify({dataTitle:dataContent}),
+        //     data: {
+        //         "modelListJson": JSON.stringify(dataArr),
+        //     },
+        //     url: "/s/shop/shopStatementDetail/settleMent",
+        //     success: function (data) {
+        //         var successMsg = data.message || "操作成功!",
+        //             failedMsg = data.message || "操作失败!";
+        //         var title = "系统提示";
+        //         if (data.code === 200) {
+        //             parent.notifications('success', successMsg, title);
+        //         } else {
+        //             parent.notifications('error', failedMsg, title);
+        //         }
+        //     },
+        //     error: function (XMLHttpRequest, textStatus, errorThrown) {
+        //         parent.notifications('error', "操作失败,请检查网络!", title);
+        //     }
+        // });
+
+    }
+
+    function resetValue() {
+        $("#search-input").val("");
+        $("#searchStartTime").val("");
+        $("#searchEndTime").val("");
+    }
+
+    laydate({
+        elem: "#searchStartTime",
+        format: "YYYY-MM-DD hh:mm:ss"
+    });
+    laydate({
+        elem: "#searchEndTime",
+        format: "YYYY-MM-DD hh:mm:ss"
+    });
+
+</script>
+</body>
+</html>

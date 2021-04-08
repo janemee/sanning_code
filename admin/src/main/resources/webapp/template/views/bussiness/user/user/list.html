@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- 样式文件加载开始 -->
+    <#include "/include/res.html" >
+    <!-- 样式文件加载结束 -->
+</head>
+
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title" style="padding:3px 15px 0 20px;">
+                    <div class="col-md-6">
+                        <div class="search-form">
+                            <form>
+                                <div class="input-group">
+                                    <input type="text" name="search_val" placeholder="输入用户昵称/姓名/手机号码进行搜索"
+                                           class="form-control search-input" id="search-input">
+                                    <span class="input-group-btn search-span">
+                                        <button class="btn btn-white btn-sm " type="button"
+                                                onclick="dropdownSearchFun(this)"
+                                                data-url="${cxt!}/s/user/user/list_json"
+                                                data-tid="table_jq" id="search-btn"><i class="fa fa-search"></i> 查询
+                                        </button>
+                                    </span>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="search-form-adv ml10">
+                            <form>
+                                <input type="hidden" name="fast_search" value="true">
+                                <div class="btn-group" onclick="dropdownSelectHoverFun(this)">
+                                    <button type="button" class="btn btn-white dropdown-select-toggle" data-toggle="#"
+                                            aria-haspopup="true" aria-expanded="false"> 条件查询 <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu search-menu">
+                                        <li class="input-group input-group-sm">
+                                            <span>用户昵称</span>
+                                            <input type="text" name="*_nick_name" class="hm-search-w208">
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>姓名</span>
+                                            <input type="text" name="*_real_name" class="hm-search-w208">
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>手机号码</span>
+                                            <input type="text" name="*_phone" class="hm-search-w208">
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>邀请码</span>
+                                            <input type="text" name="*_invite_code" class="hm-search-w208">
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>交易账号</span>
+                                            <input type="text" name="*_account_no" class="hm-search-w208">
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>邀请人昵称</span>
+                                            <input type="text" name="*_inviter_name" class="hm-search-w208">
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>邀请人手机号</span>
+                                            <input type="text" name="*_inviter_phone" class="hm-search-w208">
+                                        </li>
+
+                                        <li class="input-group input-group-sm">
+                                            <span>注册时间</span>
+                                            <input placeholder="开始日期" class="hm-search-w208 layer-date"
+                                                   name="*start_create_time" style="width: 100px;" id="start">
+                                            -
+                                            <input placeholder="结束日期" class="hm-search-w208 layer-date"
+                                                   name="*end_create_time" style="width: 100px;" id="end">
+                                        </li>
+                                        <li>
+                                            <span>&nbsp;</span>
+                                            <button class="btn btn-white btn-sm" type="button"
+                                                    onclick="dropdownSearchFun(this)"
+                                                    data-url="${cxt!}/s/user/user/list_json"
+                                                    data-tid="table_jq" id="search-btn"><i class="fa fa-search"></i> 查询
+                                            </button>
+                                            <button class="btn btn-white btn-sm" type="button"
+                                                    onclick="dropdownSearchCleanFun(this)"
+                                                    data-url="${cxt!}/s/user/user/list_json"
+                                                    data-tid="table_jq" id="clear-btn"><i class="fa fa-retweet"></i> 清空
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="ibox-tools m-t-xs">
+                        <div class="btn-group">
+
+                            <@shiro.hasPermission name=':s:user:user:export'>
+                            <button class="btn btn-white btn-sm" type="button"
+                                    onclick="exportFun(this)"
+                                    data-url="${cxt!}/s/user/user/export"
+                                    data-tid="table_jq">
+                                <i class="fa fa-download"></i> 导出
+                            </button>
+                            </@shiro.hasPermission>
+
+                            <@shiro.hasPermission name=':s:user:user:importUser'>
+                            <button class="btn btn-white btn-sm" type="button"
+                                    onclick="hm_fn_addFun(importTitle, winWidth, winHeight, importUrl, formId, winname);">
+                                    <i class="fa fa-level-down"></i> 用户导入
+                            </button>
+                            </@shiro.hasPermission>
+
+                            <@shiro.hasPermission name=':s:user:user:downloadExcel'>
+                            <button class="btn btn-white btn-sm"
+                                    onclick="download(this)">
+                                <i class="fa fa-download"></i>&nbsp;下载模版
+                            </button>
+                            </@shiro.hasPermission>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="ibox-content">
+                    <table id="table_jq"></table>
+                    <div id="pager_jq"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- js加载-->
+<#include "/include/js.html">
+
+<!--<script type="text/javascript" src="${cxt!}/ui/js/hm/administrator.js"></script>-->
+<!-- Page-Level Scripts -->
+<script>
+    var start = {
+        elem: "#start",
+        format: "YYYY-MM-DD",
+        // min: laydate.now(),
+        max: "2099-06-16 23:59:59",
+        istime: false,
+        istoday: false,
+        festival: true, //是否显示节日
+        // isclear: false, //是否显示清空
+        choose: function (datas) {
+            end.min = datas;
+            end.start = datas
+        }
+    };
+    var end = {
+        elem: "#end",
+        format: "YYYY-MM-DD",
+        // min: laydate.now(),
+        max: "2099-06-16 23:59:59",
+        istime: false,
+        istoday: false,
+        // isclear: false, //是否显示清空
+        festival: true, //是否显示节日
+        choose: function (datas) {
+            start.max = datas
+        }
+    };
+    laydate(start);
+    laydate(end);
+    //鼠标按下事件，清空选择时间限制
+    $("#clear-btn").mousedown(function () {
+            start.max ="", end.min =""
+    })
+    var winname = window.name;
+    var winWidth = '850px',
+        winHeight = '500px',
+        formId = "#form",
+        jqGridId = "#table_jq",
+        jqPageId = "#pager_jq",
+        dataUrl = "/s/user/user/list_json",
+        importTitle = "用户导入",
+        importUrl = "/s/user/user/importUser"
+        editInvitorTitle = "修改邀请人",
+        editInvitorUrl = "/s/user/user/editInvitorHtml";
+
+    $(function () {
+        $.jgrid.defaults.styleUI = "Bootstrap";
+        $(jqGridId).jqGrid({
+            url: dataUrl,
+            datatype: "json",
+            colNames: ['用户编号','用户昵称', '姓名','交易账号', '手机号码', '邀请码', '邀请人昵称', '邀请人手机号', '注册时间', '操作'],
+            colModel: [
+                {
+                    name: 'id',
+                    index: 'id',
+                    width: 1,
+                    hidden: true,
+                    key: true
+                },
+                {
+                    name: 'nickName',
+                    index: 'nickName',
+                    width: '150'
+                }
+                , {
+                    name: 'realName',
+                    index: 'realName',
+                    width: '150'
+                }
+                , {
+                    name: 'accountNo',
+                    index: 'accountNo',
+                    width: '150'
+                }
+                , {
+                    name: 'phone',
+                    index: 'phone',
+                    width: '150'
+                }
+                , {
+                    name: 'inviteCode',
+                    index: 'inviteCode',
+                    width: '150'
+                }
+                , {
+                    name: 'inviterName',
+                    index: 'inviterName',
+                    width: '150',
+                    search: false
+                }
+                , {
+                    name: 'inviterPhone',
+                    index: 'inviterPhone',
+                    width: '150',
+                    search: false
+                }
+                , {
+                    name: 'createTime',
+                    index: 'createTime',
+                    width: '150'
+                }
+                , {
+                    width: '150',
+                    formatter: function (cellvalue, options, rowObject) {
+                            return "<@shiro.hasPermission name=':s:user:user:editInvitor'><a onclick= 'editInvitor(" + rowObject.id + ")'>&nbsp;修改邀请人</a></@shiro.hasPermission>";
+                    }
+                }
+            ],
+
+            autowidth: true,
+            height: "100%",    // 设为具体数值则会根据实际记录数出现垂直滚动条
+            width: "100%",
+            rowNum: 20,
+            rowList: [20, 30, 50],
+            pager: jqPageId,
+            mtype: "post",
+            viewrecords: true,
+            rownumbers: true,
+            rownumWidth: 50,
+            multiselect: false,
+            cellsubmit: "clientArray",
+            jsonReader: {
+                root: "exhibitDatas",
+                page: "nowPage",
+                total: "pageCount",
+                records: "recordCount",
+                repeatitems: false,
+                id: "0"
+            }
+        });
+
+        jQuery(jqGridId).jqGrid('setLabel', 'rn', '序号', {
+            'text-align': 'center',
+            'vertical-align': 'middle',
+            'width': '50'
+        }, '');
+
+        jQuery(jqGridId).jqGrid('navGrid', jqPageId, {
+                add: false,
+                del: false,
+                edit: false,
+                search: false,
+                position: 'right'
+            },
+            {}, // add options
+            {}, // del options
+            {}, // edit options
+            {});
+    });
+
+
+    $(window).bind("resize", function () {
+        var width = $(".ibox-content").width();
+        $("#table_jq").setGridWidth(width);
+    });
+
+    /*** 修改邀请人 */
+    function editInvitor(id) {
+        hm_fn_editFun(editInvitorTitle, winWidth, winHeight, editInvitorUrl, id, winname);
+    }
+
+    /**
+     * 下载模板
+     */
+    function download() {
+        layer.confirm('确定要下载excel模版吗？', {
+            btn: ['确定', '取消']
+        }, function (index) {
+            layer.close(index);
+            location.href = "/s/user/user/downloadExcel";
+
+        });
+    }
+</script>
+</body>
+</html>

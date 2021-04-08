@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- 样式文件加载开始 -->
+		<#include "../../include/res.html" >
+		<!-- 样式文件加载结束 -->
+	</head>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content ">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-title clearfix">
+              <div class="row">
+                <div class="col-md-6">
+                    <div class="search-form">
+                        <form>
+                            <div class="input-group">
+                                <input type="text" name="search_val" placeholder="请输入操作方法/请求URL进行搜索" class="form-control search-input" id="search-input">
+                                <span class="input-group-btn search-span">
+                                    <button class="btn btn-white btn-sm " type="button" onclick="dropdownSearchFun(this)" data-url="${cxt!}/modules/system/sysLog/getDataByAjax" data-tid="table_jq" id="search-btn"><i class="fa fa-search"></i> 查询</button>
+                                </span>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="search-form-adv ml10">
+                        <form>
+                            <div class="btn-group" onclick="dropdownSelectHoverFun(this)">
+                              <button type="button" class="btn btn-white btn-sm dropdown-select-toggle" data-toggle="#" aria-haspopup="true" aria-expanded="false"> 条件查询 <span class="caret"></span></button>
+                              <ul class="dropdown-menu search-menu">
+                                <li class="input-group input-group-sm">
+                                    <span>操作IP</span>
+                                    <input type="text" name="ip" placeholder="操作IP" class="hm-search-w208">
+                                </li>
+                                <li class="input-group input-group-sm">
+                                    <span>操作时间</span>
+                                    <input placeholder="开始日期" class="hm-search-w208 layer-date" name="start_time" style="width: 100px;" id="start">
+                                    -
+                                    <input placeholder="结束日期" class="hm-search-w208 layer-date" name="end_time" style="width: 100px;" id="end">
+                                </li>
+                                <li>
+                                    <span>&nbsp;</span>
+                                    <button class="btn btn-white btn-sm " type="button" onclick="dropdownSearchFun(this)" data-url="${cxt!}/modules/system/sysLog/getDataByAjax" data-tid="table_jq" id="search-btn"><i class="fa fa-search"></i> 查询</button>
+                                    <button class="btn btn-white btn-sm " type="button" onclick="dropdownSearchCleanFun(this)" data-url="${cxt!}/modules/system/sysLog/getDataByAjax" data-tid="table_jq" id="clear-btn"><i class="fa fa-retweet"></i> 清空</button>
+                                </li>
+                              </ul>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="ibox-tools">
+                        <div class="btn-group">
+                          <button data-toggle="dropdown"  onclick="exportsFun(this)" data-url="${cxt!}/modules/system/sysLog/exportLogRecords" class="btn btn-white btn-sm dropdown-toggle">
+                          <i class="fa fa-wrench"></i> 导出</button>
+                        </div>
+                    </div>
+                </div>
+              </div>
+          </div>
+					<div class="ibox-content">
+						<table id="table_jq"></table>
+						<div id="pager_jq"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<#include "../../include/js.html">
+		<script>
+            var start = {
+                elem: "#start",
+                format: "YYYY-MM-DD",
+                // min: laydate.now(),
+                max: "2099-06-16 23:59:59",
+                istime: false,
+                istoday: false,
+                festival: true, //是否显示节日
+                // isclear: false, //是否显示清空
+                choose: function (datas) {
+                    end.min = datas;
+                    end.start = datas
+                }
+            };
+            var end = {
+                elem: "#end",
+                format: "YYYY-MM-DD",
+                // min: laydate.now(),
+                max: "2099-06-16 23:59:59",
+                istime: false,
+                istoday: false,
+                // isclear: false, //是否显示清空
+                festival: true, //是否显示节日
+                choose: function (datas) {
+                    start.max = datas
+                }
+            };
+            laydate(start);
+            laydate(end);
+            $("#clear-btn").mousedown(function () {
+                start.max ="", end.min =""
+            })
+		</script>
+	<!-- Page-Level Scripts -->
+		<script  type="text/javascript">
+		var JqGrid,
+		jqGridId = "#table_jq",
+		jqPageId = "#pager_jq",
+		dataUrl = "${cxt!}/modules/system/sysLog/getDataByAjax",
+		deleteUrl = "${cxt!}/modules/system/sysLog/delete",
+		formId = "#form";
+		$(function() {
+			$.jgrid.defaults.styleUI = "Bootstrap";
+			$(jqGridId).jqGrid({
+				url : dataUrl,
+				datatype : "json",
+				colNames : ['ID', '创建者', '创建时间', 'IP','请求URI','操作方法','消耗时间(ms)','操作提交数据', '内容'],
+				colModel : [
+						{
+							name : 'id',
+							index : 'id',
+							width : 1,
+							hidden : true,
+							key : true
+						},
+						{
+							name : 'username',
+							index : 'username',
+							width:'130'
+						},
+						{
+							name : 'startDate',
+							index : 'startDate',
+							width:'170'
+						},
+						{
+							name : 'ip',
+							index : 'ip',
+							width:'150'
+						},
+						{
+							name : 'requestPath',
+							index : 'requestPath',
+							width:'180'
+						},
+						{
+							name : 'method',
+							index : 'method',
+							width:'100'
+						},
+						{
+							name :'took',
+							index:'took',
+							width:'120'
+						},
+						{
+							name : 'cookie',
+							index : 'cookie',
+							width:'150'
+						},
+						{
+							name : 'desc',
+							index : 'desc',
+							width:'150'
+						}],
+				autowidth : true,
+				height : "auto", // 设为具体数值则会根据实际记录数出现垂直滚动条
+				width : "100%",
+				rowNum : 20,
+				rowList : [20,30,50],
+				pager : jqPageId,
+				mtype : "post",
+				viewrecords : true,
+				jsonReader : {
+					root:"list",
+					page: "page",
+					total: "totalPage",
+					records: "totalRow",
+					repeatitems: false,
+					id: "0"
+				}
+			});
+		});
+		function deleteLog() {
+			var endTime = $("#end").val();
+			if(endTime == ""){
+				parent.notifications('error', "结束日期不能为空！", "提示");
+			}else {
+				var i = parent.layer.confirm('确定清除日志吗？', {
+					skin: 'layui-layer-molv',
+					icon: 0,
+					title: '提示',
+					btn: ['确定', '取消'] //按钮
+				}, function () {
+					$.ajax({
+						type: "POST",
+						async: false,
+						data: {'end_time': endTime},
+						url: deleteUrl,
+						success: function (data) {
+							var successMsg = "操作成功!",
+									failedMsg = "操作失败!",
+									title = "系统提示";
+							if (data.result) {
+								window.$(jqGridId).jqGrid('setGridParam', {
+									url: dataUrl,
+									page: 1
+								}).trigger("reloadGrid");
+								parent.notifications('success', successMsg, title);
+							} else {
+								parent.notifications('error', data.msg, title);
+							}
+						},
+						error: function (XMLHttpRequest, textStatus, errorThrown) {
+							parent.notifications('error', "操作失败,请检查网络!", "标题");
+						},
+						complete: function () {
+							parent.layer.close(i);
+						}
+					});
+				})
+			}
+		}
+	</script>
+</body>
+</html>

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- 样式文件加载开始 -->
+    <#include "../include/res.html" >
+    <!-- 样式文件加载结束 -->
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title clearfix" style="width:100%;position: fixed; top:0;background:#FFF;z-index:123;">
+
+                    <div class="col-md-6">
+                        <div class="search-form">
+                            <form>
+                                <div class="input-group">
+                                    <input type="text" name="search_val" placeholder="请输入名称进行搜索"
+                                           class="form-control search-input" id="search-input">
+                                    <input type="text" name="ncColumnsType" placeholder="请输入名称进行搜索"
+                                           class="form-control search-input" style="display: none;"
+                                           value="'name','nid','value'">
+                                    <span class="input-group-btn search-span">
+                                                <button class="btn btn-white btn-sm " type="button"
+                                                        onclick="dropdownSearchFun(this)"
+                                                        data-url="${cxt!}/s/apkHistory/json/list"
+                                                        data-tid="table_jq"
+                                                        id="search-btn"><i class="fa fa-search"></i> 查询</button>
+                                            </span>
+                                </div>
+                            </form>
+                        </div>
+                        <#--                        <div class="search-form-adv ml10">-->
+                        <#--                            <form>-->
+                        <#--                                <div class="btn-group" onclick="dropdownSelectHoverFun(this)">-->
+                        <#--                                    <button type="button" class="btn btn-white dropdown-select-toggle" data-toggle="#"-->
+                        <#--                                            aria-haspopup="true" aria-expanded="false"> 条件查询 <span class="caret"></span>-->
+                        <#--                                    </button>-->
+                        <#--                                    <ul class="dropdown-menu search-menu">-->
+                        <#--                                        <li class="input-group input-group-sm">-->
+                        <#--                                            <span>标识</span>-->
+                        <#--                                            <input type="text" id="nid" name="nid" class="hm-search-w208">-->
+                        <#--                                        </li>-->
+                        <#--                                        <li class="input-group input-group-sm">-->
+                        <#--                                            <span>名称</span>-->
+                        <#--                                            <input type="text" id="name" name="name" class="hm-search-w208">-->
+                        <#--                                        </li>-->
+                        <#--                                        <li class="input-group input-group-sm">-->
+                        <#--                                            <span>类型</span>-->
+                        <#--                                            <select name="type" class="hm-search-w208">-->
+                        <#--                                                <option value="99" selected="selected">全部</option>-->
+                        <#--                                                <option value="1">系统底层</option>-->
+                        <#--                                                <option value="2">各种费率配</option>-->
+                        <#--                                                <option value="3">邮件/短信</option>-->
+                        <#--                                                <option value="4">附加增值功能</option>-->
+                        <#--                                                <option value="5">第三方资金托管相关</option>-->
+                        <#--                                            </select>-->
+                        <#--                                        </li>-->
+                        <#--                                        <li class="input-group input-group-sm">-->
+                        <#--                                            <span>状态</span>-->
+                        <#--                                            <select name="state" class="hm-search-w208">-->
+                        <#--                                                <option value="99" selected="selected">全部</option>-->
+                        <#--                                                <option value="1">启用</option>-->
+                        <#--                                                <option value="0">禁用</option>-->
+                        <#--                                            </select>-->
+                        <#--                                        </li>-->
+                        <#--                                        <li>-->
+                        <#--                                            <span>&nbsp;</span>-->
+                        <#--                                            <button class="btn btn-white btn-sm" type="button"-->
+                        <#--                                                    onclick="dropdownSearchFun(this)"-->
+                        <#--                                                    data-url="${cxt!}/s/apkHistory/json/list"-->
+                        <#--                                                    data-tid="table_jq" id="search-btn"><i class="fa fa-search"></i> 查询-->
+                        <#--                                            </button>-->
+                        <#--                                            <button class="btn btn-white btn-sm" type="button"-->
+                        <#--                                                    onclick="dropdownSearchCleanFun(this)"-->
+                        <#--                                                    data-url="${cxt!}/s/apkHistory/json/list"-->
+                        <#--                                                    data-tid="table_jq" id="clear-btn"><i class="fa fa-retweet"></i> 清空-->
+                        <#--                                            </button>-->
+                        <#--                                        </li>-->
+                        <#--                                    </ul>-->
+                        <#--                                </div>-->
+                        <#--                            </form>-->
+                        <#--                        </div>-->
+                    </div>
+                    <div class="ibox-tools m-t-xs">
+
+                        <div class="btn-group">
+                            <button class=" btn btn-white btn-sm " type="button" id="add-btn"
+                                    onclick="hm_fn_addFun(addTitle,winWidth,winHeight,addUrl,formId,winname)">
+                                <i class="fa fa-plus-circle"></i> 添加
+                            </button>
+                            <button class="btn btn-white btn-sm" id="Edit">
+                                <i class="fa fa-edit"></i>&nbsp;编辑
+                            </button>
+                            <button class="btn btn-white btn-sm" id="Del">
+                                <i class="fa fa-trash-o"></i>&nbsp;删除
+                            </button>
+                            <!--<button onclick="cleanCache()" class=" btn btn-white btn-sm">-->
+                            <!--<i class="fa fa-refresh"></i>&nbsp;刷新前台缓存-->
+                            <!--</button>-->
+                        </div>
+                    </div>
+                </div>
+                <div class="ibox-content" style="margin-top:55px;height:800px;">
+                    <table id="table_jq"></table>
+                    <div id="pager_jq"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- js加载开始 -->
+<#include "../include/js.html">
+<script>
+    var winname = window.name; //当前窗口的名称
+    var JqGrid,
+        winWidth = '800px',
+        winHeight = '440px',
+        addTitle = "添加",
+        addUrl = "/s/apkHistory/add",
+        editTitle = "编辑",
+        editUrl = "/s/apkHistory/update",
+        deleteUrl = "/s/apkHistory/json/del",
+        delMsg = "删除后无法找回数据，确定删除吗?",
+        lookQrCodeImgUrl = "/s/apkHistory/lookQeCodeImg",
+        lookQrCodeImgTitle = "查看下载apk二维码",
+        jqGridId = "#table_jq",
+        jqPageId = "#pager_jq",
+        dataUrl = "/s/apkHistory/json/list",
+        formId = "#form";
+    $(function () {
+        $.jgrid.defaults.styleUI = "Bootstrap";
+        $(jqGridId).jqGrid({
+            url: dataUrl,
+            datatype: "json",
+            colNames: ['ID', '版本号', '文件名称', '状态', '文件地址 (点击查看下载二维码)', '创建时间', '更新时间', '备注'/*, '操作'*/],
+            colModel: [
+                {
+                    name: 'id',
+                    index: 'id',
+                    width: 1,
+                    hidden: true,
+                    key: true
+                },
+                {
+                    name: 'version',
+                    index: 'version',
+                    width: '80'
+                },
+                {
+                    name: 'name',
+                    index: 'name',
+                    width: '120'
+                },
+
+                {
+                    name: 'stateDesc',
+                    index: 'stateDesc',
+                    width: '80'
+                },
+
+                {
+                    name: 'dataUrl',
+                    index: 'dataUrl',
+                    width: '200',
+                    formatter: function (cellvalue, options, rowObject) {
+                        var str = "";
+                        str += '<a style="margin-bottom:0;"  title="查看下载二维码" onclick="hm_fn_viewFun(lookQrCodeImgTitle,winWidth,winHeight,lookQrCodeImgUrl,' + "'" + rowObject.id + "'" + ',winname)">' + rowObject.dataUrl + '</a>&nbsp;';
+                        return str;
+                    }
+                },
+                {
+                    name: 'createTime',
+                    index: 'createTime',
+                    width: '100'
+                },
+                {
+                    name: 'updateTime',
+                    index: 'updateTime',
+                    width: '100'
+                },
+                {
+                    name: 'remake',
+                    index: 'remake',
+                    width: '150'
+                }
+                // ,
+                // {
+                //     name: 'tax',
+                //     index: 'tax',
+                //     width: '80',
+                //     formatter: function (cellvalue, options, rowObject) {
+                //         var str = '';
+                //         str += '<a style="margin-bottom:0;"  title="查看下载二维码" onclick="hm_fn_viewFun(lookQrCodeImgTitle,winWidth,winHeight,lookQrCodeImgUrl,' + "'" + rowObject.id + "'" + ',winname)">查看下载二维码</a>&nbsp;';
+                //
+                //         return str;
+                //     }
+                // }
+            ],
+            autowidth: true,
+            height: "auto",    // 设为具体数值则会根据实际记录数出现垂直滚动条
+            width: "100%",
+            rowNum: 100,
+            rowList: [100, 150, 200],
+            pager: jqPageId,
+            mtype: "post",
+            rownumbers: true,
+            viewrecords: true,
+            multiselect: true,
+            jsonReader: {
+                root: "exhibitDatas",
+                page: "nowPage",
+                total: "pageCount",
+                records: "recordCount",
+                repeatitems: false,
+                id: "0"
+            }
+        });
+        jQuery(jqGridId).jqGrid('navGrid', jqPageId, {
+                add: false,
+                del: false,
+                edit: false,
+                search: false,
+                position: 'right'
+            },
+            {},
+            {},
+            {},
+            {});
+    });
+    $(window).bind("resize", function () {
+        var width = $(".ibox-content").width();
+        $("#table_jq").setGridWidth(width);
+    });
+
+    jQuery("#Del").click(function () {
+        var ids = jQuery(jqGridId).jqGrid('getGridParam', 'selarrrow');
+        if (ids == '') {
+            parent.notifications('error', "请选择一条数据");
+            return false;
+        }
+        hm_fn_del(jqGridId, dataUrl, deleteUrl, ids, delMsg)
+    });
+
+    jQuery("#Edit").click(function () {
+        var ids = jQuery(jqGridId).jqGrid('getGridParam', 'selarrrow');
+        if (ids == '') {
+            parent.notifications('error', "请选择一条数据");
+            return false;
+        }
+        if (ids.length > 1) {
+            parent.notifications('error', "只能选择一条数据");
+            return false;
+        }
+        hm_fn_editFun(editTitle, winWidth, winHeight, editUrl, ids, winname)
+    });
+
+</script>
+<script type="text/javascript" src="/ui/js/hm/configure.js"></script>
+<!-- js加载结束 -->
+<script>
+    function cleanCache() {
+        var iii = layer.load(2, {
+            shade: [0.1, '#fff']
+        });
+        $.ajax({
+            type: "POST",
+            async: true,
+            url: "/modules/system/conf/refreshCache",
+            dataType: "json",
+            success: function (result) {
+                if (result) {
+                    parent.notifications('success', "缓存刷新成功");
+                } else {
+                    parent.notifications('error', "缓存刷新失败");
+                }
+                layer.close(iii);
+            },
+            error: function () {
+                parent.notifications('error', '刷新失败,请检查网络!');
+            },
+            complete: function () {
+                layer.close(iii);
+            }
+        });
+    }
+</script>
+</body>
+</html>

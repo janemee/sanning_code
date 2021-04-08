@@ -1,0 +1,75 @@
+<!-- 左侧菜单pageslide-left -->
+<nav class="navbar-default navbar-static-side" role="navigation">
+	<div class="nav-close">
+		<i class="fa fa-times-circle"></i>
+	</div>
+	<#--
+	<li></li>
+	<div class="dropdown profile-element"
+		style="padding: 0 0px; background: #3a6ab0;">
+		<img alt="image" class="" src="${cxt!}/ui/img/logo.png" width="50px"
+			height="50px" />
+	</div>
+	-->
+	<div class="sidebar-collapse">
+		<div class="dropdown profile-element" style="padding: 10px 10px;">
+			<#if logUrl??  && (logUrl) !='#' >
+			<img alt="image" class="back" src="${(logUrl)!}" width="100%" height="50" />
+		    </#if>
+		</div>
+		<div class="logo-element" style="padding: 10px 10px;">
+			<#if logUrl??  && (logUrl) !='#' >
+			<img alt="image" class="" src="${(logUrl)!}" width="100%" height="50" />
+		</#if>
+		</div>
+		<ul id="side-menu" class="nav">
+			<#if menuList??>
+				<#list menuList as menu>
+					<li>
+						<#if (menu.isParent)?? && menu.isParent == 1>
+							<a href="javascript:;">
+						<#else>
+							<a class="J_menuItem" href="${cxt!}${(menu.url)!}" data-index="${menu_index+1}">
+						</#if>
+						<i class="${(menu.images)!}"></i>
+						<span class="nav-label">${(menu.name)!}</span>
+						<#if (menu.isParent)?? && (menu.isParent) == 1>
+							<span class="fa arrow"></span>
+						</#if>
+						</a>
+						<ul class="nav nav-second-level collapse">
+							<#if menu.subMenu??>
+								<#list menu.subMenu as subMenu>
+                                    <li>
+                                        <#if (subMenu.isParent)?? && (subMenu.isParent) == 1>
+                                            <a href="javascript:void(0);">
+                                        <#else>
+                                            <a class="J_menuItem" href="${(subMenu.url)!}" data-index="${menu_index+1}_${subMenu_index+1}">
+                                        </#if>
+                                            <i class="${(subMenu.images)!}"></i>
+                                            <span class="nav-label">${(subMenu.name)!}</span>
+                                            <#if (subMenu.isParent)?? && (subMenu.isParent) == 1>
+                                                <span class="fa arrow"></span>
+                                            </#if>
+                                        </a>
+                                        <#if subMenu.subMenu??>
+                                             <#list subMenu.subMenu as m>
+                                                <ul class="nav nav-third-level collapse">
+                                                    <li>
+                                                        <a class="J_menuItem" href="${(m.url)!}" data-index="${menu_index + 1}_${subMenu_index+1}_${m_index+1}">
+                                                            <i class="${(m.images)!}"></i>${(m.name)!}
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                             </#list>
+                                        </#if>
+                                    </li>
+								</#list>
+							</#if>
+						</ul>
+					</li>
+				</#list>
+			</#if>
+		</ul>
+	</div>
+</nav>

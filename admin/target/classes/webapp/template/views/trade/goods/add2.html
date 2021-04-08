@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- 样式文件加载开始 -->
+    <#include "/include/res.html" >
+    <!-- 样式文件加载结束 -->
+    <script type="text/javascript" src="/ui/js/jquery-2.1.1.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/ui/css/plugins/webuploader/webuploader.css">
+    <link rel="stylesheet" type="text/css" href="/ui/css/demo.css">
+    <!--引入JS-->
+    <script type="text/javascript" src="/ui/js/plugins/webuploader/webuploader.min.js"></script>
+    <style>
+        #img_span img{
+            width: 100px;
+            height: 100px;
+            margin-right: 0px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox-content">
+                <form class="form-horizontal m-t" id="form">
+                    <div class="row">
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">挂牌厂家:<i class="required-help">*</i></label>
+                            <div class="col-sm-5">
+                                <input id="facName" name="facName" class="form-control" type="text" value="" readonly>
+                                <input id="facId" type="hidden" name="facId" class="form-control">
+                            </div>
+                            <div class="col-sm-3">
+                                <button class="btn btn-sm btn-white" type="button"
+                                        onclick="chooseFactory()"><i class="fa fa-user"></i> 选择
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">厂家名称:<i class="required-help">*</i></label>
+                            <div class="col-sm-8">
+                                <input name="outsideName" class="form-control" type="text" value="" required>
+                            </div>
+                        </div>
+                    </div>
+                    <#include "_form.html">
+
+                    <div class="row" style="position: relative">
+                        <label class="col-sm-2 control-label">商品轮播图:<i class="required-help">*</i></label>
+                        <div class="col-sm-6 control-label" style="display: flex;justify-content: flex-start">
+                            <input id="file" class="filepath" onchange="changepic(this)" type="file"><br>
+                            <input id="pic" name="picList" type="hidden">
+                        </div>
+                        <div style="position: absolute;top: 50px;left: 150px;display: flex;align-items: center;">
+                            <div id="img_span" ></div>
+                            <div id="move" style="position: relative"></div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- js加载开始 -->
+<#include "/include/js.html">
+<script type="text/javascript" src="/ui/js/trade/goods.js"></script>
+<script type="text/javascript">
+    var jqGridId = "#table_jq",
+        dataUrl = "${cxt!}/s/trade/goods/json/list",
+        formId = "#form",
+        winname = "${winname!}";
+
+    jQuery(document).ready(function () {
+        GoodsJs.init();
+    });
+    $("#tradeTime").on('change',function () {
+        var time =$("#tradeTime").val();
+        var regex=/^([0-9]|1[0-9]):[0-5][0-9],([1-9]|1[0-9]):[0-5][0-9];([0-9]|1[0-9]):[0-5][0-9],([1-9]|1[0-9]):[0-5][0-9]$/;
+        var result=regex.test(time);
+        if (!result){
+            top.layer.alert("交易时间格式错误!", {
+                icon: 5,
+                shadeClose: true
+            });
+            return false;
+        }
+    })
+    $("input[name='listingPrice']").on('change',function () {
+        var listingPrice =$("input[name='listingPrice']").val();
+        var num = fomatFloat(listingPrice,2);
+        $("input[name='listingPrice']").val(num?num:0);
+    })
+    $("input[name='lastPrice']").on('change',function () {
+        var lastPrice =$("input[name='lastPrice']").val();
+        var num = fomatFloat(lastPrice,2);
+        $("input[name='lastPrice']").val(num?num:0);
+    })
+    $("input[name='buyFeeRate']").on('change',function () {
+        var buyFeeRate =$("input[name='buyFeeRate']").val();
+        var num = fomatFloat(buyFeeRate,2);
+        $("input[name='buyFeeRate']").val(num?num:0);
+    })
+    $("input[name='sellFeeRate']").on('change',function () {
+        var sellFeeRate =$("input[name='sellFeeRate']").val();
+        var num = fomatFloat(sellFeeRate,2);
+        $("input[name='sellFeeRate']").val(num?num:0);
+    })
+    $("input[name='tranferRate']").on('change',function () {
+        var tranferRate =$("input[name='tranferRate']").val();
+        var num = fomatFloat(lastPrice,2);
+        $("input[name='tranferRate']").val(num?num:0);
+    })
+    $("input[name='changeRate']").on('change',function () {
+        var changeRate =$("input[name='changeRate']").val();
+        var num = fomatFloat(changeRate,2);
+        $("input[name='changeRate']").val(num?num:0);
+    })
+
+
+    // num为传入的值，n为保留的小数位
+    function fomatFloat(num,n){
+        var f = parseFloat(num);
+        if(isNaN(f)){
+            return false;
+        }
+        f = Math.round(num*Math.pow(10, n))/Math.pow(10, n); // n 幂
+        var s = f.toString();
+        var rs = s.indexOf('.');
+        //判定如果是整数，增加小数点再补0
+        if(rs < 0){
+            rs = s.length;
+            s += '.';
+        }
+        while(s.length <= rs + n){
+            s += '0';
+        }
+        return s;
+    }
+
+    function validateForm() {
+        var pic = $('#file')[0].files[0];
+        var pic1 = $('#pic').val();
+        if (pic == undefined){
+            top.layer.alert("请上传封面图!", {
+                icon: 5,
+                shadeClose: true
+            });
+            return false;
+        }
+        if (pic1 == undefined || pic1 == ''){
+            top.layer.alert("请上传轮播图!", {
+                icon: 5,
+                shadeClose: true
+            });
+            return false;
+            parent.notifications('error', '请上传轮播图');
+        }
+        $(formId).submit();
+    }
+
+    //选厂家
+    function chooseFactory() {
+        parent.layer.open({
+            skin: 'layui-layer-molv',
+            type: 2,
+            scrollbar: false,
+            title: '选择挂牌厂家',
+            fix: false, //不固定
+            maxmin: true,
+            area: ['50%', '40%'],
+            btn: ['确定', '关闭'],
+            yes: function (index, layero) {
+                window.parent[layero.find('iframe')[0]['name']]
+                    .yesBtn($("#facName"), $("#facId"));
+            },
+            cancel: function (index) {
+            },
+            content: '/s/trade/goods/factory'
+        });
+    }
+
+    //文件上传
+    function upload() {
+        var data = new FormData();
+        var pic = $('#file')[0].files[0];
+        data.append('file', pic);
+        $.ajax({
+            type: "POST",
+            async: false,
+            contentType: false,
+            processData: false,
+            data: data,
+            url: "/s/file/upload",
+            success: function (data) {
+                if (data.code === 200) {
+                    $('#path').val(data.data);
+                    $('#img').attr('src', data.data);
+                    parent.notifications('success', '上传成功');
+                } else {
+                    parent.notifications('error', '上传失败');
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                parent.notifications('error', '操作失败,请检查网络!');
+            },
+        });
+    }
+
+    var i=0;
+    function changepic(obj) {
+        var str = $("#pic").val();
+        var picArray = [];
+        if (str != ''){
+            picArray = str.split(',');
+            if (picArray.length > 4){
+                top.layer.alert("轮播图最多上传五张!", {
+                    icon: 5,
+                    shadeClose: true
+                });
+                return false;
+            }
+        }
+        //首先插入一个图片标签，src属性为空，宽高设置为100px，暂时设为不可见
+        $("#move").after("<img src=\"\" id=\"show"+i+"\" width=\"100\" height='100' style=\"display: none;\"><p id=\"del"+i+"\" onclick='del(this.id)' style='display: none;text-align: center;margin-top: 5px;color: blue;'>删除</p>");
+        //调用getObjectURL函数，返回上传的图片的地址
+        var data = new FormData();
+        data.append('file', obj.files[0]);
+        $.ajax({
+            type: "POST",
+            async: false,
+            contentType: false,
+            processData: false,
+            data: data,
+            url: "/s/file/upload",
+            success: function (data) {
+                if (data.code === 200) {
+                    var pic = $("#pic").val();
+                    $('#pic').val(pic == ''?pic+data.data:pic+','+data.data);
+                    $('#show'+i).attr('src',data.data);//将图片的路径设置为返回上传的图片的地址
+                    $("#show"+i).show();//将图片设置为可见
+                    $("#del"+i).show();
+                    parent.notifications('success', '上传成功');
+                } else {
+                    parent.notifications('error', '上传失败');
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                parent.notifications('error', '操作失败,请检查网络!');
+            },
+        });
+        i++;
+    }
+
+    function del(obj) {
+        var str = obj.substring(3);
+        var picUrl = [];
+        picUrl = $("#pic").val().split(",");
+        for(let i=0;i<picUrl.length;i++){
+            if(picUrl[i]==''){
+                var newArr = picUrl.splice(i, 1)
+            }
+            if($("#show"+str)[0].src==picUrl[i] ) {
+                picUrl.splice(i, 1)
+            }
+        }
+       var newStr = picUrl.join(',');
+        $("#pic").val(newStr);
+        //移除img和删除标签
+        $("#show"+str).remove();
+        $("#del"+str).remove();
+    }
+</script>
+</body>
+</html>

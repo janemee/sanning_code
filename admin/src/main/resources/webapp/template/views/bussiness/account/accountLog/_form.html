@@ -1,0 +1,141 @@
+<div class="form-group">
+
+
+                    <div class="col-sm-6 form-group">
+                    <label class="col-sm-4 control-label">id:<i class="required-help">*</i></label>
+                    <div class="col-sm-8">
+                                                    <input id="title" type="text" name="id" value="${(accountLog.id)!}" class="form-control" required>
+                                            </div>
+                </div>
+            </div>
+    <div class="form-group">
+                            <div class="col-sm-6 form-group">
+                    <label class="col-sm-4 control-label">${column.comment}:<i class="required-help">*</i></label>
+                    <div class="col-sm-8">
+                                                    <input id="title" type="text" name="uuid" value="${(accountLog.uuid)!}" class="form-control" required>
+                                            </div>
+                </div>
+                            <div class="col-sm-6 form-group">
+                    <label class="col-sm-4 control-label">用户id:<i class="required-help">*</i></label>
+                    <div class="col-sm-8">
+                                                    <input id="title" type="text" name="userId" value="${(accountLog.userId)!}" class="form-control" required>
+                                            </div>
+                </div>
+            </div>
+    <div class="form-group">
+                            <div class="col-sm-6 form-group">
+                    <label class="col-sm-4 control-label">账户类型1资金账户,2其他账户:<i class="required-help">*</i></label>
+                    <div class="col-sm-8">
+                                                                                                        
+            <select id="accountType" name="accountType" class="form-control chosen-select" required>
+                <option value="0">请选择方式</option>
+                
+                
+                <#list realNameStateValues as item>
+                <option value="${item.getCode()}" <#if (accountLog.accountType)?? && (accountLog.accountType.getCode()) == item.code>selected="selected"</#if> >${item.getValue()}</option>
+                </#list>
+
+
+                                            </div>
+                </div>
+                            <div class="col-sm-6 form-group">
+                    <label class="col-sm-4 control-label">用户类型1普通用户,2代理商,3厂家:<i class="required-help">*</i></label>
+                    <div class="col-sm-8">
+                                                                                                        
+            <select id="userType" name="userType" class="form-control chosen-select" required>
+                <option value="0">请选择方式</option>
+                
+                
+                <#list realNameStateValues as item>
+                <option value="${item.getCode()}" <#if (accountLog.userType)?? && (accountLog.userType.getCode()) == item.code>selected="selected"</#if> >${item.getValue()}</option>
+                </#list>
+
+
+                                            </div>
+                </div>
+            </div>
+    <div class="form-group">
+                            <div class="col-sm-6 form-group">
+                    <label class="col-sm-4 control-label">操作金额:<i class="required-help">*</i></label>
+                    <div class="col-sm-8">
+                                                    <input id="title" type="text" name="amount" value="${(accountLog.amount)!}" class="form-control" required>
+                                            </div>
+                </div>
+                            <div class="col-sm-6 form-group">
+                    <label class="col-sm-4 control-label">总额:<i class="required-help">*</i></label>
+                    <div class="col-sm-8">
+                                                    <input id="title" type="text" name="total" value="${(accountLog.total)!}" class="form-control" required>
+                                            </div>
+                </div>
+            </div>
+    <div class="form-group">
+                            <div class="col-sm-6 form-group">
+                    <label class="col-sm-4 control-label">可用:<i class="required-help">*</i></label>
+                    <div class="col-sm-8">
+                                                    <input id="title" type="text" name="available" value="${(accountLog.available)!}" class="form-control" required>
+                                            </div>
+                </div>
+                            <div class="col-sm-6 form-group">
+                    <label class="col-sm-4 control-label">冻结:<i class="required-help">*</i></label>
+                    <div class="col-sm-8">
+                                                    <input id="title" type="text" name="freeze" value="${(accountLog.freeze)!}" class="form-control" required>
+                                            </div>
+                </div>
+            </div>
+    <div class="form-group">
+                            <div class="col-sm-6 form-group">
+                    <label class="col-sm-4 control-label">类型:<i class="required-help">*</i></label>
+                    <div class="col-sm-8">
+                                                    <input id="title" type="text" name="type" value="${(accountLog.type)!}" class="form-control" required>
+                                            </div>
+                </div>
+                            <div class="col-sm-6 form-group">
+                    <label class="col-sm-4 control-label">备注:<i class="required-help">*</i></label>
+                    <div class="col-sm-8">
+                                                    <input id="title" type="text" name="remark" value="${(accountLog.remark)!}" class="form-control" required>
+                                            </div>
+                </div>
+            </div>
+    <div class="form-group">
+                            <div class="col-sm-6 form-group">
+                    <label class="col-sm-4 control-label">删除标记:<i class="required-help">*</i></label>
+                    <div class="col-sm-8">
+                                                    <input id="title" type="text" name="delFlag" value="${(accountLog.delFlag)!}" class="form-control" required>
+                                            </div>
+                </div>
+                            <div class="col-sm-6 form-group">
+                    <label class="col-sm-4 control-label">版本:<i class="required-help">*</i></label>
+                    <div class="col-sm-8">
+                                                    <input id="title" type="text" name="version" value="${(accountLog.version)!}" class="form-control" required>
+                                            </div>
+                </div>
+            </div>
+    <div class="form-group">
+                            <div class="col-sm-6 form-group">
+                    <label class="col-sm-4 control-label">创建人:<i class="required-help">*</i></label>
+                    <div class="col-sm-8">
+                                                    <input id="title" type="text" name="creator" value="${(accountLog.creator)!}" class="form-control" required>
+                                            </div>
+                </div>
+                            <div class="col-sm-6 form-group">
+                    <label class="col-sm-4 control-label">更新人:<i class="required-help">*</i></label>
+                    <div class="col-sm-8">
+                                                    <input id="title" type="text" name="updator" value="${(accountLog.updator)!}" class="form-control" required>
+                                            </div>
+                </div>
+            </div>
+    <div class="form-group">
+                            <div class="col-sm-6 form-group">
+                    <label class="col-sm-4 control-label">创建时间:<i class="required-help">*</i></label>
+                    <div class="col-sm-8">
+                                                    <input id="title" type="text" name="createTime" value="${(accountLog.createTime)!}" class="form-control" required>
+                                            </div>
+                </div>
+                            <div class="col-sm-6 form-group">
+                    <label class="col-sm-4 control-label">修改时间:<i class="required-help">*</i></label>
+                    <div class="col-sm-8">
+                                                    <input id="title" type="text" name="updateTime" value="${(accountLog.updateTime)!}" class="form-control" required>
+                                            </div>
+                </div>
+            </div>
+    <div class="form-group">

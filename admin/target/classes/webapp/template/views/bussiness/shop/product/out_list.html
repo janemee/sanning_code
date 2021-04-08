@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- 样式文件加载开始 -->
+    <#include "/include/res.html" >
+    <!-- 样式文件加载结束 -->
+</head>
+
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title" style="padding:3px 15px 0px 20px;">
+                    <div class="col-md-6">
+                        <div class="search-form">
+                            <form>
+                                <div class="input-group">
+                                    <input type="text" name="search_val" placeholder="请输入商品名称进行搜索"
+                                           class="form-control search-input" id="search-input">
+                                    <span class="input-group-btn search-span">
+                                        <button class="btn btn-white btn-sm " type="button"
+                                                onclick="dropdownSearchFun(this)"
+                                                data-url="${cxt!}/s/product/json/list"
+                                                data-tid="table_jq" id="search-btn"> 查询
+                                        </button>
+                                    </span>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <table id="table_jq"></table>
+                    <div id="pager_jq"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- js加载-->
+<#include "/include/js.html">
+
+<script type="text/javascript" src="${cxt!}/ui/js/hm/administrator.js"></script>
+<!-- Page-Level Scripts -->
+<script>
+    var winname = window.name;
+    var winWidth = '850px',
+        winHeight = '500px',
+        editTitle = "编辑",
+        editUrl = "/s/goods/edit",
+        deleteUrl = "/s/product/json/del",
+        jqGridId = "#table_jq",
+        jqPageId = "#pager_jq",
+        dataUrl = "/s/product/json/list";
+
+    $(function () {
+        $.jgrid.defaults.styleUI = "Bootstrap";
+        $(jqGridId).jqGrid({
+            url: dataUrl,
+            datatype: "json",
+            colNames: ['名称', '商家名称', '描述', '总库存', '销量', '价格', '发布时间', '停售时间', '操作'],
+            colModel: [
+                {
+                    name: 'title',
+                    index: 'title',
+                    width: '100'
+                },
+                {
+                    name: 'shopName',
+                    index: 'shopName',
+                    width: '100'
+                },
+                {
+                    name: 'content',
+                    index: 'content',
+                    width: '100'
+                },
+                {
+                    name: 'reserve',
+                    index: 'reserve',
+                    width: '100'
+                },
+                {
+                    name: 'sales',
+                    index: 'sales',
+                    width: '100'
+                },
+                {
+                    name: 'price',
+                    index: 'price',
+                    width: '100'
+                },
+                {
+                    name: 'publishTime',
+                    index: 'publishTime',
+                    width: '100'
+                },
+                {
+                    name: 'outageTime',
+                    index: 'outageTime',
+                    width: '100'
+                }
+                , {
+                    width: '100',
+                    formatter: function (cellvalue, options, rowObject) {
+                        var htm;
+                        var a1 = "<a onclick= 'popShelves(" + rowObject.id + ")'>&nbsp;下架&nbsp;</a>";
+                         var a2 = "<a onclick= 'viewRow(" + rowObject.id + ")'>&nbsp;查看&nbsp;</a>";
+                         var a3 = "<a onclick= 'editSales(" + rowObject.id + ")'>&nbsp;修改销量&nbsp;</a>";
+                        htm = a1 + a2 + a3;
+                        return htm;
+                    }
+                }
+                ],
+            autowidth: true,
+            height: "100%",    // 设为具体数值则会根据实际记录数出现垂直滚动条
+            width: "100%",
+            rowNum: 20,
+            rowList: [100, 150, 200],
+            pager: jqPageId,
+            mtype: "post",
+            viewrecords: true,
+            rownumbers: true,
+            rownumWidth: 50,
+            cellsubmit: "clientArray",
+            editurl: editUrl,
+            onSelectRow: function (id) {
+                if (id && id !== lastsel) {
+                    jQuery(jqGridId).jqGrid('restoreRow', lastsel);
+                    jQuery(jqGridId).jqGrid('editRow', id, true);
+                    lastsel = id;
+                }
+            },
+            jsonReader: {
+                root: "exhibitDatas",
+                page: "nowPage",
+                total: "pageCount",
+                records: "recordCount",
+                repeatitems: false,
+                id: "0"
+            },
+            postData: {status: 2}
+        });
+
+        jQuery(jqGridId).jqGrid('setLabel', 'rn', '序号', {
+            'text-align': 'center',
+            'vertical-align': 'middle',
+            'width': '50'
+        }, '');
+
+        jQuery(jqGridId).jqGrid('navGrid', jqPageId, {
+                add: false,
+                del: false,
+                edit: false,
+                search: false,
+                position: 'right'
+            },
+            {},
+            {},
+            {},
+            {});
+    });
+
+
+    $(window).bind("resize", function () {
+        var width = $(".ibox-content").width();
+        $("#table_jq").setGridWidth(width);
+    });
+
+    /** 修改弹窗 */
+    jQuery("#Edit").click(function () {
+        var ids = jQuery(jqGridId).jqGrid('getGridParam', 'selarrrow');
+        if (ids == '') {
+            parent.notifications('error', "请选择一条数据");
+            return false;
+        }
+        if (ids.length > 1) {
+            parent.notifications('error', "只能选择一条数据");
+            return false;
+        }
+        hm_fn_editFun(editTitle, winWidth, winHeight, editUrl, ids, winname);
+    });
+    /** 删除 */
+    jQuery("#Del").click(function () {
+        var ids = jQuery(jqGridId).jqGrid('getGridParam', 'selarrrow');
+        if (ids == '') {
+            parent.notifications('error', "请选择一条数据");
+            return false;
+        }
+        hm_fn_del(jqGridId, dataUrl, deleteUrl, ids)
+    });
+
+    /*** 下架 */
+    function popShelves(id) {
+        var ids = [id];
+        if (ids == '') {
+            parent.notifications('error', "请选择一条数据");
+            return false;
+        }
+        var url = "/s/product/json/popShelves";
+        var confirm = "下架";
+        hm_fn_doAction(jqGridId, dataUrl, url, ids, confirm);
+    }
+
+    function editSales(id) {
+        var url = "/s/shop/product/editSales";
+        hm_fn_editFun("修改销量", winWidth, winHeight, url, id, winname);
+    }
+
+    /* 仓库中商品编辑 */
+    function viewRow(id) {
+        var ids = [id];
+        if (ids == '') {
+            parent.notifications('error', "请选择一条数据");
+            return false;
+        }
+        var url = "/s/shop/product/view";
+        hm_fn_viewFun1("查看", '62.5%', '70%', url, ids);
+    }
+
+    /*** 删除 */
+    function delRow(id) {
+        var ids = [id];
+        if (ids == '') {
+            parent.notifications('error', "请选择一条数据");
+            return false;
+        }
+        hm_fn_del(jqGridId, dataUrl, deleteUrl, ids)
+    }
+</script>
+</body>
+</html>

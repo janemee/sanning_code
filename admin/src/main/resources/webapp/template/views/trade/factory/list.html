@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- 样式文件加载开始 -->
+    <#include "/include/res.html" >
+    <!-- 样式文件加载结束 -->
+</head>
+
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title" style="padding:3px 15px 0 20px;">
+                    <div class="col-md-6">
+                        <div class="search-form">
+                            <form>
+                                <div class="input-group">
+                                    <input type="text" name="search_val" placeholder="请输入厂家名称/联系人/电话进行搜索"
+                                           class="form-control search-input" id="search-input">
+                                    <span class="input-group-btn search-span">
+                                        <button class="btn btn-white btn-sm " type="button"
+                                                onclick="dropdownSearchFun(this)"
+                                                data-url="${cxt!}/s/trade/factory/json/list"
+                                                data-tid="table_jq" id="search-btn"><i class="fa fa-search"></i> 查询
+                                        </button>
+                                    </span>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="search-form-adv ml10">
+                            <form>
+                                <input type="hidden" name="fast_search" value="true">
+                                <div class="btn-group" onclick="dropdownSelectHoverFun(this)">
+                                    <button type="button" class="btn btn-white dropdown-select-toggle" data-toggle="#"
+                                            aria-haspopup="true" aria-expanded="false"> 条件查询 <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu search-menu">
+                                        <li class="input-group input-group-sm">
+                                            <span>厂家名称</span>
+                                            <input type="text" name="*_name" class="hm-search-w208">
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>营业执照编号</span>
+                                            <input type="text" name="*_code" class="hm-search-w208">
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>联系地址</span>
+                                            <input type="text" name="*_address" class="hm-search-w208">
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>联系人</span>
+                                            <input type="text" name="*_contact" class="hm-search-w208">
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>联系电话</span>
+                                            <input type="text" name="*_phone" class="hm-search-w208">
+                                        </li>
+
+                                        <li>
+                                            <span>&nbsp;</span>
+                                            <button class="btn btn-white btn-sm" type="button"
+                                                    onclick="dropdownSearchFun(this)"
+                                                    data-url="${cxt!}/s/trade/factory/json/list"
+                                                    data-tid="table_jq" id="search-btn"><i class="fa fa-search"></i> 查询
+                                            </button>
+                                            <button class="btn btn-white btn-sm" type="button"
+                                                    onclick="dropdownSearchCleanFun(this)"
+                                                    data-url="${cxt!}/s/trade/factory/json/list"
+                                                    data-tid="table_jq" id="clear-btn"><i class="fa fa-retweet"></i> 清空
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="ibox-tools m-t-xs">
+                        <div class="btn-group">
+                            <@shiro.hasPermission name=':s:trade:factory:addOrUpd'>
+                            <button onclick="hm_fn_addFun(addTitle,winWidth,winHeight,addUrl,formId,winname)"
+                                    class="btn btn-white btn-sm" data-index="1-1">
+                                <i class="fa fa-plus-circle"></i>&nbsp;添加
+                            </button>
+                            </@shiro.hasPermission>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="ibox-content">
+                    <table id="table_jq"></table>
+                    <div id="pager_jq"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- js加载-->
+<#include "/include/js.html">
+<script>
+
+    var winname = window.name;
+    var formId = "#form",
+        winWidth = '800px',
+        winHeight = '600px',
+        jqGridId = "#table_jq",
+        jqPageId = "#pager_jq",
+        dataUrl = "/s/trade/factory/json/list",
+        addTitle = "添加厂家",
+        addUrl = "/s/trade/factory/add",
+        editTitle = "编辑",
+        editUrl = "/s/trade/factory/upd",
+        relevanceTitle = "关联子账户",
+        relevanceUrl = "/s/trade/factory/relevance",
+        detailTitle = "仓单明细",
+        detailUrl = "/s/trade/factory/detail",
+        sonListTitle = "子账户列表",
+        sonListUrl = "/s/trade/factory/sonList";
+
+
+    $(function () {
+        $.jgrid.defaults.styleUI = "Bootstrap";
+        $(jqGridId).jqGrid({
+            url: dataUrl,
+            datatype: "json",
+            colNames: ['厂家名称', '营业执照编号', '联系地址', '联系人', '联系电话', '操作'],
+            colModel: [
+                {
+                    name: 'name',
+                    index: 'name',
+                    width: '130'
+                }
+                , {
+                    name: 'code',
+                    index: 'code',
+                    width: '130'
+                }
+                , {
+                    name: 'address',
+                    index: 'address',
+                    width: '130'
+                }
+                , {
+                    name: 'contact',
+                    index: 'contact',
+                    width: '100'
+                }
+                , {
+                    name: 'phone',
+                    index: 'phone',
+                    width: '100',
+                }
+                , {
+                    width: '200',
+                    formatter: function (cellvalue, options, rowObject) {
+                        return "<@shiro.hasPermission name=':s:trade:factory:addOrUpd'>" +
+                            "<a onclick= 'edit(" + rowObject.id + ")'>&nbsp;编辑&nbsp;</a>" +
+                            "</@shiro.hasPermission>" +
+                            "<@shiro.hasPermission name=':s:trade:factory:relevance'>" +
+                            "<a onclick= 'relevance(" + rowObject.id + ")'>&nbsp;关联子账户&nbsp;</a>" +
+                            "</@shiro.hasPermission>" +
+                            "<@shiro.hasPermission name=':s:trade:factory:detail:list'>" +
+                            "<a onclick= 'detail(" + rowObject.id + ")'>&nbsp;仓单明细&nbsp;</a>" +
+                            "</@shiro.hasPermission>" +
+                            "" +
+                            "<@shiro.hasPermission name=':s:trade:factory:son:list'>" +
+                            "<a onclick= 'sonList(" + rowObject.id + ")'>&nbsp;子账户列表&nbsp;</a>" +
+                            "</@shiro.hasPermission>";
+
+                    }
+                }
+            ],
+
+            autowidth: true,
+            height: "100%",    // 设为具体数值则会根据实际记录数出现垂直滚动条
+            width: "100%",
+            rowNum: 20,
+            rowList: [20, 30, 50],
+            pager: jqPageId,
+            mtype: "post",
+            viewrecords: true,
+            rownumbers: true,
+            rownumWidth: 50,
+            multiselect: false,
+            cellsubmit: "clientArray",
+            jsonReader: {
+                root: "exhibitDatas",
+                page: "nowPage",
+                total: "pageCount",
+                records: "recordCount",
+                repeatitems: false,
+                id: "0"
+            }
+        });
+
+        jQuery(jqGridId).jqGrid('setLabel', 'rn', '序号', {
+            'text-align': 'center',
+            'vertical-align': 'middle',
+            'width': '50'
+        }, '');
+
+        jQuery(jqGridId).jqGrid('navGrid', jqPageId, {
+                add: false,
+                del: false,
+                edit: false,
+                search: false,
+                position: 'right'
+            },
+            {}, // add options
+            {}, // del options
+            {}, // edit options
+            {});
+    });
+
+
+    $(window).bind("resize", function () {
+        var width = $(".ibox-content").width();
+        $("#table_jq").setGridWidth(width);
+    });
+
+    function edit(id) {
+        hm_fn_editFun(editTitle, winWidth, winHeight, editUrl, id, winname)
+    }
+
+    function relevance(id) {
+        hm_fn_editFun(relevanceTitle, winWidth, winHeight, relevanceUrl, id, winname)
+    }
+
+    //仓单明细
+    function detail(id) {
+        hm_fn_viewFun1(detailTitle, '900px', winHeight, detailUrl, id)
+    }
+
+    //子账户列表
+    function sonList(id) {
+        hm_fn_viewFun1(sonListTitle, winWidth, winHeight, sonListUrl, id)
+    }
+</script>
+</body>
+</html>

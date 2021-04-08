@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- 样式文件加载开始 -->
+    <#include "/include/res.html" >
+    <!-- 样式文件加载结束 -->
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox-content">
+                <form class="form-horizontal m-t" id="form">
+                    <input type="hidden" name="id" value="${(transfer.id)!}">
+                    <div class="form-group">
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">商品名称:<i class="required-help">*</i></label>
+                            <div class="col-sm-8">
+                                <input type="text" name="name" value="${(transfer.name)!}" class="form-control" readonly>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">原持有人类型:<i class="required-help">*</i></label>
+                            <div class="col-sm-8">
+                                <input type="text" name="sourceType" <#if transfer.sourceType == 1>value="用户"<#else>value="厂家"</#if> class="form-control"
+                            readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">原持有人:<i class="required-help">*</i></label>
+                            <div class="col-sm-8">
+                                <input type="text" name="sourceId" value="${(transfer.sourceName)!}" class="form-control"
+                                       readonly>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">转移人类型:<i class="required-help">*</i></label>
+                            <div class="col-sm-8">
+                                <input type="text" name="targetType" <#if transfer.targetType == 1>value="用户"<#else>value="厂家"</#if> class="form-control"
+                            readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">转移人:<i class="required-help">*</i></label>
+                            <div class="col-sm-8">
+                                <input type="text" name="targetId" value="${(transfer.targetName)!}" class="form-control"
+                                       readonly>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">转移价格:<i class="required-help">*</i></label>
+                            <div class="col-sm-8">
+                                <input type="text" name="price" value="${(transfer.price)!}" class="form-control" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">转移数量:<i class="required-help">*</i></label>
+                            <div class="col-sm-8">
+                                <input type="number" name="count" value="${(transfer.count)!}" class="form-control" readonly>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">状态:<i class="required-help">*</i></label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <div class="radio radio-info radio-inline">
+                                        <input type="radio" id="stateEnable" value="2" name="status" checked/>
+                                        <label for="stateEnable"> 审核通过</label>
+                                    </div>
+                                    <div class="radio radio-info radio-inline">
+                                        <input type="radio" id="stateDisable" value="3" name="status"/>
+                                        <label for="stateDisable"> 审核不通过</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-10 form-group">
+                            <label class="col-sm-2 control-label">备注:</label>
+                            <div style="margin-left: 100px">
+                                <textarea name="remark" id="remark" rows="8" maxlength="200" class="form-control" placeholder="200字符以内"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- js加载开始 -->
+<#include "/include/js.html">
+<script type="text/javascript" src="${cxt!}/ui/js/hm/tradeTransfer.js"></script>
+<script type="text/javascript">
+    var jqGridId = "#table_jq",
+        dataUrl = "${cxt!}/s/trade/tradeTransfer/json/list",
+        formId = "#form",
+        winname = "${winname!}";
+        var funcs = {
+        initSubmit: function (form) {
+            $(formId).validate({
+                errorElement: 'span', //default input error message container
+                errorClass: 'help-block', // default input error message class
+                focusInvalid: false, // do not focus the last invalid input
+                ignore: "",
+                rules: {
+                },
+                invalidHandler: function(event, validator) { //display error alert on form submit
+                },
+                highlight: function(element) { // hightlight error inputs
+                    $(element).closest('.form-group').addClass('has-error'); // set error class to the control group
+                },
+                unhighlight: function(element) { // revert the change done by hightlight
+                    $(element).closest('.form-group').removeClass('has-error'); // set error class to the control group
+                },
+                success: function(label) {
+                    label.closest('.form-group').removeClass('has-error'); // set success class to the control group
+                    label.remove();
+                },
+                submitHandler: function(form) {
+                    var index = parent.layer.getFrameIndex(window.name);
+                    //loading层提示
+                    var loading = layer.load(2, {
+                        shade: [0.3, '#fff']
+                    });
+                    $.ajax({
+                        type: "POST",
+                        async: false,
+                        data: $(form).serialize(),
+                        url: "/s/trade/transfer/json/check",
+                        success: function(data) {
+                            var successMsg = data.msg || "操作成功!",
+                                failedMsg = data.msg || "操作失败!";
+                            var title = "系统提示";
+                            if (data.code == 200) {
+                                parent.notifications('success', successMsg, title);
+                            } else {
+                                parent.notifications('error', data.message, title);
+                            }
+                        },
+                        error: function(XMLHttpRequest, textStatus, errorThrown) {
+                            parent.notifications('error', "操作失败,请检查网络!", title);
+                        },
+                        complete: function() {
+                            layer.close(loading);
+                            parent.layer.close(index);
+                        }
+                    });
+                }
+            });
+        },
+        
+        
+
+    };
+        
+        
+    jQuery(document).ready(function () {
+        funcs.initSubmit();
+    });
+
+    function validateForm() {
+        var status = $('input:radio:checked').val();
+        var remake = $('#remark').val();
+        if (status == 3 && remake == "") {
+            top.layer.alert("备注不能为空!", {
+                icon: 5,
+                shadeClose: true
+            });
+            return false;
+        }
+        $(formId).submit();
+    }
+</script>
+</body>
+
+</html>

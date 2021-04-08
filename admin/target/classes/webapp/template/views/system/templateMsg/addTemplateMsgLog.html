@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- 样式文件加载开始 -->
+<#include "../../include/res.html" >
+    <!-- 样式文件加载结束 -->
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <form class="form-horizontal m-t" id="form">
+                        <input type="hidden" id="ID" value="" name="templateMsg.id"/>
+                        <div class="form-group">
+                            <div class="col-sm-12 form-group">
+                                <label class="col-sm-2 control-label">模板:<i class="required-help">*</i></label>
+                                <div class="col-sm-5">
+                                    <select id="msg_id" name="templateMsgLog.msg_id"
+                                            class="form-control chosen-select" required title="发送对象">
+                                        <option value="">-- 请选择模板 --</option>
+                                    <#list templateList as item>
+                                        <option value="${item.id!}">${item.title!}</option>
+                                    </#list>
+                                    </select>
+                                </div>
+                                <div class="col-sm-5"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="col-sm-12 form-group">
+                                <label class="col-sm-2 control-label">模板ID:<i class="required-help">*</i></label>
+                                <div class="col-sm-5">
+                                    <input id="template_id" name="templateMsgLog.template_id"
+                                           value="${(templateMsg.template_id)!}" class="form-control"
+                                           maxlength="100" required title="模板ID">
+                                </div>
+                                <div class="col-sm-5"></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12 form-group">
+                                <label class="col-sm-2 control-label">内容模板:<i class="required-help">*</i></label>
+                                <div class="col-sm-4">
+                                    <textarea id="content" name="templateMsgLog.content"
+                                              style="width:100%;height:200px;" placeholder="请按照右边的模板填写，{{}} 里面是需要替换的内容.填写格式如下:first,keyowords1,keywords2,remark.请用中文逗号(,)分隔"
+                                              title="发送内容">${(templateMsgLog.content)!}</textarea>
+                                </div>
+                                <div class="col-sm-4">
+                                    <textarea id="detail" name="templateMsg.detail" style="width:100%;height:200px;"
+                                              placeholder="微信模板内容"
+                                              title="详细内容"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12 form-group">
+                                <label class="col-sm-2 control-label">发送对象:<i class="required-help">*</i></label>
+                                <div class="col-sm-4">
+                                    <select id="send_object" name="templateMsgLog.send_object"
+                                            class="form-control chosen-select" required title="发送对象">
+                                        <option value="1" selected>单个</option>
+                                        <option value="0">全部</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- js加载开始 -->
+<#include "../../include/js.html">
+<script type="text/javascript" src="${cxt!}/ui/js/hm/sendTemplateMsg.js"></script>
+<script type="text/javascript">
+    var jqGridId = "#table_jq",
+            dataUrl = "/modules/system/templateMsg/getLogDataByAjax",
+            formId = "#form",
+            winname = "${winname!}";
+    jQuery(document).ready(function () {
+        NoticeTemplateJs.init();
+    });
+
+    function validateForm() {
+        $(formId).submit();
+    }
+
+//    getAllUsers();
+    function getAllUsers() {
+        $.ajax({
+            type: "POST",
+            async: false,
+            url: "/modules/system/templateMsg/getAllUsers",
+            success: function (data) {
+                if (data.code == 1) {
+                    var html = '<option value="0">全部</option>';
+                    $.each(data.data.users, function (i, v) {
+                        html += '<option value="' + v.openId + '">' + v.username + '(' + v.openId + ')</option>';
+                    });
+                    $("#send_object").html(html);
+                } else {
+                    parent.notifications('error', data.msg);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                parent.notifications('error', "操作失败,请检查网络!");
+            },
+            complete: function () {
+            }
+        });
+
+    }
+
+    $('#msg_id').on('change', function () {
+        var chooseId = $(this).val();
+        if (null == chooseId || chooseId == "" || chooseId == "undefined") {
+            parent.notifications('error', 'ID不能为空');
+        }
+        $.ajax({
+            type: "POST",
+            async: false,
+            data: {'ids': chooseId},
+            url: "/modules/system/templateMsg/edit",
+            success: function (data) {
+                if (data.code == 1) {
+                    $("#template_id").val(data.data.template.template_id);
+                    $("#detail").html(data.data.template.detail);
+                } else {
+                    parent.notifications('error', data.msg, title);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                parent.notifications('error', "操作失败,请检查网络!", title);
+            },
+            complete: function () {
+            }
+        });
+    });
+</script>
+<!-- js加载 结束-->
+</body>
+</html>

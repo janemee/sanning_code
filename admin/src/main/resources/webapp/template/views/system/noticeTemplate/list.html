@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- 样式文件加载开始 -->
+    <#include "../../include/res.html" >
+    <!-- 样式文件加载结束 -->
+</head>
+<body class="white-bg5">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title" style="padding:3px 15px 0px 20px;">
+                    <div class="col-md-6">
+                        <div class="search-form">
+                            <form>
+                                <div class="input-group">
+                                    <input type="text" name="search_val" placeholder="请输入名称/标识号进行搜索"
+                                           class="form-control search-input" id="search-input">
+                                    <input type="text" name="ncColumnsType" placeholder="请输入名称/标识号进行搜索"
+                                           class="form-control search-input" style="display: none;"
+                                           value="'title','nid'">
+                                    <span class="input-group-btn search-span">
+                                <button class="btn btn-white btn-sm" type="button" onclick="dropdownSearchFun(this)"
+                                        data-url="${cxt!}/s/noticeTemplate/json/list"
+                                        data-tid="table_jq" id="search-btn"><i class="fa fa-search"></i> 查询</button>
+                            </span>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="ibox-tools m-t-xs">
+                        <div class="btn-group">
+                            <button onclick="hm_fn_addFun(addTitle,winWidth,winHeight,addUrl,formId,winname)"
+                                    class="btn btn-white btn-sm" data-index="1-1">
+                                <i class="fa fa-plus-circle"></i>&nbsp;添加
+                            </button>
+                            <button class="btn btn-white btn-sm" id="Edit">
+                                <i class="fa fa-edit"></i>&nbsp;编辑
+                            </button>
+                            <button class="btn btn-white btn-sm" id="Del">
+                                <i class="fa fa-trash-o"></i>&nbsp;删除
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <table id="table_jq"></table>
+                    <div id="pager_jq"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- js加载开始 -->
+<#include "../../include/js.html">
+<!-- js加载结束 -->
+<!-- Page-Level Scripts -->
+<script>
+    var JqGrid,
+        winWidth = '800px',
+        winHeight = '80%',
+        addTitle = "添加消息模板",
+        addUrl = "/s/noticeTemplate/add",
+        editTitle = "编辑消息模板",
+        editUrl = "/s/noticeTemplate/edit",
+        deleteUrl = "/s/noticeTemplate/json/delete",
+        delMsg = "确定删除吗?",
+        jqGridId = "#table_jq",
+        jqPageId = "#pager_jq",
+        dataUrl = "/s/noticeTemplate/json/list",
+        formId = "#form",
+        winname = window.name;
+    $(function () {
+        $.jgrid.defaults.styleUI = "Bootstrap";
+        $(jqGridId).jqGrid({
+            url: dataUrl,
+            datatype: "json",
+            colNames: ['ID', '标题', '通知方式', '标识', '模板内容', '是否启用', '备注'/*,'操作'*/],
+            colModel: [
+                {
+                    name: 'id',
+                    index: 'id',
+                    width: 1,
+                    hidden: true,
+                    key: true
+                },
+                {
+                    name: 'title',
+                    index: 'title',
+                    width: '150'
+                },
+                {
+                    name: 'noticeType',
+                    index: 'noticeType',
+                    width: '60',
+                    formatter: function (cellvalue, options, rowObject) {
+                        var str = '';
+                        if (cellvalue == 1) {
+                            str = '<span class="label label-primary">短信</span>';
+                        } else if (cellvalue == 2) {
+                            str = '<span class="label label-danger">邮件</span>';
+                        } else if (cellvalue == 3) {
+                            str = '<span class="label label-default">站内信</span>';
+                        }
+                        return str;
+                    }
+                },
+                {
+                    name: 'nid',
+                    index: 'nid',
+                    width: '180'
+                }, {
+                    name: 'template',
+                    index: 'template',
+                    width: '350'
+                },
+                // {
+                //     name: 'isenabled',
+                //     index: 'isenabled',
+                //     width: '60',
+                //     formatter: function (cellvalue, options, rowObject) {
+                //         var str = '';
+                //         if (cellvalue == 1) {
+                //             str = '<span class="badge badge-primary"><i class="fa fa-check"></i></span>';
+                //         } else if (cellvalue == 0) {
+                //             str = '<span class="badge badge-danger"><i class="fa fa-times"></i></span>';
+                //         }
+                //         return str;
+                //     }
+                // },
+                {
+                    name: 'stateFormatter',
+                    index: 'stateFormatter',
+                    width: '60'
+                },
+                {
+                    name: 'remark',
+                    index: 'remark',
+                    width: '150'
+                }/*,
+                {
+                    name: 'tax',
+                    index: 'tax',
+                    width: '70',
+                    formatter: function (cellvalue, options, rowObject) {
+                        var str = '';
+                        str += '<a style="margin-bottom:0px;" class="btn btn-white btn-xs btn-bitbucket" title="编辑" onclick="hm_fn_editFun(editTitle,winWidth,winHeight,editUrl,' + "'" + rowObject.id + "'" + ',winname)"><i class="fa fa-edit"></i></a>&nbsp;';
+                        str += '<a style="margin-bottom:0px;" class="btn btn-default btn-xs btn-bitbucket" title="删除" onclick="hm_fn_del(jqGridId,dataUrl,deleteUrl,' + "'" + rowObject.id + "'" + ')"><i class="fa fa-trash"></i></a>';
+                        return str;
+                    }
+                }*/],
+            autowidth: true,
+            height: "auto",    // 设为具体数值则会根据实际记录数出现垂直滚动条
+            width: "100%",
+            rowNum: 20,
+            rowList: [20, 30, 50],
+            pager: jqPageId,
+            mtype: "post",
+            rownumbers: true,
+            viewrecords: true,
+            multiselect: true,
+            jsonReader: {
+                root: "exhibitDatas",
+                page: "nowPage",
+                total: "pageCount",
+                records: "recordCount",
+                repeatitems: false,
+                id: "0"
+            }
+        });
+        jQuery(jqGridId).jqGrid('navGrid', jqPageId, {
+                add: false,
+                del : false,
+                edit: false,
+                search: false,
+                position: 'right'
+            },
+            {},
+            {},
+            {},
+            {});
+    });
+
+    jQuery("#Del").click(function () {
+        var ids = jQuery(jqGridId).jqGrid('getGridParam', 'selarrrow');
+        if (ids == '') {
+            parent.notifications('error', "请至少选择一条数据");
+            return false;
+        }
+        hm_fn_del(jqGridId, dataUrl, deleteUrl, ids, delMsg)
+    });
+
+    jQuery("#Edit").click(function () {
+        var ids = jQuery(jqGridId).jqGrid('getGridParam', 'selarrrow');
+        if (ids == '') {
+            parent.notifications('error', "请选择一条数据");
+            return false;
+        }
+        if (ids.length > 1) {
+            parent.notifications('error', "只能选择一条数据");
+            return false;
+        }
+        hm_fn_editFun(editTitle, winWidth, winHeight, editUrl, ids, winname)
+    });
+    $(window).bind("resize", function () {
+        var width = $(".ibox-content").width();
+        $("#table_jq").setGridWidth(width);
+    });
+
+</script>
+
+</body>
+</html>

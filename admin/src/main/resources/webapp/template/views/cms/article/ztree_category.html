@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- 样式文件加载-->
+		<#include "../../include/res.html" >
+	</head>
+	<body class="gray-bg">
+		<div class="wrapper wrapper-content  ">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="ibox float-e-margins">
+						<div class="ibox-content">
+							<div class="content_wrap">
+								<div class="content_wrap">
+									<div class="content_wrap">
+										<div class="zTreeDemoBackground left">
+											<ul id="ztree_layer" class="ztree"></ul>
+										</div>
+									</div>
+								</div>
+							</div>
+							
+						</div>
+					</div>
+				</div>
+				<div class="form-group" style="float:right;">
+			</div>
+			</div>
+		</div>
+
+		<#include "../include/js.html">
+		<script>
+			var index = parent.layer.getFrameIndex(window.name);
+			parent.layer.iframeAuto(index);
+			//给父页面传值
+			function yesBtn(){
+				var zTree = $.fn.zTree.getZTreeObj("ztree_layer");
+				checkCount = zTree.getCheckedNodes(true);
+				i = checkCount.length;
+				if(i > 0){
+					var ids = checkCount[i-1].ids;
+					var name = checkCount[i-1].name;
+				}else{
+					layer.alert('请选择功能', {
+						icon: 2
+					});
+					return ;
+				}
+			   	parent.$('#parent-input').val(ids); //隐藏输入框放置ids
+			   	parent.$('#parent-span').html(name); //a标签中放置名称
+			    parent.layer.close(index);
+			};
+
+		</script>
+
+		<script type="text/javascript">
+			var setting = {
+				view: {
+					selectedMulti: false
+				},
+				check: {
+					enable: true,
+					chkStyle: "radio",
+					radioType: "all"
+				},
+				data: {
+					simpleData: {
+						enable: true
+					}
+				},
+				callback: {
+					beforeCheck: beforeCheck,
+					onCheck: onCheck
+				}
+			};
+
+			var zNodes;
+			var url = ${url};
+			$.ajax({
+			   type: "POST",
+			   async:false,
+			   url: url,
+			   success: function(msg){
+			     zNodes = msg;
+			   }
+			});
+			var code, log, className = "dark";
+			function beforeCheck(treeId, treeNode) {
+				className = (className == "dark" ? "":"dark");
+				showLog("[ "+getTime()+" beforeCheck ]&nbsp;&nbsp;&nbsp;&nbsp;" + treeNode.name );
+				return (treeNode.doCheck !== false);
+			}
+			function onCheck(e, treeId, treeNode) {
+				showLog("[ "+getTime()+" onCheck ]&nbsp;&nbsp;&nbsp;&nbsp;" + treeNode.name );
+			}		
+			function showLog(str) {
+				if (!log) log = $("#log");
+				log.append("<li class='"+className+"'>"+str+"</li>");
+				if(log.children("li").length > 6) {
+					log.get(0).removeChild(log.children("li")[0]);
+				}
+			}
+			function getTime() {
+				var now= new Date(),
+				h=now.getHours(),
+				m=now.getMinutes(),
+				s=now.getSeconds(),
+				ms=now.getMilliseconds();
+				return (h+":"+m+":"+s+ " " +ms);
+			}
+
+			function checkNode(e) {
+				var zTree = $.fn.zTree.getZTreeObj("treeOperator_layer"),
+				type = e.data.type,
+				nodes = zTree.getSelectedNodes();
+				if (type.indexOf("All")<0 && nodes.length == 0) {
+					alert("请先选择一个节点");
+				}
+
+				if (type == "checkAllTrue") {
+					zTree.checkAllNodes(true);
+				} else if (type == "checkAllFalse") {
+					zTree.checkAllNodes(false);
+				} else {
+					var callbackFlag = $("#callbackTrigger").attr("checked");
+					for (var i=0, l=nodes.length; i<l; i++) {
+						if (type == "checkTrue") {
+							zTree.checkNode(nodes[i], true, null, callbackFlag);
+						} else if (type == "checkFalse") {
+							zTree.checkNode(nodes[i], false, null, callbackFlag);
+						}else if (type == "checkTruePS") {
+							zTree.checkNode(nodes[i], true, true, callbackFlag);
+						} else if (type == "checkFalsePS") {
+							zTree.checkNode(nodes[i], false, true, callbackFlag);
+						}
+					}
+				}
+			}
+
+			$(document).ready(function(){
+				$.fn.zTree.init($("#treeOperator_layer"), setting, zNodes);
+				$("#checkTrue").bind("click", {type:"checkTrue"}, checkNode);
+				$("#checkFalse").bind("click", {type:"checkFalse"}, checkNode);
+			});
+		</script>
+	
+	</body>
+
+</html>

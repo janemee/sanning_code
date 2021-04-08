@@ -1,0 +1,481 @@
+<!-- 样式文件加载开始 -->
+<#include "include/res.html" >
+<#include "include/js.html" >
+<!-- 样式文件加载结束 -->
+<body class="white-bg">
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <#if currAdmin?? && currAdmin.username?contains('admins')>
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>运营统计</h5>
+                </div>
+                <!-- 第一行 -->
+                <div class="row ibox-content">
+                    <div class="col-sm-3">
+                        <div class="widget style1 navy-bg">
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <i class="fa fa-shopping-cart fa-5x"></i>
+                                </div>
+                                <div class="col-xs-8 text-right">
+                                    <span> 今日订单数 </span>
+                                    <h2 class="font-bold">${orderToday?string('#,##0')}</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="widget style1 red-bg">
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <i class="fa fa-cny fa-5x"></i>
+                                </div>
+                                <div class="col-xs-8 text-right">
+                                    <span> 今日订单总额 </span>
+                                    <h2 class="font-bold">${amountToday?string('#,##0.00')}</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--第二行-->
+                <div class="row ibox-content">
+                    <div class="col-sm-3">
+                        <div class="widget style1 navy-bg">
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <i class="fa fa-user-plus fa-5x"></i>
+                                </div>
+                                <div class="col-xs-8 text-right">
+                                    <span> 今日注册用户 </span>
+                                    <h2 class="font-bold">${regToday?string('#,##0')}</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="widget style1 red-bg">
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <i class="fa fa-user fa-5x"></i>
+                                </div>
+                                <div class="col-xs-8 text-right">
+                                    <span> 今日活跃用户 </span>
+                                    <h2 class="font-bold">${loginToday?string('#,##0')}</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="widget style1 blue-bg">
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <i class="fa fa-users fa-5x"></i>
+                                </div>
+                                <div class="col-xs-8 text-right">
+                                    <span> 用户总数 </span>
+                                    <h2 class="font-bold">${regTotal?string('#,##0')}</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--第三行-->
+                <div class="row ibox-content">
+                    <div class="col-sm-3">
+                        <div class="widget style1 navy-bg">
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <i class="fa fa-cart-plus fa-5x"></i>
+                                </div>
+                                <div class="col-xs-8 text-right">
+                                    <span> 累计订单数 </span>
+                                    <h2 class="font-bold">${orderTotal?string('#,##0')}</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="widget style1 red-bg">
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <i class="fa fa-cny fa-5x"></i>
+                                </div>
+                                <div class="col-xs-8 text-right">
+                                    <span> 累计订单金额 </span>
+                                    <h2 class="font-bold">${amountTotal?string('#,##0.00')}</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="widget style1 blue-bg">
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <i class="fa fa-cny fa-5x"></i>
+                                </div>
+                                <div class="col-xs-8 text-right">
+                                    <span> 订单总成本 </span>
+                                    <h2 class="font-bold">${costTotal?string('#,##0.00')}</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="widget style1 yellow-bg">
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <i class="fa fa-cny fa-5x"></i>
+                                </div>
+                                <div class="col-xs-8 text-right">
+                                    <span> 订单总利润 </span>
+                                    <h2 class="font-bold">${profitTotal?string('#,##0.00')}</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </#if>
+</div>
+<!--柱状图-->
+<div class="row">
+
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <button id="dBtn" type="button" class="btn btn-primary ">天</button>
+                <button id="mBtn" class="btn btn-danger ">月</button>
+                <button id="yBtn" class="btn btn-success ">年</button>
+                <div class="ibox-tools">
+                    <!--<a class="collapse-link">-->
+                        <!--<i class="fa fa-chevron-up"></i>-->
+                    <!--</a>-->
+                </div>
+            </div>
+            <div class="ibox-content">
+                <div class="echarts" id="chart1" style="width: 800px;height: 400px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--表格-->
+<div class="row">
+    <div class="col-sm-6">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>一周热销厂家TOP10</h5>
+                <div class="ibox-tools">
+                    <!--<a class="collapse-link">-->
+                        <!--<i class="fa fa-chevron-up"></i>-->
+                    <!--</a>-->
+                </div>
+            </div>
+            <div class="ibox-content">
+                <table id="shopTable" class="table table-striped  dataTable no-footer">
+
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>一周热销商品TOP10</h5>
+                <div class="ibox-tools">
+                    <!--<a class="collapse-link">-->
+                        <!--<i class="fa fa-chevron-up"></i>-->
+                    <!--</a>-->
+                </div>
+            </div>
+            <div class="ibox-content">
+                <table id="goodsTable" class="table table-striped  dataTable no-footer">
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</div>
+<script>
+    var echartDataUrl = "/s/indexEchartData";
+    var topDataUrl = "/s/indexTopData";
+    var diff = 0;
+
+    var myChart = echarts.init(document.getElementById('chart1'), 'light');
+    var option = {
+        title: {
+            text: ''
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                label: {
+                    backgroundColor: '#505765'
+                }
+            }
+        },
+
+        legend: {
+            data: [
+                '订单数',
+                '订单金额'
+            ],
+        },
+        xAxis: [
+            {
+                type: 'category',
+                data: []
+            }
+        ],
+        yAxis: [
+            {
+                name: "订单金额",
+                type: 'value'
+            },
+            {
+                name: "订单数",
+                type: 'value'
+            }
+        ],
+        series: [
+            {
+                name: '订单数',
+                type: 'bar',
+                yAxisIndex: 1,
+                data: []
+            },
+            {
+                name: '订单金额',
+                type: 'line',
+                yAxisIndex: 0,
+                data: []
+            },
+        ]
+    };
+    // 按天请求本月数据
+    $("#dBtn").click(function () {
+        var chartType = 1;
+        // TODO 修改时间偏移量
+        var data = {
+            "chartType": chartType,
+            "diff": diff
+        };
+        $.post(echartDataUrl, data, function (data) {
+            if (data.code === 200) {
+                // []
+                totalLength = data.data.chartDataList.length;
+                if (totalLength > 0) {
+                    updateChart(chartType, data.data.chartDataList);
+                } else {
+                    console.log("请求成功，但是没有数据");
+                }
+            } else {
+                console.log("请求失败");
+            }
+        });
+    });
+
+    // 按月请求本年度数据
+    $("#mBtn").click(function () {
+        var chartType = 2;
+        var data = {
+            "chartType": chartType,
+            "diff": diff
+        };
+        $.post(echartDataUrl, data, function (data) {
+            if (data.code === 200) {
+                // []
+                totalLength = data.data.chartDataList.length;
+                if (totalLength > 0) {
+                    updateChart(chartType, data.data.chartDataList);
+                } else {
+                    console.log("请求成功，但是没有数据");
+                }
+            } else {
+                console.log("请求失败");
+            }
+        });
+    });
+
+    // 按年请求所有年份数据
+    $("#yBtn").click(function () {
+        var chartType = 3;
+        var data = {
+            "chartType": chartType,
+            "diff": diff
+        };
+        $.post(echartDataUrl, data, function (data) {
+            if (data.code === 200) {
+                // []
+                totalLength = data.data.chartDataList.length;
+                if (totalLength > 0) {
+                    updateChart(chartType, data.data.chartDataList);
+                } else {
+                    console.log("请求成功，但是没有数据");
+                }
+            } else {
+                console.log("请求失败");
+            }
+        });
+    });
+
+    // render
+    // data格式 [{},{}]
+    // 1:x轴数据, 2 y轴s0数据,3:y轴s1数据
+    function updateChart(chartType, data) {
+        var dateIndex = "dDate";
+        var title = "按天"
+        if (chartType === 2) {
+            dateIndex = "mDate";
+            title = "按月"
+        } else if (chartType === 3) {
+            dateIndex = "yDate";
+            title = "按年";
+        }
+        var xData = data.map(function (ele) {
+            return ele[dateIndex];
+        });
+        var y1Data = data.map(function (ele) {
+            return ele["totalCount"];
+        });
+        var y2Data = data.map(function (ele) {
+            return ele["totalAmount"];
+        });
+        // var option = myChart.getOption();
+        option.title = {text: title};
+        option.xAxis[0].data = xData;
+        option.series[0].data = y1Data;
+        option.series[1].data = y2Data;
+        myChart.setOption(option, true);
+    }
+
+    // 热销
+    function renderTopShop(data) {
+        var table = $("#shopTable").DataTable();
+        table.clear();
+        table.rows.add(data);
+        table.draw();
+    }
+
+    function renderTopGoods(data) {
+        var table = $("#goodsTable").DataTable();
+        table.clear();
+        table.rows.add(data);
+        table.draw();
+    }
+
+    $("#shopTable").DataTable({
+        paging: false,
+        ordering: false,
+        searching: false,
+        info: false,
+        // data: [
+        //     {index: 1, name: "jack", age: 20, sex: "man"},
+        //     {index: 2, name: "jack", age: 20, sex: "man"},
+        //     {index: 3, name: "jack", age: 20, sex: "man"},
+        //     {index: 4, name: "jack", age: 20, sex: "man"},
+        //     {index: 5, name: "jack", age: 20, sex: "man"},
+        //     {index: 6, name: "jack", age: 20, sex: "man"},
+        //     {index: 7, name: "jack", age: 20, sex: "man"},
+        //     {index: 8, name: "jack", age: 20, sex: "man"},
+        //     {index: 9, name: "jack", age: 20, sex: "man"},
+        //     {index: 10, name: "jack", age: 20, sex: "man"},
+        // ],
+        columns: [
+            {"data": "index"},
+            {"data": "shopName"},
+            {"data": "amountTotal"}
+        ],
+    });
+
+    $("#goodsTable").DataTable({
+        paging: false,
+        ordering: false,
+        searching: false,
+        info: false,
+        // data: [
+        //     {index: 1, name: "jack", age: 20, sex: "man"},
+        //     {index: 2, name: "jack", age: 20, sex: "man"},
+        //     {index: 3, name: "jack", age: 20, sex: "man"},
+        //     {index: 4, name: "jack", age: 20, sex: "man"},
+        //     {index: 5, name: "jack", age: 20, sex: "man"},
+        //     {index: 6, name: "jack", age: 20, sex: "man"},
+        //     {index: 7, name: "jack", age: 20, sex: "man"},
+        //     {index: 8, name: "jack", age: 20, sex: "man"},
+        //     {index: 9, name: "jack", age: 20, sex: "man"},
+        //     {index: 10, name: "jack", age: 20, sex: "man"},
+        // ],
+        columns: [
+            {"data": "index"},
+            {"data": "goodsName"},
+            {"data": "shopName"},
+            {"data": "amountTotal"}
+        ],
+    });
+    // 初始加载当月的数据
+    // 默认请求三组
+    $(document).ready(function () {
+        // 初始加载echarts
+        var chartType = 1;
+        var postDataEchart = {
+            "chartType": chartType,
+            "diff": diff
+        };
+        $.post(echartDataUrl, postDataEchart, function (data) {
+            if (data.code === 200) {
+                // []
+                totalLength = data.data.chartDataList.length;
+                if (totalLength > 0) {
+                    updateChart(chartType, data.data.chartDataList);
+                } else {
+                    console.log("请求成功，但是没有数据");
+                }
+            } else {
+                console.log("请求失败");
+            }
+        });
+
+        // 初始加载top榜单
+        $.post(topDataUrl, {}, function (data) {
+            if (data.code === 200) {
+                // []
+                var topShop = data.data.topShop;
+                var topGoods = data.data.topGoods;
+
+                if (topShop) {
+                    topShop.forEach(function(ele,index){
+                        ele["index"] = index + 1;
+                        if (ele["amountTotal"]){
+                            ele["amountTotal"] = ele["amountTotal"].toFixed(2);
+                        }else{
+                            ele["amountTotal"]=0;
+                            ele["amountTotal"]=ele["amountTotal"].toFixed(2);
+                        }
+                    });
+                    renderTopShop(topShop);
+                }
+                if (topGoods) {
+                    topGoods.forEach(function(ele,index){
+                        ele["index"] = index + 1;
+                        if (ele["amountTotal"]){
+                            ele["amountTotal"] = ele["amountTotal"].toFixed(2);
+                        }else{
+                            ele["amountTotal"]=0;
+                            ele["amountTotal"]=ele["amountTotal"].toFixed(2);
+                        }
+                    });
+                    renderTopGoods(topGoods);
+                }
+            } else {
+                console.log("请求失败");
+            }
+        });
+    });
+</script>
+</body>

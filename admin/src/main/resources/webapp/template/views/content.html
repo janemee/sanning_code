@@ -1,0 +1,482 @@
+<!-- 样式文件加载开始 -->
+<#include "include/res.html" >
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+<!-- 样式文件加载结束 -->
+<body class="white-bg">
+<div class="wrapper wrapper-content">
+
+    <#if currAdmin?? && currAdmin.username?contains('admins')>
+        <!-- 今日统计 -->
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5><i class="fa fa-pie-chart"></i> 运营统计</h5>
+                    </div>
+                    <div class="row ibox-content">
+                        <div class="col-sm-3">
+                            <div class="ibox float-e-margins">
+                                <div class="ibox-title">
+                                    <span class="label label-success pull-right">总</span>
+                                    <h5>挂单数量</h5>
+                                </div>
+                                <div class="ibox-content">
+                                    <h1 class="no-margins">${entrustTotal?string('#,##0')!0}</h1>
+                                    <div class="stat-percent font-bold text-success">
+                                        ${entrustTotalToday?string('#,##0')!0} 今日 <!--<i class="fa fa-bolt"></i>-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="ibox float-e-margins">
+                                <div class="ibox-title">
+                                    <span class="label label-info pull-right">总</span>
+                                    <h5>充值</h5>
+                                </div>
+                                <div class="ibox-content">
+                                    <h1 class="no-margins">${rechargeTotal?string('#,##0.00')!0}</h1>
+                                    <div class="stat-percent font-bold text-info">
+                                        ${rechargeTotalToday?string('#,##0.00')!0} 今日
+                                        <!--<i class="fa fa-level-up"></i>-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="ibox float-e-margins">
+                                <div class="ibox-title">
+                                    <span class="label label-primary pull-right">总</span>
+                                    <h5>提现</h5>
+                                </div>
+                                <div class="ibox-content">
+                                    <h1 class="no-margins">${cashTotal?string('#,##0.00')!0}</h1>
+                                    <div class="stat-percent font-bold text-navy">
+                                        ${cashTotalToday?string('#,##0.00')!0} 今日 <!--<i class="fa fa-level-up"></i>-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="ibox float-e-margins">
+                                <div class="ibox-title">
+                                    <span class="label label-danger pull-right">总</span>
+                                    <h5>用户活跃</h5>
+                                </div>
+                                <div class="ibox-content">
+                                    <h1 class="no-margins">${activeNum?string('#,##0')!0}</h1>
+                                    <div class="stat-percent font-bold text-danger">${activeNumLast?string('#,##0')!0}
+                                        上周 <!--<i class="fa fa-level-down"></i>-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 历史统计 -->
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins">
+                    <div class="row ibox-content">
+                        <div class="col-sm-3">
+                            <div class="widget style1 blue-bg">
+                                <div class="row">
+                                    <div class="col-xs-2">
+                                        <i class="fa fa-users fa-5x"></i>
+                                    </div>
+                                    <div class="col-xs-10 text-right">
+                                        <span> 注册用户 </span>
+                                        <h2 class="font-bold">${regTotal?string('#,##0')}</h2>
+                                        <span>昨日：${regYesterday!0}</span>
+                                        <span>今日：${regToday!0}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="widget style1 yellow-bg">
+                                <div class="row">
+                                    <div class="col-xs-2">
+                                        <i class="fa fa-flag fa-5x"></i>
+                                    </div>
+                                    <div class="col-xs-10 text-right">
+                                        <span> 交易总额(¥) </span>
+                                        <h2 class="font-bold">${(GMV/10000)?string('#,##0.00')}<strong
+                                                    style="font-size: 14px;">万</strong></h2>
+                                        <span>昨日：${(yesterdayGMV/10000)?string('#,##0.00')}<strong
+                                                    style="font-size: 8px;">万</strong></span>
+                                        <span>今日：${(todayGMV/10000)?string('#,##0.00')}<strong
+                                                    style="font-size: 8px;">万</strong></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="widget style1 blue-bg">
+                                <div class="row">
+                                    <div class="col-xs-2">
+                                        <i class="fa fa-flag-checkered fa-5x"></i>
+                                    </div>
+                                    <div class="col-xs-10 text-right">
+                                        <span> 累计手续费(¥)</span>
+                                        <h2 class="font-bold">${platformEarns?string('#,##0.00')}<strong
+                                                    style="font-size: 14px;">元</strong></h2>
+                                        <span>昨日：${yesterdayPlatformEarns?string('#,##0.00')}<strong
+                                                    style="font-size: 8px;">元</strong></span>
+                                        <span>今日：${todayPlatformEarns?string('#,##0.00')}<strong
+                                                    style="font-size: 8px;">元</strong></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="widget style1 yellow-bg">
+                                <div class="row">
+                                    <div class="col-xs-2">
+                                        <i class="fa fa-flag-o fa-5x"></i>
+                                    </div>
+                                    <div class="col-xs-10 text-right">
+                                        <span> 用户总收益(¥) </span>
+                                        <h2 class="font-bold">${(userEarns/10000)?string('#,##0.00')}<strong
+                                                    style="font-size: 14px;">万</strong></h2>
+                                        <span>昨日：${(yesterdayUserEarns/10000)?string('#,##0.00')}<strong
+                                                    style="font-size: 8px;">万</strong></span>
+                                        <span>今日：${(todayUserEarns/10000)?string('#,##0.00')}<strong
+                                                    style="font-size: 8px;">万</strong></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 待办 -->
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5><i class="fa fa-arrow-circle-o-up"></i> 提现信息</h5>
+                    </div>
+                    <div class="ibox-content no-padding">
+                        <ul class="list-group">
+                            <#list cashList as list>
+                                <li class="list-group-item">
+                                    <p><a class="text-danger"
+                                          href="${(list.url)!}">${(list.typeTitle)!}</a> ${(list.content)!}</p>
+                                    <small class="block text-muted"> ${(list.creataTime)!}</small>
+                                </li>
+                            </#list>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5><i class="fa fa-dollar"></i> 充值信息</h5>
+                    </div>
+                    <div class="ibox-content no-padding">
+                        <ul class="list-group">
+                            <#list rechargeList as list>
+                                <li class="list-group-item">
+                                    <p><a class="text-danger"
+                                          href="${(list.url)!}">${(list.typeTitle)!}</a> ${(list.content)!}</p>
+                                    <small class="block text-muted"> ${(list.creataTime)!}</small>
+                                </li>
+                            </#list>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5><i class="fa fa-adjust"></i> 实名信息</h5>
+                    </div>
+                    <div class="ibox-content no-padding">
+                        <ul class="list-group">
+                            <#list authList as list>
+                                <li class="list-group-item">
+                                    <p><a class="text-danger"
+                                          href="${(list.url)!}">${(list.typeTitle)!}</a> ${(list.content)!}</p>
+                                    <small class="block text-muted"> ${(list.creataTime)!}</small>
+                                </li>
+                            </#list>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 图表 -->
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5></h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <!--<i class="fa fa-chevron-up"></i>-->
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="echarts" id="memberScale"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5></h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <!--<i class="fa fa-chevron-up"></i>-->
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="echarts" id="entrustCount"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <#else>
+        <div class="col-sm-6">
+            <h2>Hello,${(currAdmin.username)!}</h2>
+            <small>请使用手机自带浏览器扫描下面的二维码下载<h5>抖音短视频</h5></small>
+            <br>
+            <br>
+            <img title="" src="/ui/img/douyin.qrcode.png" width="260" style="max-width:264px;">
+            <br>
+        </div>
+        <div class="col-sm-6">
+            <h2>Hello,${(currAdmin.username)!}</h2>
+            <small>请使用手机自带浏览器扫描下面的二维码下载<h5>${(webName)!}</h5></small>
+            <small>${(qrCodeUrlMsg)!}</small>
+            <br>
+            <br>
+            <img title="" src="${(qrCodeUrl)!}" width="260" style="max-width:264px;">
+            <br>
+        </div>
+
+    </#if>
+</div>
+<#include "include/js.html">
+<script>
+    $(document).ready(function () {
+        // $(document).init(notify());
+
+        // setInterval(notify, 10000);
+        function notify() {
+            $.ajax({
+                url: "/s/notifyInfo",
+                type: 'post',
+                dataType: "json",
+                timeout: "30000",
+                success: function (data) {
+                    $("#recharge").html(data.data.recharge);
+                    $("#rechargeTime").html(data.data.rechargeTime);
+                    $("#auth").html(data.data.auth);
+                    $("#authTime").html(data.data.authTime);
+                    $("#cash").html(data.data.cash);
+                    $("#cashTime").html(data.data.cashTime);
+                    $("#bank").html(data.data.bank);
+                    $("#bankTime").html(data.data.bankTime);
+                    $("#entrust0").html(data.data.entrust0);
+                    $("#entrustTime0").html(data.data.entrustTime0);
+                    $("#entrust1").html(data.data.entrust1);
+                    $("#entrustTime1").html(data.data.entrustTime1);
+                    $("#entrust2").html(data.data.entrust2);
+                    $("#entrustTime2").html(data.data.entrustTime2);
+                    $("#entrust3").html(data.data.entrust3);
+                    $("#entrustTime3").html(data.data.entrustTime3);
+
+                }
+                // error:function(){
+                //     parent.layer.alert('系统繁忙,请稍后再试!', { title:'提示', icon:2, closeBtn: 0 });
+                // },
+                // complete:function(){
+                //     layer.close(loading);
+                //     parent.layer.close(index);
+                // }
+            });
+        }
+    });
+</script>
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var entrustCount = echarts.init(document.getElementById('entrustCount'));
+    var memberScale = echarts.init(document.getElementById("memberScale"));
+    memberScale.showLoading();
+    entrustCount.showLoading();
+    var memberScaleName = [];
+    var memberScaleNum = [];
+    var goodsName = [];
+    var sellCount = [];
+    var deliveryCount = [];
+    var lockCount = [];
+    var freezeCount = [];
+
+    // 指定图表的配置项和数据
+    var entrustCountOption = {
+        title: {
+            text: '仓单分布统计'
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+            }
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        legend: {
+            data: ['可卖数量', '提货数量', '锁仓数量', '冻结数量']
+        },
+        xAxis: {
+            type: 'category',
+            data: goodsName
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [
+            {
+                name: '可卖数量',
+                type: 'bar',
+                stack: '总量',
+                label: {
+                    normal: {
+                        show: true,
+                        position: 'insideRight'
+                    }
+                },
+                data: sellCount
+            },
+            {
+                name: '提货数量',
+                type: 'bar',
+                stack: '总量',
+                label: {
+                    normal: {
+                        show: true,
+                        position: 'insideRight'
+                    }
+                },
+                data: deliveryCount
+            },
+            {
+                name: '锁仓数量',
+                type: 'bar',
+                stack: '总量',
+                label: {
+                    normal: {
+                        show: true,
+                        position: 'insideRight'
+                    }
+                },
+                data: lockCount
+            },
+            {
+                name: '冻结数量',
+                type: 'bar',
+                stack: '总量',
+                label: {
+                    normal: {
+                        show: true,
+                        position: 'insideRight'
+                    }
+                },
+                data: freezeCount
+            },
+        ]
+    };
+    memberOption = {
+        title: {
+            text: "商品仓单统计",
+            subtext: "",
+            x: "center"
+        },
+        tooltip: {
+            trigger: "item",
+            formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        legend: {
+            orient: "vertical",
+            x: "left",
+            data: memberScaleName
+        },
+        calculable: !0,
+        series: [{
+            name: "占比",
+            type: "pie",
+            radius: "55%",
+            center: ["50%", "60%"],
+            data: memberScaleNum
+        }]
+    };
+
+    $.ajax({
+        type: "post",
+        async: true,
+        url: "/s/countMemberByType",
+        dataType: "json",
+        success: function (data) {
+            if (data.code !== 200) {
+                return;
+            }
+            data = data.data;
+            memberScaleNum.push(data);
+            for (var i = 0; i < data.length; i++) {
+                memberScaleName.push(data[i].name);
+                memberScaleNum.push(data[i]);
+            }
+            memberScale.hideLoading(); //隐藏loading动画
+            memberScale.setOption(memberOption);
+        },
+        error: function () {
+            alert("图表请求数据失败!");
+            memberScale.hideLoading();
+        }
+    });
+
+    $.ajax({
+        type: "post",
+        async: true,
+        url: "/s/countEntrustByTime",
+        dataType: "json",
+        success: function (data) {
+            if (data.code !== 200) {
+                return;
+            }
+            data = data.data;
+            for (var i = 0; i < data.length; i++) {
+                goodsName.push(data[i].name);
+                sellCount.push(data[i].sellCount);
+                deliveryCount.push(data[i].deliveryCount);
+                lockCount.push(data[i].lockCount);
+                freezeCount.push(data[i].freezeCount);
+            }
+            entrustCount.hideLoading(); //隐藏loading动画
+            entrustCount.setOption(entrustCountOption);
+        },
+        error: function () {
+            alert("图表请求数据失败!");
+            entrustCount.hideLoading();
+        }
+    });
+</script>
+
+</body>

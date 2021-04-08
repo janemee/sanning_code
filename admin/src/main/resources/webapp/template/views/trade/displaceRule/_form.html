@@ -1,0 +1,98 @@
+<div class="form-group">
+    <label class="col-sm-2 control-label">选择源商品: </label>
+    <div class="col-sm-3">
+        <button class="btn btn-sm btn-white" type="button"
+                onclick="chooseSourceGoods()"><i class="fa fa-gift"></i> 选择商品
+        </button>
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">置换源商品:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input type="text" id="sourceName" name="sourceName" value="${(sourceGoods.name)!}" class="form-control" readonly>
+            <input type="hidden" id="sourceId" name="sourceId" value="${(rule.sourceId)!}" class="form-control" readonly>
+        </div>
+    </div>
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">商品代码:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input type="text" id="sourceCode" name="sourceCode" value="${(sourceGoods.code)!}" class="form-control" readonly>
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-sm-2 control-label">选择目标商品: </label>
+    <div class="col-sm-3">
+        <button class="btn btn-sm btn-white" type="button"
+                onclick="chooseTargetGoods()"><i class="fa fa-gift"></i> 选择商品
+        </button>
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">置换目标商品:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+                <input type="text" id="targetName" name="targetName" value="${(targetGoods.name)!}" class="form-control" readonly>
+                <input type="hidden" id="targetId" name="targetId" value="${(rule.targetId)!}" class="form-control" readonly>
+        </div>
+    </div>
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">商品代码:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input type="text" id="targetCode" name="targetCode" value="${(targetGoods.code)!}"class="form-control" readonly>
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">规则名称<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input id="name" type="text" name="name" value="${(rule.name)!}" placeholder="请输入1-20字符的规则名称" class="form-control" maxlength="20" minlength="1"
+                   required>
+        </div>
+    </div>
+
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">置换协议:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <select id="procotolId" name="procotolId" class="form-control" required>
+                <#if articles ??>
+                <#list articles as article>
+                <option value="${(article.id)!}" <#if rule ?? && rule.procotolId == article.id>selected</#if>>${(article.title)!}</option>
+                </#list>
+                </#if>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">置换比例<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input id="scale" type="text" name="scale" value="${(rule.scale)!}" placeholder="示例：3:1" class="form-control" maxlength="10" minlength="1"
+                   required>
+        </div>
+    </div>
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">状态:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <select name="status" id="status" class="form-control" required>
+                <option value="1" <#if rule ?? && rule.stauts ?? && rule.status == 1>selected</#if>>禁用</option>
+                <option value="2" <#if rule ?? && rule.stauts ?? && rule.status == 2>selected</#if>>启用</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="col-sm-10 form-group">
+        <label class="col-sm-2 control-label">规则说明:<i class="required-help">*</i></label>
+        <div style="margin-left: 100px">
+            <textarea id="remark" name="remark" rows="10" maxlength="200" placeholder="200字符以内" required class="form-control">${(rule.remark)!}</textarea>
+        </div>
+    </div>
+</div>

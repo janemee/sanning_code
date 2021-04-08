@@ -1,0 +1,160 @@
+<div class="row">
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">商品名称:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input name="name" class="form-control" type="text" value="${(goods.name)!}" maxlength="45" required>
+        </div>
+    </div>
+
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">商品代码:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input name="code" class="form-control" type="text" value="${(goods.code)!}" maxlength="45" required>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">市场指导价(元):<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input name="lastPrice" class="form-control" type="text" value="${(goods.lastPrice)!}" placeholder="请输入市场指导价" onkeyup = "this.value=/^\d+\.?\d{0,2}$/.test(this.value) ? this.value : this.value.substring(0,this.value.length-1)" mrequired>
+        </div>
+    </div>
+
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">发行量:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input name="quantityIssued" class="form-control" type="number" value="${(goods.quantityIssued)!}" min="1"
+                   onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" required>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">商品类别:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input name="type" class="form-control" type="text" value="${(goods.type)!}" placeholder="请输入商品类别" required>
+        </div>
+    </div>
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">交易单位:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input name="unit" class="form-control" type="text" value="${(goods.unit)!}" required>
+        </div>
+    </div>
+</div>
+<div class="row">
+
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">交易时间:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input name="tradeTime" id="tradeTime" class="form-control" type="text" value="${(goods.tradeTime)!}"  placeholder="示例: 9:30,11:30;13:00,16:00" required>
+        </div>
+    </div>
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">增值积分转化比例(%):<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input name="tranferRate" class="form-control" type="text" value="${(goods.tranferRate)!}" max="100" placeholder="请输入正整数或小数" onkeyup = "this.value=/^\d+\.?\d{0,2}$/.test(this.value) ? this.value : this.value.substring(0,this.value.length-1)" required>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">购入手续费(%):<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input name="buyFeeRate" class="form-control" type="text" value="${(goods.buyFeeRate)!}" placeholder="请输入正整数或小数" onkeyup = "this.value=/^\d+\.?\d{0,2}$/.test(this.value) ? this.value : this.value.substring(0,this.value.length-1)" required>
+        </div>
+    </div>
+
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">售出手续费(%):<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input name="sellFeeRate" class="form-control" type="text" value="${(goods.sellFeeRate)!}" placeholder="请输入正整数或小数" onkeyup = "this.value=/^\d+\.?\d{0,2}$/.test(this.value) ? this.value : this.value.substring(0,this.value.length-1)" required>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">最小提货数量:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input name="minDelivery" class="form-control" type="number"  value="${(goods.minDelivery)!}"
+                   onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" min="1" required>
+        </div>
+    </div>
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">最小仓单天数:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input name="minHoldDays" class="form-control" type="number" min="0" value="${(goods.sort)!}"
+                   onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^0-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" required>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">当日最大购入量:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input name="dailyMaxBuy" class="form-control" type="number" min="1" value="${(goods.dailyMaxBuy)!}"
+                   onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" required>
+        </div>
+    </div>
+
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">当日最大售出量:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input name="dailyMaxSell" class="form-control" type="number" min="1" value="${(goods.dailyMaxSell)!}"
+                   onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" required>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">最大仓单量:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input name="maxHold" class="form-control" type="number" min="1" value="${(goods.maxHold)!}"
+                   onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" required>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">封面图:<i class="required-help">*</i></label>
+        <div class="col-sm-4 control-label">
+            <input type="hidden" id="path" name="pic" value="${(goods.pic)!}">
+            <#if goods??>
+            <img src="${(goods.pic)!}" id="img2" width="100px" height="100px">
+            <#else>
+            <img src="" id="img" onerror="this.src='${cxt!}/ui/img/timg.jpeg'" width="100px" height="100px">
+        </#if>
+        <input id="file" type="file" name="file" onchange="upload()" accept="image/jpg, image/png, image/jpeg">
+        </div>
+    </div>
+</div>
+
+<!--&lt;!&ndash;轮播图 百度WebUploader&ndash;&gt;-->
+<!--<div id="uploader" class="wu-example">-->
+    <!--<div class="queueList">-->
+        <!--<div id="dndArea" class="placeholder">-->
+            <!--<div id="filePicker"></div>-->
+            <!--<p>或将照片拖到这里，单次最多可选5张</p>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--<div class="statusBar" style="display:none;">-->
+        <!--<div class="progress">-->
+            <!--<span class="text">0%</span>-->
+            <!--<span class="percentage"></span>-->
+        <!--</div><div class="info"></div>-->
+        <!--<div class="btns">-->
+            <!--<div id="filePicker2"></div><div class="uploadBtn">开始上传</div>-->
+            <!--<input id="pic" name="picList" type="hidden">-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</div>-->
+

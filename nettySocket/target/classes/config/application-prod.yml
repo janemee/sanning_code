@@ -1,0 +1,78 @@
+server:
+  port: 9050
+endpoints:
+  restart:
+    enabled: true
+  shutdown:
+    enabled: true
+  health:
+    sensitive: false
+spring:
+  application:
+    name: apis
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss # 时间返回格式化
+    time-zone: GMT+8
+  resources:
+    static-locations: classpath:/webapp/template/,classpath:/webapp/base/
+    #################### DataSource Start ####################
+  datasource:
+    username: ys_root
+    password: Ys_root*
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://rm-bp16r1td841u8e375.mysql.rds.aliyuncs.com:3306/svt4j_prod?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false
+    dbcp2:
+      # 连接池中的最大空闲连接
+      max-idle: 100
+      # 连接池中的最小空闲连接
+      min-idle: 10
+      max-wait-millis: 60000
+    #################### DataSource End ####################
+
+  ######################### freemarker
+  freemarker:
+    check-template-location: false
+  http:
+    multipart:
+      max-file-size: 100MB #限制默认文件上传大小
+      max-request-size: 100MB #限制默认文件上传大小
+  mvc:
+    favicon:
+      enabled: false
+  #------------------------ freemarker end
+  ######################## redis
+  redis:
+    database: 1
+    host: 127.0.0.1
+    port: 6379
+    password: Dgj2020*
+    timeout: 2000
+    pool:
+      max-active: 200
+      max-wait: 5
+      max-idle: 20
+      min-idle: 10
+#------------------------ redis end
+
+######################### 日志
+logging:
+  config: classpath:config/logback-spring-prod.xml
+  level: info
+#------------------------ 日志end
+
+######################## mapper插件
+mybatis:
+  type-aliases-package: com.huimi.core.mapper
+  configuration:
+    map-underscore-to-camel-case: true # 数据库开启驼峰转换
+mapper:
+  mappers:
+  - com.huimi.common.baseMapper.QueryMapper
+  - com.huimi.common.baseMapper.InsertMapper
+  - com.huimi.common.baseMapper.UpdateMapper
+  - com.huimi.common.baseMapper.DeleteMapper
+  not-empty: false
+  identity: MYSQL
+  # 枚举转换基本类型
+  enum-as-simple-type: true
+#----------------------- mapper插件 end

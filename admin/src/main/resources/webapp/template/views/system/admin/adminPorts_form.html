@@ -1,0 +1,13 @@
+
+<div class="form-group">
+    <input  id="username" name="username" value="${(adminInfo.username)!}" hidden="hidden" <#if (admin.username)?? && admin.username !="">disabled</#if>>
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label ">设备最大数</label>
+        <div class="col-sm-8">
+            <input title="" id="ports" type="number" min="0" name="ports"
+                   class="form-control" maxlength="50">
+            <i class="required-help col-sm-1">*</i>
+        </div>
+    </div>
+</div>
+

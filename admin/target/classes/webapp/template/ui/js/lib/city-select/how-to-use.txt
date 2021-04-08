@@ -1,0 +1,35 @@
+HTML:
+<div id="city"> 
+      <select class="prov"></select>  
+    <select class="city" disabled="disabled"></select> 
+    <select class="dist" disabled="disabled"></select> 
+</div> 
+在#city中，放置三个select，并且三个select分别设置class属性为：prov、city、dist（这三个class名不能缺省也不能修改），分别表示省、市、区（县）三个下拉框。注意如果只想实现省市二级联动，则去掉第三个dist的select即可。
+
+JS:
+jQuery调用cityselect插件非常简单，直接调用：
+  
+$("#city").citySelect();  
+自定义参数调用，设置默认省市区。
+  
+$("#city").citySelect({  
+    url:"js/city.min.js",  
+    prov:"湖南", //省份 
+    city:"长沙", //城市 
+    dist:"岳麓区", //区县 
+    nodata:"none" //当子集无数据时，隐藏select 
+});  
+
+url也可以为自定义的数据内容（推荐这种方式，修改数据更为灵活）：
+$("#city").citySelect({ 
+    url:{"citylist":[ 
+        {"p":"前端技术","c":[{"n":"HTML"},{"n":"CSS","a":[{"s":"CSS2.0"},{"s":"CSS3.0"}]}, 
+        {"n":"JAVASCIPT"}]}, 
+        {"p":"编程语言","c":[{"n":"C"},{"n":"C++"},{"n":"PHP"},{"n":"JAVA"}]}, 
+        {"p":"数据库","c":[{"n":"Mysql"},{"n":"SqlServer"},{"n":"Oracle"}]}, 
+    ]}, 
+    prov:"", 
+    city:"", 
+    dist:"", 
+    nodata:"none" 
+}); 

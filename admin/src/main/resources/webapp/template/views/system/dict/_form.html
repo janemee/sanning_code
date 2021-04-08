@@ -1,0 +1,55 @@
+<div class="form-group">
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-2 control-label">名称</label>
+        <div class="col-sm-8">
+            <input id="name" name="dict.name" value="${(dict.name)!}" class="form-control" type="text"
+                   aria-required="true" aria-invalid="true" vMin="2" vType="length"
+                   maxlength="50">
+        </div>
+        <label class="required-help col-sm-1">*</label>
+    </div>
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-2 control-label">标识</label>
+        <div class="col-sm-8">
+            <input id="nid" type="text" name="dict.nid" value="${(dict.nid)!}"
+                   class="form-control" maxlength="50" vMin="2" vType="length">
+        </div>
+        <label class="required-help col-sm-1">*</label>
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-2 control-label">值</label>
+        <div class="col-sm-8">
+            <input id="val" type="text" name="dict.val" value="${(dict.val)!}"
+                   class="form-control" maxlength="50" vMin="2" vType="length">
+        </div>
+        <label class="required-help col-sm-1">*</label>
+    </div>
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-2 control-label">状态</label>
+        <div class="col-sm-8">
+            <div class="input-group">
+                <div class="radio radio-info radio-inline">
+                    <input type="radio" id="stateEnable" value="1" name="dict.state"
+                    <#if (dict.state)?? && (dict.state) == 1>checked="checked"</#if>
+                    >
+                    <label for="stateEnable"> 启用</label>
+                </div>
+                <div class="radio radio-danger radio-inline">
+                    <input type="radio" id="stateDisable" value="0" name="dict.state"
+                    <#if (dict.state)?? && (dict.state) == 0>checked="checked"</#if>
+                    >
+                    <label for="stateDisable"> 禁用</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-sm-1 control-label">备注</label>
+    <div class="col-sm-9">
+        <textarea id="desc" name="dict.desc" class="form-control" rows="6" cols="30">${(dict.desc)!}</textarea>
+    </div>
+</div>

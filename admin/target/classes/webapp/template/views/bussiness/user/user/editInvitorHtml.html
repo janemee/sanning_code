@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- 样式文件加载开始 -->
+    <#include "/include/res.html" >
+    <!-- 样式文件加载结束 -->
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox-content">
+                <form class="form-horizontal m-t" id="form">
+                    <div class="form-group">
+                        <input type="hidden" name="id" id="id" value="${(id)!}">
+                        <div class="col-sm-12 form-group">
+                            <label class="col-sm-4 control-label">是否设置为平台邀请人:</label>
+                            <div class="col-sm-1">
+                                <input type="checkbox" id="isPlatform" name="isPlatform" onclick="setting()">
+                            </div>
+                        </div>
+                        <div class="col-sm-12 form-group" id="userInvite">
+                            <label class="col-sm-4 control-label">选择邀请人:<i class="required-help">*</i></label>
+                            <div class="col-sm-3">
+                                <input id="phone" name="phone" class="form-control" type="text" value="" readonly>
+                                <input id="inviteId" type="hidden" name="inviteId" class="form-control">
+                            </div>
+                            <div class="col-sm-3">
+                                <button class="btn btn-sm btn-white" type="button"
+                                        onclick="chooseUser()"><i class="fa fa-user"></i> 选择
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- js加载开始 -->
+<#include "/include/js.html">
+<!--<script type="text/javascript" src="${cxt!}/ui/js/hm/user.js"></script>-->
+<script type="text/javascript">
+    var formId = "#form",
+        winname = "${winname!}";
+    var funcs = {
+        initSubmit: function (form) {
+            $(formId).validate({
+                errorElement: 'span', //default input error message container
+                errorClass: 'help-block', // default input error message class
+                focusInvalid: false, // do not focus the last invalid input
+                ignore: "",
+                rules: {
+                },
+                invalidHandler: function(event, validator) { //display error alert on form submit
+                },
+                highlight: function(element) { // hightlight error inputs
+                    $(element).closest('.form-group').addClass('has-error'); // set error class to the control group
+                },
+                unhighlight: function(element) { // revert the change done by hightlight
+                    $(element).closest('.form-group').removeClass('has-error'); // set error class to the control group
+                },
+                success: function(label) {
+                    label.closest('.form-group').removeClass('has-error'); // set success class to the control group
+                    label.remove();
+                },
+                submitHandler: function(form) {
+                    var index = parent.layer.getFrameIndex(window.name);
+                    //loading层提示
+                    var loading = layer.load(2, {
+                        shade: [0.3, '#fff']
+                    });
+                    $.ajax({
+                        type: "POST",
+                        async: false,
+                        data: $(form).serialize(),
+                        url: "/s/user/user/editInvitor",
+                        success: function(data) {
+                            var successMsg = data.message || "操作成功!",
+                                failedMsg = data.message || "操作失败!";
+                            var title = "系统提示";
+                            if (data.code == 200) {
+                                parent.notifications('success', successMsg, "系统提示");
+                            } else {
+                                parent.notifications('error', data.message, "系统提示");
+                            }
+                        },
+                        error: function(XMLHttpRequest, textStatus, errorThrown) {
+                            parent.notifications('error', "操作失败,请检查网络!", "系统提示");
+                        },
+                        complete: function() {
+                            layer.close(loading);
+                            parent.layer.close(index);
+                        }
+                    });
+                }
+            });
+        }
+
+    };
+
+
+    jQuery(document).ready(function () {
+        funcs.initSubmit();
+    });
+
+    function setting() {
+        var  b=  document.getElementById("isPlatform").checked;
+        if (b){
+            $("#userInvite").hide();
+            $("#inviteId").val(0)
+        }else {
+            $("#userInvite").show();
+            $("#inviteId").val("")
+            $("#phone").val("")
+        }
+    }
+
+
+    //选择用户
+    function chooseUser() {
+        parent.layer.open({
+            skin: 'layui-layer-molv',
+            type: 2,
+            scrollbar: false,
+            title: '选择邀请人',
+            fix: false, //不固定
+            maxmin: true,
+            area: ['50%', '40%'],
+            btn: ['确定', '关闭'],
+            yes: function (index, layero) {
+                window.parent[layero.find('iframe')[0]['name']]
+                    .yesBtn('', $("#phone"), '', '', $("#inviteId"));
+            },
+            cancel: function (index) {
+            },
+            content: '/s/trade/ration/user/list' //用户列表页
+        });
+    }
+    function validateForm() {
+        var  b=  document.getElementById("isPlatform").checked;
+        if (!b){
+            var  inviteId = $("#inviteId").val();
+            if ( inviteId == null || inviteId == ''){
+                top.layer.alert("请选择邀请人!", {
+                    icon: 5,
+                    shadeClose: true
+                });
+                return false;
+            }
+        }
+        $(formId).submit();
+    }
+</script>
+</body>
+
+</html>

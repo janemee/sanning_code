@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <#include "/include/res.html" >
+</head>
+<body style="min-height: 720px;">
+<#include "/include/js.html">
+<div class="wrapper wrapper-content ">
+    <div id="dataCard" class="row">
+        <div class="col-sm-12 " style="margin-top: 10px;">
+            <div class="col-sm-2" style="border: 1px solid #acacac;border-radius: 2px; padding-top: 10px;">
+                <div class="col-sm-12 text-center">
+                    <label>今日订单数</label>
+                </div>
+                <div class="col-sm-12 text-center">
+                    <label id="orderToday">1</label>
+                </div>
+            </div>
+            <div class="col-sm-2"
+                 style="border: 1px solid #acacac;border-radius: 2px; margin-left: 15px; padding-top: 10px;">
+                <div class="col-sm-12 text-center">
+                    <label>今日订单金额</label>
+                </div>
+                <div class="col-sm-12 text-center">
+                    <label id="amountToday">1</label>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12" style="margin-top: 20px;">
+            <div class="col-sm-2" style="border: 1px solid #acacac;border-radius: 2px; padding-top: 10px;">
+                <div class="col-sm-12 text-center">
+                    <label>今日注册用户</label>
+                </div>
+                <div class="col-sm-12 text-center">
+                    <label id="registerToday">1</label>
+                </div>
+            </div>
+            <div class="col-sm-2"
+                 style="border: 1px solid #acacac;border-radius: 2px;margin-left: 15px; padding-top: 10px;">
+                <div class="col-sm-12 text-center">
+                    <label>今日活跃用户</label>
+                </div>
+                <div class="col-sm-12 text-center">
+                    <label id="loginToday">1</label>
+                </div>
+            </div>
+            <div class="col-sm-2"
+                 style="border: 1px solid #acacac;border-radius: 2px;margin-left: 15px;padding-top: 10px;">
+                <div class="col-sm-12 text-center">
+                    <label>用户总数</label>
+                </div>
+                <div class="col-sm-12 text-center">
+                    <label id="userCount">1</label>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12" style="margin-top: 20px;">
+            <div class="col-sm-2" style="border: 1px solid #acacac;border-radius: 2px;padding-top: 10px;">
+                <div class="col-sm-12 text-center">
+                    <label>累计订单数</label>
+                </div>
+                <div class="col-sm-12 text-center">
+                    <label id="orderTotal">1</label>
+                </div>
+            </div>
+            <div class="col-sm-2"
+                 style="border: 1px solid #acacac;border-radius: 2px;margin-left: 15px;padding-top: 10px;">
+                <div class="col-sm-12 text-center">
+                    <label>累计订单金额</label>
+                </div>
+                <div class="col-sm-12 text-center">
+                    <label id="amountTotal">1</label>
+                </div>
+            </div>
+            <div class="col-sm-2"
+                 style="border: 1px solid #acacac;border-radius: 2px;margin-left: 15px;padding-top: 10px;">
+                <div class="col-sm-12 text-center">
+                    <label>订单总成本</label>
+                </div>
+                <div class="col-sm-12 text-center">
+                    <label id="costTotal">1</label>
+                </div>
+            </div>
+            <div class="col-sm-2"
+                 style="border: 1px solid #acacac;border-radius: 2px;margin-left: 15px;padding-top: 10px;">
+                <div class="col-sm-12 text-center">
+                    <label>订单总利润</label>
+                </div>
+                <div class="col-sm-12 text-center">
+                    <label id="profitTotal">1</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="dataChart" class="row" style="margin-top: 20px;">
+        <div id="dataChartBtn" class="col-sm-12" style="margin-top: 20px;">
+            <button id="dBtn">天</button>
+            <button id="mBtn">月</button>
+            <button id="yBtn">年</button>
+        </div>
+        <div class="col-sm-12" id="chart1" style="width:800px;height: 400px;">
+
+        </div>
+    </div>
+    <div id="dataTop" class="row">
+        <div class="col-sm-6" id="topShops">
+            <div class="col-sm-12">
+                <div class="col-sm-1"></div>
+                <div class="col-sm-8">
+                    <label>一周热销厂家TOP10</label>
+                </div>
+            </div>
+            <div class="col-sm-1"></div>
+            <div class="col-sm-8">
+                <table id="shopTable" class="table table-striped  dataTable no-footer">
+
+                </table>
+            </div>
+            <div class="col-sm-3"></div>
+        </div>
+        <div class="col-sm-6" id="topGoods">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-12">
+                <div class="col-sm-1"></div>
+                <div class="col-sm-8">
+                    <label>一周热销商品TOP10</label>
+                </div>
+            </div>
+            <div class="col-sm-1"></div>
+            <div class="col-sm-8">
+                <table id="goodsTable" class="table table-striped  dataTable no-footer">
+
+                </table>
+            </div>
+            <div class="col-sm-3"></div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var overviewDataUrl = "/s/indexOverViewData"
+    var echartDataUrl = "/s/indexEchartData";
+    var topDataUrl = "/s/indexTopData";
+    var diff = 0;
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('chart1'), 'light');
+
+    // 指定图表的配置项和数据
+    // 数据暂时置空，用于动态填充
+    var option = {
+        title: {
+            text: ''
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                label: {
+                    backgroundColor: '#505765'
+                }
+            }
+        },
+
+        legend: {
+            data: [
+                '订单数',
+                '订单金额'
+            ],
+        },
+        xAxis: [
+            {
+                type: 'category',
+                data: []
+            }
+        ],
+        yAxis: [
+            {
+                name: "订单金额",
+                type: 'value'
+            },
+            {
+                name: "订单数",
+                type: 'value'
+            }
+        ],
+        series: [
+            {
+                name: '订单数',
+                type: 'bar',
+                yAxisIndex: 1,
+                data: []
+            },
+            {
+                name: '订单金额',
+                type: 'line',
+                yAxisIndex: 0,
+                data: []
+            },
+        ]
+    };
+
+    // 按天请求本月数据
+    $("#dBtn").click(function () {
+        var chartType = 1;
+        // TODO 修改时间偏移量
+        var data = {
+            "chartType": chartType,
+            "diff": diff
+        };
+        $.post(echartDataUrl, data, function (data) {
+            if (data.code === 200) {
+                // []
+                totalLength = data.data.chartDataList.length;
+                if (totalLength > 0) {
+                    updateChart(chartType, data.data.chartDataList);
+                } else {
+                    console.log("请求成功，但是没有数据");
+                }
+            } else {
+                console.log("请求失败");
+            }
+        });
+    });
+
+    // 按月请求本年度数据
+    $("#mBtn").click(function () {
+        var chartType = 2;
+        var data = {
+            "chartType": chartType,
+            "diff": diff
+        };
+        $.post(echartDataUrl, data, function (data) {
+            if (data.code === 200) {
+                // []
+                totalLength = data.data.chartDataList.length;
+                if (totalLength > 0) {
+                    updateChart(chartType, data.data.chartDataList);
+                } else {
+                    console.log("请求成功，但是没有数据");
+                }
+            } else {
+                console.log("请求失败");
+            }
+        });
+    });
+
+    // 按年请求所有年份数据
+    $("#yBtn").click(function () {
+        var chartType = 3;
+        var data = {
+            "chartType": chartType,
+            "diff": diff
+        };
+        $.post(echartDataUrl, data, function (data) {
+            if (data.code === 200) {
+                // []
+                totalLength = data.data.chartDataList.length;
+                if (totalLength > 0) {
+                    updateChart(chartType, data.data.chartDataList);
+                } else {
+                    console.log("请求成功，但是没有数据");
+                }
+            } else {
+                console.log("请求失败");
+            }
+        });
+    });
+
+    // render
+    // data格式 [{},{}]
+    // 1:x轴数据, 2 y轴s0数据,3:y轴s1数据
+    function updateChart(chartType, data) {
+        var dateIndex = "dDate";
+        var title = "按天"
+        if (chartType === 2) {
+            dateIndex = "mDate";
+            title = "按月"
+        } else if (chartType === 3) {
+            dateIndex = "yDate";
+            title = "按年";
+        }
+        var xData = data.map(function (ele) {
+            return ele[dateIndex];
+        });
+        var y1Data = data.map(function (ele) {
+            return ele["totalCount"];
+        });
+        var y2Data = data.map(function (ele) {
+            return ele["totalAmount"];
+        });
+        // var option = myChart.getOption();
+        option.title = {text: title};
+        option.xAxis[0].data = xData;
+        option.series[0].data = y1Data;
+        option.series[1].data = y2Data;
+        myChart.setOption(option, true);
+    }
+
+    // 热销
+    function renderTopShop(data) {
+        var table = $("#shopTable").DataTable();
+        table.clear();
+        table.rows.add(data);
+        table.draw();
+    }
+
+    function renderTopGoods(data) {
+        var table = $("#goodsTable").DataTable();
+        table.clear();
+        table.rows.add(data);
+        table.draw();
+    }
+
+    $("#shopTable").DataTable({
+        paging: false,
+        ordering: false,
+        searching: false,
+        info: false,
+        // data: [
+        //     {index: 1, name: "jack", age: 20, sex: "man"},
+        //     {index: 2, name: "jack", age: 20, sex: "man"},
+        //     {index: 3, name: "jack", age: 20, sex: "man"},
+        //     {index: 4, name: "jack", age: 20, sex: "man"},
+        //     {index: 5, name: "jack", age: 20, sex: "man"},
+        //     {index: 6, name: "jack", age: 20, sex: "man"},
+        //     {index: 7, name: "jack", age: 20, sex: "man"},
+        //     {index: 8, name: "jack", age: 20, sex: "man"},
+        //     {index: 9, name: "jack", age: 20, sex: "man"},
+        //     {index: 10, name: "jack", age: 20, sex: "man"},
+        // ],
+        columns: [
+            {"data": "index"},
+            {"data": "shopName"},
+            {"data": "amountTotal"}
+        ],
+    });
+
+    $("#goodsTable").DataTable({
+        paging: false,
+        ordering: false,
+        searching: false,
+        info: false,
+        // data: [
+        //     {index: 1, name: "jack", age: 20, sex: "man"},
+        //     {index: 2, name: "jack", age: 20, sex: "man"},
+        //     {index: 3, name: "jack", age: 20, sex: "man"},
+        //     {index: 4, name: "jack", age: 20, sex: "man"},
+        //     {index: 5, name: "jack", age: 20, sex: "man"},
+        //     {index: 6, name: "jack", age: 20, sex: "man"},
+        //     {index: 7, name: "jack", age: 20, sex: "man"},
+        //     {index: 8, name: "jack", age: 20, sex: "man"},
+        //     {index: 9, name: "jack", age: 20, sex: "man"},
+        //     {index: 10, name: "jack", age: 20, sex: "man"},
+        // ],
+        columns: [
+            {"data": "index"},
+            {"data": "goodsName"},
+            {"data": "shopName"},
+            {"data": "amountTotal"}
+        ],
+    });
+
+
+    // 初始加载当月的数据
+    // 默认请求三组
+    $(document).ready(function () {
+
+        //初始加载 总览
+        $.post(overviewDataUrl, {}, function (data) {
+            if (data.code === 200) {
+                // []
+                var overViewData = data.data.overViewData;
+                if (overViewData) {
+                    renderOverView(overViewData);
+                } else {
+                    console.log("请求成功，但是没有数据");
+                }
+            } else {
+                console.log("请求失败");
+            }
+        });
+
+        // 初始加载echarts
+        var chartType = 1;
+        var postDataEchart = {
+            "chartType": chartType,
+            "diff": diff
+        };
+        $.post(echartDataUrl, postDataEchart, function (data) {
+            if (data.code === 200) {
+                // []
+                totalLength = data.data.chartDataList.length;
+                if (totalLength > 0) {
+                    updateChart(chartType, data.data.chartDataList);
+                } else {
+                    console.log("请求成功，但是没有数据");
+                }
+            } else {
+                console.log("请求失败");
+            }
+        });
+
+        // 初始加载top榜单
+        $.post(topDataUrl, {}, function (data) {
+            if (data.code === 200) {
+                // []
+                var topShop = data.data.topShop;
+                var topGoods = data.data.topGoods;
+
+                if (topShop) {
+                    topShop.forEach(function(ele,index){
+                        ele["index"] = index;
+                    });
+                    renderTopShop(topShop);
+                }
+                if (topGoods) {
+                    topGoods.forEach(function(ele,index){
+                        ele["index"] = index;
+                    });
+                    renderTopGoods(topGoods);
+                }
+            } else {
+                console.log("请求失败");
+            }
+        });
+    });
+    //${imgRoot}/chart/
+    myChart.on('datazoom', function (params) {
+        //params里面有什么，可以打印出来看一下就明白
+        console.log(params);
+        //可以通过params获取缩放的起止百分比，但是鼠标滚轮和伸缩条拖动触发的params格式不同，所以用另一种方法
+        //获得图表数据数组下标
+        var startValue = myChart.getModel().option.dataZoom[0].startValue;
+        var endValue = myChart.getModel().option.dataZoom[0].endValue;
+        //获得起止位置百分比
+        var startPercent = myChart.getModel().option.dataZoom[0].start;
+        var endPercent = myChart.getModel().option.dataZoom[0].end;
+    });
+
+    function renderOverView(overViewData) {
+        $("#orderToday").text(overViewData["orderToday"]);
+        $("#amountToday").text(overViewData["amountToday"]);
+
+        $("#registerToday").text(overViewData["registerToday"]);
+        $("#loginToday").text(overViewData["loginToday"]);
+        $("#userCount").text(overViewData["userCount"]);
+
+        $("#orderTotal").text(overViewData["orderTotal"]);
+        $("#amountTotal").text(overViewData["amountTotal"]);
+        $("#costTotal").text(overViewData["costTotal"]);
+        $("#profitTotal").text(overViewData["profitTotal"]);
+    }
+</script>
+</body>
+</html>

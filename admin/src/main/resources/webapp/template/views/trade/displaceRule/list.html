@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- 样式文件加载开始 -->
+    <#include "/include/res.html" >
+    <!-- 样式文件加载结束 -->
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title" style="padding:3px 15px 0px 20px;">
+                    <div class="col-md-6">
+                        <div class="search-form">
+                            <form>
+                                <div class="input-group">
+                                    <input type="text" name="search_val" placeholder="请输入规则名称/源商品/目标商品进行搜索"
+                                           class="form-control search-input" id="search-input">
+                                    <span class="input-group-btn search-span">
+                                        <button class="btn btn-white btn-sm " type="button"
+                                                onclick="dropdownSearchFun(this)"
+                                                data-url="${cxt!}/s/trade/change/rules/list_json"
+                                                data-tid="table_jq" id="search-btn"><i class="fa fa-search"></i> 查询
+                                        </button>
+                                    </span>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="search-form-adv ml10">
+                            <form>
+                                <input type="hidden" name="fast_search" value="true">
+                                <div class="btn-group" onclick="dropdownSelectHoverFun(this)">
+                                    <button type="button" class="btn btn-white dropdown-select-toggle" data-toggle="#"
+                                            aria-haspopup="true" aria-expanded="false"> 条件查询 <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu search-menu">
+                                        <li class="input-group input-group-sm">
+                                            <span>规则名称</span>
+                                            <input type="text" name="*_name" class="hm-search-w208">
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>源商品</span>
+                                            <input type="text" name="*_sourceName" class="hm-search-w208">
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>目标商品</span>
+                                            <input type="text" name="*_targetName" class="hm-search-w208">
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>置换协议</span>
+                                            <select name="*=procotol_id" class="hm-search-w208">
+                                                <option value="">全部</option>
+                                                <#if articleList ??>
+                                                    <#list articleList as article>
+                                                        <option value="${(article.id)!}">${(article.title)!}</option>
+                                                    </#list>
+
+                                                </#if>
+                                            </select>
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>状态</span>
+                                            <select name="*=status" class="hm-search-w208">
+                                                <option value="">全部</option>
+                                                <option value="2">启用</option>
+                                                <option value="1">禁用</option>
+                                            </select>
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>创建时间</span>
+                                            <input placeholder="开始日期" class="hm-search-w208 layer-date"
+                                                   name="*start_create_time" style="width: 100px;" id="start_create_time">
+                                            <input placeholder="结束日期" class="hm-search-w208 layer-date"
+                                                   name="*end_create_time" style="width: 100px;" id="end_create_time">
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>修改时间</span>
+                                            <input placeholder="开始日期" class="hm-search-w208 layer-date"
+                                                   name="*start_update_time" style="width: 100px;" id="start_update_time">
+                                            <input placeholder="结束日期" class="hm-search-w208 layer-date"
+                                                   name="*end_update_time" style="width: 100px;" id="end_update_time">
+                                        </li>
+
+                                        <li>
+                                            <span>&nbsp;</span>
+                                            <button class="btn btn-white btn-sm" type="button"
+                                                    onclick="dropdownSearchFun(this)"
+                                                    data-url="${cxt!}/s/trade/change/rules/list_json"
+                                                    data-tid="table_jq" id="search-btn"><i class="fa fa-search"></i> 查询
+                                            </button>
+                                            <button class="btn btn-white btn-sm" type="button"
+                                                    onclick="dropdownSearchCleanFun(this)"
+                                                    data-url="${cxt!}/s/trade/change/rules/list_json"
+                                                    data-tid="table_jq" id="clear-btn"><i class="fa fa-retweet"></i> 清空
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="ibox-tools m-t-xs">
+                        <div class="btn-group">
+                            <@shiro.hasPermission name=':s:trade:change:rules:save'>
+                            <button href="javascript:void(0);" id="add"
+                                    class="btn btn-white btn-sm">
+                                <i class="fa fa-plus"></i>&nbsp;添加
+                            </button>
+                            </@shiro.hasPermission>
+                        </div>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <table id="table_jq"></table>
+                    <div id="pager_jq"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- js加载-->
+<#include "/include/js.html">
+
+<script type="text/javascript" src="${cxt!}/ui/js/hm/administrator.js"></script>
+<!-- Page-Level Scripts -->
+<script>
+    var startCreateTime = {
+        elem: "#start_create_time",
+        format: "YYYY-MM-DD",
+        // min: laydate.now(),
+        max: "2099-06-16 23:59:59",
+        istime: false,
+        istoday: false,
+        festival: true, //是否显示节日
+        // isclear: false, //是否显示清空
+        festival: true, //是否显示节日
+        choose: function (datas) {
+            endCreateTime.min = datas;
+            endCreateTime.start = datas
+        }
+    };
+    var endCreateTime = {
+        elem: "#end_create_time",
+        format: "YYYY-MM-DD",
+        // min: laydate.now(),
+        max: "2099-06-16 23:59:59",
+        istime: false,
+        istoday: false,
+        // isclear: false, //是否显示清空
+        festival: true, //是否显示节日
+        choose: function (datas) {
+            startCreateTime.max = datas
+        }
+    };
+    var startUpdateTime = {
+        elem: "#start_update_time",
+        format: "YYYY-MM-DD",
+        // min: laydate.now(),
+        max: "2099-06-16 23:59:59",
+        istime: false,
+        istoday: false,
+        festival: true, //是否显示节日
+        // isclear: false, //是否显示清空
+        festival: true, //是否显示节日
+        choose: function (datas) {
+            endUpdateTime.min = datas;
+            endUpdateTime.start = datas
+        }
+    };
+    var endUpdateTime = {
+        elem: "#end_create_time",
+        format: "YYYY-MM-DD",
+        // min: laydate.now(),
+        max: "2099-06-16 23:59:59",
+        istime: false,
+        istoday: false,
+        // isclear: false, //是否显示清空
+        festival: true, //是否显示节日
+        choose: function (datas) {
+            startUpdateTime.max = datas
+        }
+    };
+    laydate(startCreateTime);
+    laydate(endCreateTime);
+    laydate(startUpdateTime);
+    laydate(endUpdateTime);
+    //鼠标按下事件，清空选择时间限制
+    $("#clear-btn").mousedown(function () {
+        startCreateTime.max ="", endCreateTime.min ="",
+        startUpdateTime.max ="", endUpdateTime.min =""
+    });
+    var winname = window.name;
+    var winWidth = '850px',
+        winHeight = '500px',
+        addTitle = "添加",
+        addUrl = "/s/trade/change/rules/add",
+        editTitle = "编辑",
+        editUrl = "/s/trade/change/rules/edit",
+        enableTitle="启用";
+        enableUrl="/s/trade/change/rules/enable";
+        prohibitTitle="禁用";
+        prohibitUrl="/s/trade/change/rules/prohibit";
+        jqGridId = "#table_jq",
+        jqPageId = "#pager_jq",
+        dataUrl = "/s/trade/change/rules/list_json",
+        formId = "#form";
+
+    $(function () {
+        $.jgrid.defaults.styleUI = "Bootstrap";
+        $(jqGridId).jqGrid({
+            url: dataUrl,
+            datatype: "json",
+            colNames: ['ID','规则名称', '源商品', '目标商品', '置换协议', '置换比例', '规则说明', '状态', '创建时间', '修改时间','操作'],
+            colModel: [
+                {
+                    name: 'id',
+                    index: 'id',
+                    width: 1,
+                    hidden: true,
+                    key: true
+                }
+                ,{
+                    name: 'name',
+                    index: 'name',
+                    width: '150'
+                }
+                , {
+                    name: 'sourceName',
+                    index: 'sourceName',
+                    width: '150'
+                }
+                , {
+                    name: 'targetName',
+                    index: 'targetName',
+                    width: '150'
+                }
+                , {
+                    name: 'title',
+                    index: 'title',
+                    width: '150'
+                }
+                , {
+                    name: 'scale',
+                    index: 'scale',
+                    width: '150'
+                }
+                , {
+                    name: 'remark',
+                    index: 'remark',
+                    width: '150'
+                }
+                , {
+                    name: 'status',
+                    index: 'status',
+                    width: '150',
+                    formatter: function (cellvalue, options, rowObject) {
+                        var str = "";
+                        if (rowObject.status == 1){
+                            str += "<span class='label label-danger'>禁用</span>";
+                        } else {
+                            str += "<span class='label label-primary'>启用</span>";
+                        }
+
+                        return str;
+                    }
+                }
+                , {
+                    name: 'createTime',
+                    index: 'createTime',
+                    width: '150'
+                }
+                , {
+                    name: 'updateTime',
+                    index: 'updateTime',
+                    width: '150'
+                },
+                {
+                    name:'options',
+                    index:'options',
+                    width:'150',
+                    formatter: function (cellvalue, options, rowObject) {
+                        var str = "<@shiro.hasPermission name=':s:trade:change:rules:updadddte'>" +
+                            "<a onclick= 'edit("+rowObject.id+")' id='edit' style='margin-right: 10px'>&nbsp;编辑&nbsp;</a>" +
+                            "</@shiro.hasPermission>";
+                        if (rowObject.status == 1){
+                            str += "<@shiro.hasPermission name=':s:trade:change:rules:enable'>" +
+                                "<a onclick= 'enable(" + rowObject.id +")'>&nbsp;启用&nbsp;</a>" +
+                                "</@shiro.hasPermission>";
+                        } else {
+                            str += "<@shiro.hasPermission name=':s:trade:change:rules:prohibit'>" +
+                                "<a onclick= 'prohibit(" + rowObject.id + ")'>&nbsp;禁用&nbsp;</a>" +
+                                "</@shiro.hasPermission>";
+                        }
+
+                        return str;
+                    }
+                }
+
+            ],
+
+            autowidth: true,
+            height: "100%",    // 设为具体数值则会根据实际记录数出现垂直滚动条
+            width: "100%",
+            rowNum: 20,
+            rowList: [20, 30, 50],
+            pager: jqPageId,
+            mtype: "post",
+            viewrecords: true,
+            rownumbers: false,
+            multiselect: false,
+            cellsubmit: "clientArray",
+            editurl: editUrl,
+            onSelectRow: function (id) {
+                if (id && id !== lastsel) {
+                    jQuery(jqGridId).jqGrid('restoreRow', lastsel);
+                    jQuery(jqGridId).jqGrid('editRow', id, true);
+                    lastsel = id;
+                }
+            },
+            jsonReader: {
+                root: "exhibitDatas",
+                page: "nowPage",
+                total: "pageCount",
+                records: "recordCount",
+                repeatitems: false,
+                id: "0"
+            }
+        });
+
+        jQuery(jqGridId).jqGrid('navGrid', jqPageId, {
+                add: false,
+                del: false,
+                edit: false,
+                search: false,
+                position: 'right'
+            },
+            {},
+            {closeAfterSearch: true, reloadAfterSubmit: true},
+            {closeAfterSearch: true, reloadAfterSubmit: true},
+            {sopt: ['cn', 'eq'], closeAfterSearch: true, multipleSearch: true});
+    });
+
+
+    $(window).bind("resize", function () {
+        var width = $(".ibox-content").width();
+        $("#table_jq").setGridWidth(width);
+    });
+
+    /** 添加规则 */
+    jQuery("#add").click(function () {
+        hm_fn_addFun(addTitle, winWidth, winHeight, addUrl, formId, winname);
+    });
+    /**
+     * 修改规则
+     */
+    function edit(id) {
+        if (id == '') {
+            parent.notifications('error', "请选择一条数据");
+            return false;
+        }
+        hm_fn_editFun(editTitle, winWidth, winHeight, editUrl, id, winname);
+    };
+    /**
+     * 启用
+     */
+    function enable(id) {
+        if (id == '') {
+            parent.notifications('error', "请选择一条数据");
+            return false;
+        }
+        hm_fn_doAction(jqGridId,dataUrl,enableUrl,id,enableTitle);
+    }
+
+    /**
+     * 禁用
+     */
+    function prohibit(id) {
+        if (id == '') {
+            parent.notifications('error', "请选择一条数据");
+            return false;
+        }
+        hm_fn_doAction(jqGridId,dataUrl,prohibitUrl,id,prohibitTitle)
+    }
+</script>
+</body>
+</html>

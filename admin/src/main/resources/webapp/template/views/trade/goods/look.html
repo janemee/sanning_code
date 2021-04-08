@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- 样式文件加载开始 -->
+    <#include "/include/res.html" >
+    <!-- 样式文件加载结束 -->
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox-content">
+                <form class="form-horizontal m-t" id="form">
+                    <div class="row">
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">商品名称:</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" type="text" value="${(goods.name)!}" readonly>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">商品代码:</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" type="text" value="${(goods.code)!}" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">商品类别:</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" type="text" value="${(goods.type)!}" readonly>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">市场指导价:</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" type="text" value="${(goods.lastPrice)!}" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">挂牌厂家:</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" type="text" value="${(goods.facName)!}" readonly>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">厂家名称:</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" type="text" value="${(goods.outsideName)!}" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">发行量:</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" type="text" value="${(goods.quantityIssued)!}" readonly>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">交易单位:</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" type="text" value="${(goods.unit)!}" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">购入手续费(%):</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" type="text" value="${(goods.buyFeeRate)!}" readonly>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">售出手续费(%):</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" type="text" value="${(goods.sellFeeRate)!}" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">当日交易量:</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" type="text" value="${(goods.dailyMaxBuy)!}" readonly>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">最大仓单量:</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" type="text" value="${(goods.maxHold)!}" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">增值积分转化比例:(%) </label>
+                            <div class="col-sm-8">
+                                <input class="form-control" type="text" value="${(goods.tranferRate)!}" readonly>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">最小提货数量:</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" type="text" value="${(goods.minDelivery)!}" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">当日最大购入量:</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" type="text" value="${(goods.dailyMaxBuy)!}" readonly>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">当日最大售出量:</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" type="text" value="${(goods.dailyMaxSell)!}" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">状态:</label>
+                            <div class="col-sm-8">
+                                <#if goods.status == 1>
+                                <input class="form-control" type="text" value="待上架" readonly>
+                                <#else>
+                                <input class="form-control" type="text" value="已上架" readonly>
+                            </#if>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">状态:</label>
+                            <div class="col-sm-8">
+                                <#if goods.tradingStatus == 1>
+                                <input class="form-control" type="text" value="正常交易" readonly>
+                                <#else>
+                                <input class="form-control" type="text" value="已停牌" readonly>
+                            </#if>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">最小仓单天数:</label>
+                            <div class="col-sm-8">
+                                <input name="minHoldDays" class="form-control" type="number" value="${(goods.minHoldDays)!}" readonly>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">交易时间:</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" type="text" value="${(goods.tradeTime)!}" readonly>
+                            </div>
+                        </div>
+
+                    </div>
+
+            <div class="row">
+                <div class="col-sm-6 form-group">
+                    <label class="col-sm-4 control-label">上市时间:</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" value="${((goods.openTime)?datetime)!}" readonly>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 form-group">
+                    <label class="col-sm-4 control-label">下市时间:</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" value="${((goods.outTime)?datetime)!}" readonly>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 form-group">
+                    <label class="col-sm-4 control-label">创建时间:</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" value="${((goods.createTime)?datetime)!}" readonly>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-11 form-group">
+                    <label class="col-sm-2 control-label">封面图:</label>
+                    <div class="col-sm-9">
+                        <img src="${(goods.pic)!}" alt="" onerror="this.src='${cxt!}/ui/img/timg.jpeg'" width="100px" height="100px">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-11 form-group">
+                    <label class="col-sm-2 control-label">轮播图:</label>
+                    <div class="col-sm-9">
+                        <#if picList ??>
+                            <#list picList as pic>
+                            <img src="${pic}" width="100px" height="100px">
+                            </#list>
+                        </#if>
+                    </div>
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+<!-- js加载开始 -->
+<#include "/include/js.html">
+</body>
+</html>

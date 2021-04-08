@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <!-- 样式文件加载开始 -->
+    <#include "/include/res.html" >
+    <!-- 样式文件加载结束 -->
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox-content">
+                <!-- 物流公司信息 -->
+                <div class="col-sm-12 " style="margin-top: 10px;margin-bottom: 0;">
+                    <div class="col-sm-3 no-padding" style="margin-bottom: 0;">
+                        <label class="col-sm-6 control-label">物流公司:</label>
+                        <div class="col-sm-6 no-padding">
+                            <p id="shipperName">${(data.logistics.shipperName)!}</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 no-padding" style="margin-bottom: 0;">
+                        <label class="col-sm-6 control-label">物流单号:</label>
+                        <div class="col-sm-6 no-padding">
+                            <p id="logisticCode">${(data.logistics.logisticCode)!}</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 收货人信息 -->
+                <div class="col-sm-12 " style="margin-top: 10px;margin-bottom: 0;">
+                    <div class="col-sm-3 no-padding" style="margin-bottom: 0;">
+                        <label class="col-sm-6 control-label">收货人:</label>
+                        <div class="col-sm-6 no-padding">
+                            <p id="receiverName">${(data.receiverName)!}</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 no-padding" style="margin-bottom: 0;">
+                        <label class="col-sm-6 control-label">联系电话:</label>
+                        <div class="col-sm-6 no-padding">
+                            <p id="receiverPhone">${(data.receiverPhone)!}</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 no-padding" style="margin-bottom: 0;">
+                        <label class="col-sm-4 control-label">收货地址:</label>
+                        <div class="col-sm-8 no-padding">
+                            <p id="receiverAddress">${(data.receiverAddress)!}</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 物流信息 -->
+                <!--<div class="col-sm-12" style="margin-top: 10px;margin-bottom: 0;">-->
+                    <div class="col-sm-12 ">
+                        <#list data.logistics.traces as ele>
+                            <!--对第0项做特殊处理 红点 黑字-->
+                            <#if ele_index == 0>
+                                <div class="col-sm-12">
+                                    <div class="col-sm-12" style="padding: 10px 0 10px 0;">
+                                        <!--左侧时间-->
+                                        <div class="col-sm-2 no-padding">
+                                            <!--日期-->
+                                            <div class="col-sm-12 no-padding">
+                                                ${ele.acceptDate}
+                                            </div>
+                                            <!--时间-->
+                                            <div class="col-sm-12 no-padding" style="color: #acacac;">
+                                                ${ele.acceptTime}
+                                            </div>
+                                        </div>
+                                        <!--中间线条和点-->
+                                        <div class="col-sm-1 no-padding" style="height: 5em;">
+                                            <img src="${imgRoot}logistics/u3681.png" style="width: 12px; height: 12px;margin-left: 1px;"/>
+                                            <span style="position: absolute;display: block; width: 0.57em; height: 6em; border-right: 1px solid #dcdcdc;margin-top: -3px;"></span>
+                                        </div>
+                                        <!--右侧接收信息-->
+                                        <div class="col-sm-8 text-center no-padding" >
+                                            <p align="left">
+                                                ${ele.acceptStation}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            <#elseif ele_has_next>
+                                <!--不是第一项也不是最后一项，字体做淡化处理-->
+                                <div class="col-sm-12" style="color: #acacac;">
+                                    <div class="col-sm-12" style="padding: 10px 0 10px 0;">
+                                        <!--左侧时间-->
+                                        <div class="col-sm-2 no-padding">
+                                            <!--日期-->
+                                            <div class="col-sm-12 no-padding">
+                                                ${ele.acceptDate}
+                                            </div>
+                                            <!--时间-->
+                                            <div class="col-sm-12 no-padding">
+                                                ${ele.acceptTime}
+                                            </div>
+                                        </div>
+                                        <!--中间线条和点-->
+                                        <div class="col-sm-1 no-padding" style="height: 5em;">
+                                            <img src="${imgRoot}logistics/u3683.png" style="width: 12px; height: 12px;margin-left: 1px;"/>
+                                            <span style="position: absolute;display: block; width: 0.57em; height: 6em; border-right: 1px solid #dcdcdc;margin-top: -3px;"></span>
+                                        </div>
+                                        <!--右侧接收信息-->
+                                        <div class="col-sm-8 text-center no-padding " style="max-height: 5em; overflow-y: scroll;">
+                                            <p align="left">
+                                                ${ele.acceptStation}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            <#else>
+                                <!--最后一项 点在下-->
+                                <div class="col-sm-12" style="color: #acacac;">
+                                    <div class="col-sm-12" style="padding: 10px 0 10px 0;">
+                                        <!--左侧时间-->
+                                        <div class="col-sm-2 no-padding">
+                                            <!--日期-->
+                                            <div class="col-sm-12 no-padding">
+                                                ${ele.acceptDate}
+                                            </div>
+                                            <!--时间-->
+                                            <div class="col-sm-12 no-padding">
+                                                ${ele.acceptTime}
+                                            </div>
+                                        </div>
+                                        <!--中间线条和点-->
+                                        <div class="col-sm-1 no-padding" style="height: 5em;">
+                                            <img src="${imgRoot}logistics/u3683.png" style="width: 12px; height: 12px;margin-left: 1px;"/>
+                                        </div>
+                                        <!--右侧接收信息-->
+                                        <div class="col-sm-8 text-center no-padding " style="max-height: 5em; overflow-y: scroll;">
+                                            <p align="left">
+                                                ${ele.acceptStation}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </#if>
+                        </#list>
+                    </div>
+                <!--</div>-->
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- js加载开始 -->
+<#include "/include/js.html">
+
+</body>
+
+</html>

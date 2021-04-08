@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- 样式文件加载开始 -->
+		<#include "../../include/res.html" >
+		<!-- 样式文件加载结束 -->
+	</head>
+	<body class="white-bg">
+		<div class="wrapper wrapper-content ">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="ibox-content">
+						<form class="form-horizontal m-t" id="form">
+							<#include "_form.html">
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- js加载开始 -->
+		<#include "../../include/js.html">
+	    <script type="text/javascript" src="${cxt!}/ui/js/hm/configure.js"></script>
+		<script type="text/javascript">
+			var jqGridId = "#table_jq",
+				dataUrl = "${cxt!}/s/config/json/add",
+				formId = "#form",
+				winname = "${winname!}";
+	      	jQuery(document).ready(function(){
+	      		ConfigureJs.init();
+	      	});
+	      	function validateForm(){
+	  			$(formId).submit();
+	  		}
+	      	
+		</script>
+		<!-- js加载 结束-->
+	</body>
+
+</html>

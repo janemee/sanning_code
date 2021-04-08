@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- 样式文件加载开始 -->
+    <#include "/include/res.html" >
+    <!-- 样式文件加载结束 -->
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title" style="padding:3px 15px 0px 20px;">
+                    <div class="col-md-6">
+                        <div class="search-form">
+                            <form>
+                                <div class="input-group">
+                                    <input type="text" name="search_val" placeholder="请输入节假日日期/备注进行搜索"
+                                           class="form-control search-input" id="search-input">
+                                    <span class="input-group-btn search-span">
+                                        <button class="btn btn-white btn-sm " type="button"
+                                                onclick="dropdownSearchFun(this)"
+                                                data-url="${cxt!}/s/holiday/json/list"
+                                                data-tid="table_jq" id="search-btn"><i class="fa fa-search"></i> 查询
+                                        </button>
+                                    </span>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="search-form-adv ml10">
+                            <form>
+                                <input type="hidden" name="fast_search" value="true">
+                                <div class="btn-group" onclick="dropdownSelectHoverFun(this)">
+                                    <button type="button" class="btn btn-white dropdown-select-toggle" data-toggle="#"
+                                            aria-haspopup="true" aria-expanded="false"> 条件查询 <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu search-menu">
+                                        <li class="input-group input-group-sm">
+                                            <span>节假日日期</span>
+                                            <input type="text" name="*_holiday" class="hm-search-w208">
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>备注</span>
+                                            <input type="text" name="*_remark" class="hm-search-w208">
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>创建时间</span>
+                                            <input placeholder="开始日期" class="hm-search-w208 layer-date"
+                                                   name="*start_create_time" style="width: 100px;" onclick="laydate()">
+                                            &nbsp;-&nbsp;
+                                            <input placeholder="结束日期" class="hm-search-w208 layer-date"
+                                                   name="*end_create_time" style="width: 100px;" onclick="laydate()">
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>更新时间</span>
+                                            <input placeholder="开始日期" class="hm-search-w208 layer-date"
+                                                   name="*start_update_time" style="width: 100px;" onclick="laydate()">
+                                            &nbsp;-&nbsp;
+                                            <input placeholder="结束日期" class="hm-search-w208 layer-date"
+                                                   name="*end_update_time" style="width: 100px;" onclick="laydate()">
+                                        </li>
+                                        <li>
+                                            <span>&nbsp;</span>
+                                            <button class="btn btn-white btn-sm" type="button"
+                                                    onclick="dropdownSearchFun(this)"
+                                                    data-url="${cxt!}/s/holiday/json/list"
+                                                    data-tid="table_jq" id="search-btn"><i class="fa fa-search"></i> 查询
+                                            </button>
+                                            <button class="btn btn-white btn-sm" type="button"
+                                                    onclick="dropdownSearchCleanFun(this)"
+                                                    data-url="${cxt!}/s/holiday/json/list"
+                                                    data-tid="table_jq" id="clear-btn"><i class="fa fa-retweet"></i> 清空
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="ibox-tools m-t-xs">
+                        <div class="btn-group">
+                            <@shiro.hasPermission name=':s:holiday:save'>
+                            <button href="javascript:void(0);"
+                                    onclick="hm_fn_addFun(addTitle,winWidth,winHeight,addUrl,formId,winname)"
+                                    class="btn btn-white btn-sm">
+                                <i class="fa fa-plus"></i>&nbsp;添加
+                            </button>
+                            </@shiro.hasPermission>
+                            <!--<button href="javascript:void(0);" class="btn btn-white btn-sm" id="Edit">-->
+                                <!--<i class="fa fa-edit"></i>&nbsp;编辑-->
+                            <!--</button>-->
+                        </div>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <table id="table_jq"></table>
+                    <div id="pager_jq"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- js加载-->
+<#include "/include/js.html">
+
+<script type="text/javascript" src="${cxt!}/ui/js/hm/administrator.js"></script>
+<!-- Page-Level Scripts -->
+<script>
+    var winname = window.name;
+    var winWidth = '850px',
+        winHeight = '500px',
+        addTitle = "添加",
+        addUrl = "/s/holiday/add",
+        editTitle = "编辑",
+        editUrl = "/s/holiday/edit",
+        delTitle ="确定删除吗?"
+        delUrl ="/s/holiday/json/delete"
+        jqGridId = "#table_jq",
+        jqPageId = "#pager_jq",
+        dataUrl = "/s/holiday/json/list",
+        formId = "#form";
+
+    $(function () {
+        $.jgrid.defaults.styleUI = "Bootstrap";
+        $(jqGridId).jqGrid({
+            url: dataUrl,
+            datatype: "json",
+            colNames: ['ID', '节假日日期', '备注','创建时间', '更新时间','操作'],
+            colModel: [
+                {
+                    name: 'id',
+                    index: 'id',
+                    width: 1,
+                    hidden: true,
+                    key: true
+                }
+                , {
+                    name: 'holiday',
+                    index: 'holiday',
+                    width: '150'
+                }
+                , {
+                    name: 'remark',
+                    index: 'remark',
+                    width: '150'
+                }
+                , {
+                    name: 'createTime',
+                    index: 'createTime',
+                    width: '150'
+                }
+                , {
+                    name: 'updateTime',
+                    index: 'updateTime',
+                    width: '150'
+                },
+                {
+                    name: 'options',
+                    index: 'options',
+                    width: '150',
+                    formatter:function (cellvalue,options,rowObject) {
+                        var str ="";
+                        str +="<@shiro.hasPermission name=':s:holiday:update'>" +
+                            "<a onclick='edit("+rowObject.id+")'>&nbsp;&nbsp;编辑&nbsp;&nbsp;</a>" +
+                            "</@shiro.hasPermission>"
+                        str +="<@shiro.hasPermission name=':s:holiday:delete'>" +
+                            "<a onclick='del("+rowObject.id+")'>&nbsp;&nbsp;删除&nbsp;&nbsp;</a>" +
+                            "</@shiro.hasPermission>"
+                        return str;
+                    }
+                }
+            ],
+
+            autowidth: true,
+            height: "100%",    // 设为具体数值则会根据实际记录数出现垂直滚动条
+            width: "100%",
+            rowNum: 20,
+            rowList: [20, 30, 50],
+            pager: jqPageId,
+            mtype: "post",
+            viewrecords: true,
+            rownumbers: false,
+            multiselect: false,
+            cellsubmit: "clientArray",
+            editurl: editUrl,
+            onSelectRow: function (id) {
+                if (id && id !== lastsel) {
+                    jQuery(jqGridId).jqGrid('restoreRow', lastsel);
+                    jQuery(jqGridId).jqGrid('editRow', id, true);
+                    lastsel = id;
+                }
+            },
+            jsonReader: {
+                root: "exhibitDatas",
+                page: "nowPage",
+                total: "pageCount",
+                records: "recordCount",
+                repeatitems: false,
+                id: "0"
+            }
+        });
+
+        jQuery(jqGridId).jqGrid('navGrid', jqPageId, {
+                add: false,
+                del: false,
+                edit: false,
+                search: false,
+                position: 'right'
+            },
+            {},
+            {closeAfterSearch: true, reloadAfterSubmit: true},
+            {closeAfterSearch: true, reloadAfterSubmit: true},
+            {sopt: ['cn', 'eq'], closeAfterSearch: true, multipleSearch: true});
+    });
+
+
+    $(window).bind("resize", function () {
+        var width = $(".ibox-content").width();
+        $("#table_jq").setGridWidth(width);
+    });
+
+    /** 修改弹窗 */
+    function edit (id) {
+        if (id == '') {
+            parent.notifications('error', "请选择一条数据");
+            return false;
+        }
+        if (id.length > 1) {
+            parent.notifications('error', "只能选择一条数据");
+            return false;
+        }
+        hm_fn_editFun(editTitle, winWidth, winHeight, editUrl, id, winname);
+    };
+
+    /**
+     * 删除
+     * @param id
+     * @returns {boolean}
+     */
+    function del(id) {
+        if (id == '') {
+            parent.notifications('error', "请选择一条数据");
+            return false;
+        }
+        if (id.length > 1) {
+            parent.notifications('error', "只能选择一条数据");
+            return false;
+        }
+        hm_fn_del(jqGridId,dataUrl,delUrl,id,delTitle)
+    }
+
+</script>
+</body>
+</html>

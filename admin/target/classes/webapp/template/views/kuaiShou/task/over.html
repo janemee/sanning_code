@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- 样式文件加载开始 -->
+    <#include "../../include/res.html" >
+    <!-- 样式文件加载结束 -->
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    结束任务
+                </div>
+                <div class="ibox-content">
+                    <div class="alert alert-success">
+                        <b>温馨提示</b>
+                        <br>
+                        关闭设备的未完成的任务
+                        <br>
+                        <i class="required-help ">注意事项：请勿在2分钟内频繁发送任务，会导致设备接收任务异常。任务发送间隔请保持在2分钟左右。</i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <form class="form-horizontal m-t" id="form" action="${cxt!}/s/kuaiShou/task/json/add">
+                        <input type="text" id="taskType" name="taskType" value="over" hidden="hidden">
+                        <input type="text" id="isLiveHot" name="isLiveHot" value="0" hidden="hidden">
+                        <div class="form-group">
+                            <div class="col-sm-12 form-group">
+                                <label class="col-sm-2 control-label">任务名称</label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="task_name" class="form-control" name="taskName" >
+                                </div>
+                                <i class="required-help col-sm-1">*</i>
+                            </div>
+                            <div class="form-group col-sm-12">
+                                <label class="col-sm-2 control-label">选择执行设备</label>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+                                        <div class="radio radio-info radio-inline">
+                                            <input type="radio" id="equipment" value="equipment" name="deviceStyle"
+                                                   checked="checked">
+                                            <label for="equipment"> 选择设备</label>
+                                        </div>
+                                        <div class="radio radio-info radio-inline">
+                                            <input type="radio" id="grouping" value="grouping" name="deviceStyle">
+                                            <label for="grouping"> 选择分组</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <label class="col-sm-2 control-label equipmentShow"><label class="required-help">*</label>选择设备</label>
+                            <div class="col-sm-8 equipmentShow">
+                                <select id="equipments" name="equipments" class="form-control chosen-select"
+                                        multiple="multiple" placeholder="请选择">
+                                    <option disabled hidden selected></option>
+                                    <#list equipmentList as type>
+                                        <option value="${type.id}">${type.deviceCode}</option>
+                                    </#list>
+                                </select>
+                            </div>
+                            <label class="col-sm-2 control-label groupingShow">
+                                <label class="required-help">*</label>
+                                选择分组</label>
+                            <div class="col-sm-8 groupingShow">
+                                <select id="equipmentGroups" name="equipmentGroups" class="form-control chosen-select"
+                                        multiple="multiple" placeholder="请选择">
+                                    <option disabled hidden selected></option>
+                                    <#list equipmentGroups as type2>
+                                        <option value="${type2.id}">${type2.name}</option>
+                                    </#list>
+                                </select>
+                            </div>
+                        </div>
+
+                    </form>
+                    <button href="javascript:void(0);"
+                            onclick="validateForm()"
+                            class="btn btn-warning btn-sm col-md-offset-6">
+                        <i class="fa fa-save"></i>&nbsp;保存
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- js加载开始 -->
+<#include "../../include/js.html">
+<script type="text/javascript" src="${cxt!}/ui/js/hm/overTask.js"></script>
+<script type="text/javascript">
+    var jqGridId = "#table_jq",
+        data = "${cxt!}/s/task/json/add",
+        formId = "#form",
+        winname = "${winname!}";
+
+    jQuery(document).ready(function () {
+        overTaskJson.init();
+    });
+    var selectEquipment = 'equipment';
+    $('.groupingShow').hide();
+    $('.selectDate').hide();
+
+    $("#equipment").click(function () {
+        selectEquipment = 'equipment';
+        $('.equipmentShow').show();
+        $('.groupingShow').hide();
+    });
+    $("#grouping").click(function () {
+        selectEquipment = 'grouping';
+        $('.groupingShow').show();
+        $('.equipmentShow').hide();
+    });
+
+    function validateForm() {
+        var taskName = $('#task_name').val();
+        if (taskName == '' || taskName ==undefined) {
+            parent.notifications('error', "请输入任务名称", '系统提示');
+            return;
+        }
+        if (!checkedListOrGroup()) {
+            return;
+        }
+        $(formId).submit();
+    }
+</script>
+<!-- js加载结束 -->
+</body>
+
+</html>

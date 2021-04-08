@@ -1,0 +1,61 @@
+<div class="form-group">
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-3 control-label">信息类型：</label>
+        <div class="col-sm-8">
+            <div class="input-group">
+                <select id="type" name="logTemplate.type" class="form-control chosen-select" style="width: 230px">
+                    <option value=""
+                    <#if !(logTemplate.type)?? || (logTemplate.type) == ''>selected="selected"</#if>
+                    >请选择类型</option>
+                    <option value="1"
+                    <#if (logTemplate.type)?? && (logTemplate.type) == '1'>selected="selected"</#if>
+                    >资金日志</option>
+                    <option value="2"
+                    <#if (logTemplate.type)?? && (logTemplate.type) == '2'>selected="selected"</#if>
+                    >合计日志</option>
+                    <option value="3"
+                    <#if (logTemplate.type)?? && (logTemplate.type) == '3'>selected="selected"</#if>
+                    >会员日志</option>
+                </select>
+            </div>
+        </div>
+        <label class="required-help col-sm-1">*</label>
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-3 control-label">模板信息：</label>
+        <div class="col-sm-8">
+            <textarea id="value" type="text" name="logTemplate.value" class="form-control" vMin="2" vType="length">${(logTemplate.value)!}</textarea>
+        </div>
+        <label class="required-help col-sm-1">*</label>
+    </div>
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-3 control-label">模板备注：</label>
+        <div class="col-sm-8">
+        <textarea id="remark" type="text" name="logTemplate.remark" class="form-control" maxlength="200" vMin="2"
+                  vType="length">${(logTemplate.remark)!}</textarea>
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-3 control-label">日志类型：</label>
+        <div class="col-sm-8">
+            <input id="type" name="logTemplate.logtype" value="${(logTemplate.logtype)!}"
+                   class="form-control" maxlength="100" vType="length">
+        </div>
+        <label class="required-help col-sm-1">*</label>
+    </div>
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-3 control-label">模板类型：</label>
+        <div class="col-sm-8">
+            <input id="type" name="logTemplate.nid" value="${(logTemplate.nid)!}"
+                   class="form-control" maxlength="100" vType="length">
+        </div>
+        <label class="required-help col-sm-1">*</label>
+    </div>
+</div>
+<div class="form-group">
+
+</div>

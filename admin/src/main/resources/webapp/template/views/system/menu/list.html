@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- 样式文件加载 -->
+        <#include "../../include/res.html" >
+        <link rel="stylesheet" href="${cxt!}/ui/js/plugins/treetable/css/jquery.treetable.css"/>
+        <link rel="stylesheet" href="${cxt!}/ui/js/plugins/treetable/css/jquery.treetable.theme.default.css"/>
+    </head>
+    <body class="gray-bg">
+        <div class="wrapper wrapper-content ">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title" style="padding:3px 15px 0px 20px;">
+                            <div class="search">
+                                <a class="btn btn-white btn-sm" href="javascript:;" onclick="saveSort();">
+                                    <i class="fa fa-save"></i> 保存排序
+                                </a>
+                                <!--<button class="btn btn-white btn-sm" type="button" data-url = "/s/menu/list" onclick="refreshFun(this)" data-tid="table_jq"><i class="fa fa-refresh"></i>&nbsp;刷新</button>-->
+                                
+                            </div>
+                            <div class="ibox-tools m-t-xs">
+                                <div class="btn-group">
+                                    <button onclick="add()" class="btn btn-white btn-sm">
+                                        <i class="fa fa-plus-circle"></i>&nbsp;添加
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <style>
+                            #treetable-category tr {
+                                line-height: 25px;
+                            }
+
+                            #treetable-category tr th {
+                                text-align: center;
+                            }
+                            #treetable-category td{word-break:break-all; border: 1px solid #e7e7e7;}
+                            .juzhong {
+                                text-align: center;
+                                width: 50px;
+                            }
+                        </style>
+                        <div class="ibox-content">
+                            <table id="treetable-category">
+                                <thead>
+                                    <tr>
+                                        <th>名称</th>
+                                        <th>类型</th>
+                                        <th>排序</th>
+                                        <th>ICON</th>
+                                        <th>URL</th>
+                                        <th>权限位</th>
+                                        <th>权限值</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <form id="sort">
+                                    <#if menuList??>
+                                        <#list menuList as menu>
+                                            <tr data-tt-id='${menu.id!}' <#if menu.isFirst??><#else>
+                                            data-tt-parent-id='${(menu.parentId)!}' </#if>>
+                                                <td>
+                                                    <#if menu.isParent == 1>
+                                                        <span class="folder">${menu.name!}</span>
+                                                    <#else>
+                                                        <span class="leaf">${menu.name!}</span>
+                                                    </#if>
+                                                </td>
+                                                <td style="text-align:center;">
+                                                    <#if menu.type == 1>
+                                                        <a class="btn btn-danger btn-xs" href="javascript:void(0);">操作</a>
+                                                    <#else>
+                                                        <a class="btn btn-success btn-xs" href="javascript:void(0);">菜单</a>
+                                                    </#if>
+                                                </td>
+                                                <td style="text-align:center;">
+                                                    <input type="hidden" name="id" value="${menu.id}">
+                                                    <input class="juzhong" value="${menu.sort!}" name="sort">
+                                                </td>
+                                                <td style="text-align:center;"><i class="fa ${menu.images!}"></i></td>
+                                                <td style="text-align:left;">${menu.url!}</td>
+                                                <td style="text-align:center;">${menu.rightpos!}</td>
+                                                <td style="text-align:center;">${menu.rightval!}</td>
+                                                <td style="text-align:center;" width="200px;">
+                                                    <a class="btn btn-white btn-xs" title="修改"
+                                                       onclick="hm_fn_editFun(editTitle,winWidth,winHeight,editUrl,'${menu.id}',winname)"><i
+                                                            class="fa fa-edit"></i> </a>
+                                                    <#if menu.type?? && menu.type == 0>
+                                                        <a class="btn btn-white btn-xs" title="添加下级菜单"
+                                                           onclick="hm_fn_addSubMenuFun(addTitle,winWidth,winHeight,addUrl,formId,'${menu.id}',winname)"><i
+                                                            class="fa fa-plus-circle"></i> </a>
+                                                    </#if>
+                                                    <a class="btn btn-white btn-xs" title="删除"
+                                                       onclick="_fn_del(jqGridId,dataUrl,deleteUrl,'${menu.id}')"><i
+                                                            class="fa fa-trash"></i> </a>
+                                                </td>
+                                            </tr>
+                                        </#list>
+                                    </#if>
+                                    </form>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="ibox-content">
+                            <table id="table_jq"></table>
+                            <div id="pager_jq"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- js加载开始 -->
+        <#include "../../include/js.html">
+        <script src="${cxt!}/ui/js/plugins/treetable/jquery.treetable.js"></script>
+        <script>
+            var winname = window.name;
+            var winWidth = '860px',
+                    winHeight = '500px',
+                    dataUrl = "modules/system/menu",
+                    addTitle = "添加菜单",
+                    addUrl = "/s/menu/add",
+                    addSubTitle = "添加下级菜单",
+                    addSubUrl = "modules/system/menu/add",
+                    editTitle = "编辑菜单",
+                    editUrl = "/s/menu/edit",
+                    deleteUrl = "/s/menu/json/delete",
+                    jqGridId = "#table_jq",
+                    jqPageId = "#pager_jq",
+                    formId = "#form";
+
+            var $menu = $("#treetable-category");
+            $menu.treetable({
+                expandable: true
+            });
+//            $menu.treetable("expandAll");
+
+            $menu.find("tbody").on("mousedown", "tr", function () {
+                $(".selected").not(this).removeClass("selected");
+                $(this).toggleClass("selected");
+            });
+
+        </script>
+        <script type="text/javascript">
+            function add() {
+//                var selected = $("tbody").find(".selected");
+//                if (selected.length < 1) {
+//                    notifications('warning',"请选择一条记录","提示");
+//                    return;
+//                }
+                hm_fn_addFun(addTitle,winWidth,winHeight,addUrl,formId,winname);
+            }
+            function saveSort() {
+                $.ajax({
+                    type: "POST",
+                    async: false,
+                    data: $("#sort").serialize(),
+                    url: "/s/menu/json/saveSort",
+                    success: function (data) {
+                        if (data.code === 200) {
+                            parent.notifications('success',"保存成功");
+                            window.location.href = "/s/menu/list";
+                        } else {
+                            parent.notifications('error',data.msg);
+                        }
+                    },
+                    error: function () {
+                        parent.layer.alert('操作失败,请检查网络!', {title: '提示', icon: 2, closeBtn: 0});
+                    },
+                    complete: function () {
+                    }
+                });
+            }
+
+            function _fn_del(jqGridId,dataUrl,url,id){
+                var i = parent.layer.confirm('确定删除吗？', {
+                    skin: 'layui-layer-molv',
+                    icon:0,
+                    title:'提示',
+                    btn: ['确定','取消'] //按钮
+                }, function(){
+                    $.ajax({
+                        async:"true",
+                        url: url,
+                        data: "ids="+id,
+                        success: function(data){
+                            if(data.code === 200){
+                                parent.notifications('success',"删除成功");
+                                window.location.href = "/s/menu/list";
+                            }else{
+                                parent.notifications('error',data.msg);
+                            }
+                        },
+                        error:function(){
+                            parent.notifications('error',"操作失败,请检查网络!");
+                        },
+                        complete:function(){
+                            parent.layer.close(i);
+                        }
+                    });
+                });
+            }
+
+        </script>
+    </body>
+</html>

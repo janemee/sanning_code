@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- 样式文件加载开始 -->
+		<#include "../../include/res.html" >
+		<!-- 样式文件加载结束 -->
+	</head>
+	<body class="white-bg">
+		<div class="wrapper wrapper-content ">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>模板添加</h5>
+                        </div>
+                        <div class="ibox-content">
+                            <form class="form-horizontal m-t" id="form">
+                                <input type="hidden" id="ID" value="" name="templateMsg.id" />
+                            <#include "_form.html">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>模板列表</h5>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                                <a class="dropdown-toggle" data-toggle="dropdown">
+                                    <i class="fa fa-wrench"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-user">
+                                    <li><a href="table_basic.html#" tppabs="http://www.zi-han.net/theme/hplus/table_basic.html#">选项1</a>
+                                    </li>
+                                    <li><a href="table_basic.html#" tppabs="http://www.zi-han.net/theme/hplus/table_basic.html#">选项2</a>
+                                    </li>
+                                </ul>
+                                <a class="close-link">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>标题</th>
+                                        <th>模板ID</th>
+                                        <th>行业</th>
+                                        <th>#</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                <#list templateList as item>
+                                    <tr>
+                                        <td>${item.title!}</td>
+                                        <td><span class="line">${item.template_id!}</span>
+                                        </td>
+                                        <td>${item.industry!}</td>
+                                        <td class="text-navy">
+                                            <a onclick="Edit('${item.id!}')"><i class="fa fa-edit"></i> 编辑</a>
+                                        </td>
+                                    </tr>
+                                </#list>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+		</div>
+		<!-- js加载开始 -->
+		<#include "../../include/js.html">
+		<script type="text/javascript" src="${cxt!}/ui/js/hm/templateMsg.js"></script>
+		<script type="text/javascript">
+			var jqGridId = "#table_jq",
+				dataUrl = "/modules/system/templateMsg/getDataByAjax",
+				formId = "#form",
+				winname = "${winname!}";
+	      	jQuery(document).ready(function(){
+	      		NoticeTemplateJs.init();
+	      	});
+	      	function validateForm(){
+	  			$(formId).submit();
+	  		}
+
+	  		function Edit(id) {
+	      	    if( null == id || id == "" || id == "undefined") {
+                    parent.notifications('error','ID不能为空');
+                }
+                $.ajax({
+                    type: "POST",
+                    async:false,
+                    data:{'ids':id},
+                    url: "/modules/system/templateMsg/edit",
+                    success: function(data){
+                        if (data.code == 1){
+                            $("#ID").val(data.data.template.id);
+                            $("#title").val(data.data.template.title);
+                            $("#template_id").val(data.data.template.template_id);
+                            $("#industry").val(data.data.template.industry);
+                            $("#detail").html(data.data.template.detail);
+                            $("#example").html(data.data.template.example);
+                        }else{
+                            parent.notifications('error',data.msg,title);
+                        }
+                    },
+                    error:function(XMLHttpRequest, textStatus, errorThrown){
+                        parent.notifications('error',"操作失败,请检查网络!",title);
+                    },
+                    complete:function(){
+                    }
+                });
+            }
+		</script>
+		<!-- js加载 结束-->
+	</body>
+
+</html>

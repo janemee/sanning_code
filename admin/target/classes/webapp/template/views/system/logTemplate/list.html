@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- 样式文件加载开始 -->
+		<#include "../../include/res.html" >
+		<!-- 样式文件加载结束 -->
+	</head>
+	<body class="gray-bg">
+		<div class="wrapper wrapper-content ">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="ibox float-e-margins">
+						<div class="ibox-title" style="padding:3px 15px 0px 20px;">
+							<div class="search">
+								<!-- <input type="email" placeholder="请输入名称/标识号进行搜索" id="search-input"> -->
+								<!-- <button class="btn btn-info " type="button">高级<i class="fa fa-chevron-down"></i></button> -->
+								<span>信息类型：</span>								
+								<select id="type" class="chosen-select" style="width:120px;">
+								 	<option value ="" selected="selected">全部</option>
+								 	<option value ="1">资金日志</option>
+								 	<option value ="2">合计日志</option>
+								 	<option value ="3">会员日志</option>
+								</select>
+								<button class="btn btn-white btn-sm " type="button" onclick="search(jqGridId,dataUrl)" id="search-btn"><i class="fa fa-search"></i> 查询</button>
+								<a href="javascript:void(0);" onclick="hm_fn_addFun(addTitle,winWidth,winHeight,addUrl,formId,winname)" class="btn btn-info" data-index="1-1">
+									<i class="fa fa-plus"></i>&nbsp;添加
+								</a>
+							</div>
+							<div class="ibox-tools m-t-xs">
+								<div class="btn-group">
+	                                <button data-toggle="dropdown" class="btn btn-white btn-sm dropdown-toggle">
+	                                <!-- <i class="fa fa-wrench"></i>  -->更多 <span class="caret"></span></button>
+	                                <ul class="dropdown-menu">
+	                                    <li><a href="buttons.html#"><i class="fa fa-sign-out"></i> 导出</a></li>
+	                                </ul>
+	                            </div>
+							</div>
+						</div>
+						<div class="ibox-content">
+							<table id="table_jq"></table>
+							<div id="pager_jq"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- js加载开始 -->
+		<#include "../../include/js.html">
+		<!-- Page-Level Scripts -->
+		<script>
+			var winname = window.name;
+			var JqGrid,
+				winWidth =  '860px',
+				winHeight = '500px',
+				addTitle = "添加资金记录模板",
+				addUrl =  "${cxt}/modules/logTemplate/add",
+				editTitle = "编辑资金记录模板",
+				editUrl =  "${cxt}/modules/logTemplate/edit",
+				deleteUrl = "${cxt}/modules/logTemplate/delete",
+				jqGridId = "#table_jq",
+				jqPageId = "#pager_jq",
+				dataUrl = "${cxt!}/modules/logTemplate/getDataByAjax",
+				formId = "#form";
+			$(function() {
+				$.jgrid.defaults.styleUI = "Bootstrap";
+				$(jqGridId).jqGrid({
+					url : dataUrl,
+					datatype : "json",
+					colNames : ['ID','信息类型','日志类型','模板信息','模板备注','模板类型','操作' ],
+					colModel : [
+							{
+								name : 'ids',
+								index : 'ids',
+								width : 1,
+								hidden : true,
+								key : true
+							},
+							{
+								name : 'type',
+								index : 'type',
+								width : '100',
+								formatter : function(cellvalue, options, rowObject) {
+									var str = '';
+									if(cellvalue == 1){
+										str = '<span">资金日志</span>';
+									}else if(cellvalue == 2){
+										str = '<span">合计日志</span>';
+									}else if(cellvalue == 3){
+										str = '<span>会员日志</span>';
+									}
+									return str;
+								}
+							},
+							{
+								name : 'logtype',
+								index : 'logtype',
+								width:'150'
+							},
+							{
+								name : 'value',
+								index : 'value',
+								width:'150'
+							},
+							{
+								name : 'remark',
+								index : 'remark',
+								width:'150'
+							},
+							{
+								name : 'nid',
+								index : 'nid',
+								width:'150'
+							},
+							{
+								name : 'tax',
+								index : 'tax',
+								width:'80',
+								formatter : function(cellvalue,options,rowObject) {
+									var str = '';
+									str += '<a style="margin-bottom:0px;" class="btn btn-white btn-xs btn-bitbucket" title="编辑" onclick="hm_fn_editFun(editTitle,winWidth,winHeight,editUrl,'+"'"+rowObject.ids+"'"+',winname)"><i class="fa fa-edit"></i></a>&nbsp;';
+									str += '<a style="margin-bottom:0px;" class="btn btn-default btn-xs btn-bitbucket" title="删除" onclick="hm_fn_del(jqGridId,dataUrl,deleteUrl,'+"'"+rowObject.ids+"'"+')"><i class="fa fa-trash"></i></a>';
+									return str;
+								}
+							} ],
+					autowidth : true,
+					height: "auto",    // 设为具体数值则会根据实际记录数出现垂直滚动条  
+				    width:"100%",
+					rowNum : 20,
+					rowList : [20,30,50],
+					pager : jqPageId,
+					mtype : "post",
+					rownumbers: true,
+					viewrecords : true,
+					jsonReader : {  
+						root:"list",  
+						page: "page",  
+						total: "totalPage",  
+						records: "totalRow",  
+						repeatitems: false,  
+						id: "0"  
+					}
+				});
+                jQuery(jqGridId).jqGrid('navGrid', jqPageId, {
+                            add: false,
+                            del : false,
+                            edit: false,
+                            search: false,
+                            position: 'right'
+                        },
+                        {},
+                        {},
+                        {},
+                        {});
+			});
+			//查询
+			function search(jqGridId,dataUrl) {
+			  var search_val = $('#type option:selected').val();
+			  $(jqGridId).jqGrid('setGridParam', {
+			    url : dataUrl+"?search_val=" + search_val,
+			    page : 1
+			  }).trigger("reloadGrid");
+			}
+			
+		</script>
+	<!-- js加载结束 -->
+	</body>
+</html>

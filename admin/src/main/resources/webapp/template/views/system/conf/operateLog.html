@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- 样式文件加载开始 -->
+		<#include "../../include/res.html" >
+		<!-- 样式文件加载结束 -->">
+	</head>
+	<style>
+		.ibox-title .search{display: inline-block;font-size: 14px;padding: 0;text-overflow: ellipsis;float: left;}
+	</style>
+<body class="white-bg">
+	<div class="wrapper wrapper-content ">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-title" style="padding:3px 15px 0px 20px;">
+						<div class="search">
+							<input type="text" placeholder="请输入名称/标识号进行搜索" class="hm-search" id="search-input">
+							<!-- <button class="btn btn-info " type="button">高级<i class="fa fa-chevron-down"></i></button> -->
+							<button class="btn btn-info " type="button" onclick="gridReload(jqGridId,dataUrl)" id="search-btn"><i class="fa fa-search"></i> 查询</button>
+							<a href="javascript:void(0);" onclick="hm_fn_addFun(addTitle,winWidth,winHeight,addUrl,formId)" class="btn btn-info J_menuItem" data-index="1-1">
+								<i class="fa fa-plus"></i>&nbsp;添加
+							</a>
+						</div>
+						<div class="ibox-tools m-t-xs">
+							<div class="btn-group">
+                                <button data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle">
+                                <!-- <i class="fa fa-wrench"></i>  -->更多 <span class="caret"></span></button>
+                                <ul class="dropdown-menu">
+                                   "
+                                    <li><a href="buttons.html#"><i class="fa fa-sign-out"></i> 导出</a></li>
+                                </ul>
+                            </div>
+						</div>
+					</div>
+					<div class="ibox-content">
+						<table id="table_jq"></table>
+						<div id="pager_jq"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<#include "../../include/js.html">
+	<!-- Page-Level Scripts -->
+		<script>
+		var JqGrid,
+		winWidth =  '768px',
+		winHeight = '440px',
+		addTitle = "添加参数配置",
+		addUrl =  "${cxt}/modules/system/conf/add",
+		editTitle = "编辑参数配置",
+		editUrl =  "${cxt}/modules/system/conf/edit",
+		deleteUrl = "${cxt}/modules/system/conf/delete",
+		jqGridId = "#table_jq",
+		jqPageId = "#pager_jq",
+		dataUrl = "${cxt!}/modules/system/conf/getDataByAjax",
+		formId = "#form";
+		$(function() {
+			$.jgrid.defaults.styleUI = "Bootstrap";
+			$(jqGridId).jqGrid({
+				url : dataUrl,
+				datatype : "json",
+				colNames : ['ID', '日志类型', '创建者', 'IP','请求URI','操作方法','操作提交数据', '内容' ],
+				colModel : [
+						{
+							name : 'ids',
+							index : 'ids',
+							width : 1,
+							hidden : true,
+							key : true
+						},
+						{
+							name : 'type',
+							index : 'type',
+							width:'150'
+						},
+						
+						{
+							name : 'adduser',
+							index : 'adduser',
+							width:'150'
+						},
+						{
+							name : 'addtime',
+							index : 'addtime',
+							width:'150'
+						},
+						{
+							name : 'remoteaddr',
+							index : 'remoteaddr',
+							width:'150'
+						},
+						{
+							name : 'method',
+							index : 'method',
+							width:'150'
+						},
+						{
+							name : 'params',
+							index : 'params',
+							width:'150'
+						},
+						{
+							name : 'response',
+							index : 'response',
+							width:'150'
+						}],
+				autowidth : true,
+				height : "auto", // 设为具体数值则会根据实际记录数出现垂直滚动条
+				width : "100%",
+				rowNum : 20,
+				rowList : [20,30,50],
+				pager : '#pager_configure',
+				mtype : "post",
+				viewrecords : true,
+				caption : "系统配置列表",
+				jsonReader : {  
+					root:"list",  
+					page: "page",  
+					total: "totalPage",  
+					records: "totalRow",  
+					repeatitems: false,  
+					id: "0"  
+				}
+			});
+		})
+
+	</script>
+</body>
+</html>

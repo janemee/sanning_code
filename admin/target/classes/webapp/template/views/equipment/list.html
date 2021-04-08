@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <!-- 样式文件加载开始 -->
+    <#include "../include/res.html" >
+    <!-- 样式文件加载结束 -->
+    <title>设备列表</title>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title" style="padding:3px 15px 0 20px;">
+                    <div class="col-md-6">
+                        <div class="search-form ">
+                            <form>
+                                <div class="input-group">
+                                    <input title="" type="text" name="search_val" placeholder="请输入设备名称进行搜索"
+                                           class="form-control search-input" style="width: 250px" id="search-input">
+                                    <span class="input-group-btn search-span">
+                                        <button class="btn btn-white btn-sm " type="button"
+                                                onclick="dropdownSearchFun(this)"
+                                                data-url="${cxt!}/s/equipment/json/list"
+                                                data-tid="table_jq" id="search-btn"><i class="fa fa-search"></i> 查询
+                                        </button>
+                                    </span>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="search-form-adv ml10">
+                            <form>
+                                <div class="btn-group" onclick="dropdownSelectHoverFun(this)">
+                                    <button type="button" class="btn btn-white dropdown-select-toggle" data-toggle="#"
+                                            aria-haspopup="true" aria-expanded="false"> 条件查询 <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu search-menu">
+                                        <li class="input-group input-group-sm">
+                                            <span>值</span>
+                                            <input type="text" id="name" name="search_val2" class="hm-search-w208">
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>类型</span>
+                                            <select name="queryType" class="hm-search-w208">
+                                                <option value="equipmentName" selected="selected">设备名称</option>
+                                                <option value="equipmentGroupName">设备分组</option>
+                                                <option value="agentName">代理商名称</option>
+                                            </select>
+                                        </li>
+                                        <li>
+                                            <span>&nbsp;</span>
+                                            <button class="btn btn-white btn-sm" type="button"
+                                                    onclick="dropdownSearchFun(this)"
+                                                    data-url="${cxt!}/s/equipment/json/list"
+                                                    data-tid="table_jq" id="search-btn"><i class="fa fa-search"></i> 查询
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="ibox-tools m-t-xs">
+<!--                        <div class="btn-group">-->
+<!--                                      <span href="javascript:void(0);" class="btn btn-white btn-sm" id="">-->
+<!--                                          &nbsp;空闲设备：<span id="free">${(free)!}</span>-->
+<!--                            </span>-->
+<!--                            <span href="javascript:void(0);" class="btn btn-white btn-sm">-->
+<!--                                &nbsp; 正在运行的设备：<span id="busy">${(busy)!}</span>-->
+<!--                            </span>-->
+<!--                            <button href="javascript:void(0);" class="btn btn-white btn-sm" id="getBusy">-->
+<!--                                &nbsp; 刷新-->
+<!--                            </button>-->
+<!--                        </div>-->
+                    </div>
+                    <div class="ibox-tools m-t-xs">
+                        <div class="btn-group">
+                            <#-- <button href="javascript:void(0);"
+                                onclick="hm_fn_addFun(addTitle,winWidth,winHeight,addUrl,formId,winname)"
+                                class="btn btn-white btn-sm">
+                                 <i class="fa fa-plus"></i>&nbsp;添加
+                             </button>-->
+                            <@shiro.hasPermission name=":s:equipment:list">
+                                <button href="javascript:void(0);" class="btn btn-white btn-sm" id="Edit">
+                                    <i class="fa fa-edit"></i>&nbsp;编辑
+                                </button>
+                            </@shiro.hasPermission>
+
+                            <button href="javascript:void(0);" class="btn btn-white btn-sm" id="Dis">
+                                <i class="fa fa-lock"></i>&nbsp;删除
+                            </button>
+                            <button href="javascript:void(0);" class="btn btn-white btn-sm" id="Batch">
+                                <i class="fa fa-edit"></i>&nbsp;批量分组
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <table id="table_jq"></table>
+                    <div id="pager_jq"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- js加载-->
+<#include "../include/js.html">
+
+<script type="text/javascript" src="${cxt!}/ui/js/hm/equipment.js"></script>
+<!-- Page-Level Scripts -->
+<script>
+    var winname = window.name;
+    var winWidth = '850px',
+        winHeight = '500px',
+        addTitle = "添加设备",
+        addUrl = "/s/equipment/add",
+        editTitle = "编辑设备",
+        editUrl = "/s/equipment/edit",
+        disableTitle = "删除",
+        disableUrl = "/s/equipment/json/del",
+        batchTitle = "批量分组",
+        batchUrl = "/s/equipment/batch",
+        showTitle = "任务具体详情",
+        showUrl = "/s/equipment/eqTask",
+        resetUrl = "/s/admin/json/modifyDefaultPwd",
+        busyUrl = "/s/equipment/json/busy",
+        jqGridId = "#table_jq",
+        jqPageId = "#pager_jq",
+        dataUrl = "/s/equipment/json/list",
+        treeUrl = "/s/admin/toZtreeDataPage",
+        formId = "#form";
+    lastsel = '';
+    $(function () {
+        $.jgrid.defaults.styleUI = "Bootstrap";
+        $(jqGridId).jqGrid({
+            url: dataUrl,
+            datatype: "json",
+            colNames: ['序号', '设备唯一ID', '设备名称', '设备分组','代理商名称','代理商邀请码','类型', '状态', '创建时间', '最后上线时间','操作'],
+            colModel: [
+                {
+                    name: 'id',
+                    index: 'id',
+                    width: 1,
+                    hidden: true,
+                    key: true
+                },
+                {
+                    name: 'deviceUid',
+                    index: 'deviceUid',
+                    width: '230'
+                },
+                {
+                    name: 'deviceCode',
+                    index: 'deviceCode',
+                    width: '100'
+                },
+                {
+                    name: 'groupName',
+                    index: 'groupName',
+                    width: '100'
+                },
+                {
+                    name: 'sysAdminName',
+                    index: 'sysAdminName',
+                    width: '120'
+                },
+                {
+                    name: 'sysAdminCode',
+                    index: 'sysAdminCode',
+                    width: '75'
+                },
+                {
+                    name: 'type',
+                    index: 'type',
+                    width: '80',
+                    formatter: function (cellvalu, options, rowObject) {
+                        var str = '';
+                        if (cellvalu == 0) {
+                            str = '<span class="label label-primary">全部</span>';
+                        } else if (cellvalu == 1) {
+                            str = '<span class="label label-success">R版</span>';
+                        } else if (cellvalu == 2) {
+                            str = '<span class="label label-danger">v版</span>';
+                        } else if (cellvalu == 3) {
+                            str = '<span class="label label-info">E版</span>';
+                        }
+                        return str;
+                    }
+                },
+                {
+                    name: 'state',
+                    index: 'state',
+                    width: '80',
+                    formatter: function (cellvalue, options, rowObject) {
+                        var str = '';
+                        if (cellvalue == 0) {
+                            str = '<span class="label label-default">离线</span>';
+                        } else if (cellvalue == 1) {
+                            str = '<span class="label label-danger">在线</span>';
+                        }
+                        return str;
+                    }
+                },
+                {
+                    name: 'createTime',
+                    index: 'createTime',
+                    width: '150'
+                },
+                {
+                    name: 'lastTime',
+                    index: 'lastTime',
+                    width: '150'
+                },
+                {
+                    width: '150',
+                    formatter: function (cellvalue, options, rowObject) {
+                        var str = '', edit;
+                        edit =
+                                "<a onclick='showReviewDetail(" + rowObject.id + ")'>查看</a>";
+                        return str + edit;
+                    }
+                }],
+            autowidth: true,
+            height: "100%",    // 设为具体数值则会根据实际记录数出现垂直滚动条
+            width: "100%",
+            rowNum: 20,
+            rowList: [20, 30, 50],
+            pager: jqPageId,
+            mtype: "post",
+            viewrecords: true,
+            rownumbers: true,
+            multiselect: true,
+            cellsubmit: "clientArray",
+            editurl: editUrl,
+            onSelectRow: function (id) {
+                if (id && id !== lastsel) {
+                    jQuery(jqGridId).jqGrid('restoreRow', lastsel);
+                    jQuery(jqGridId).jqGrid('editRow', id, true);
+                    lastsel = id;
+                }
+            },
+            jsonReader: {
+                root: "exhibitDatas",
+                page: "nowPage",
+                total: "pageCount",
+                records: "recordCount",
+                repeatitems: false,
+                id: "0"
+            }
+        });
+
+        jQuery(jqGridId).jqGrid('navGrid', jqPageId, {
+                add: false,
+                del: false,
+                edit: false,
+                search: false,
+                position: 'right'
+            },
+            {},
+            {},
+            {},
+            {});
+    });
+
+
+    $(window).bind("resize", function () {
+        var width = $(".ibox-content").width();
+        $("#table_jq").setGridWidth(width);
+    });
+
+    jQuery("#Edit").click(function () {
+        var ids = jQuery(jqGridId).jqGrid('getGridParam', 'selarrrow');
+        if (ids == '') {
+            parent.notifications('error', "请选择一条数据");
+            return false;
+        }
+        if (ids.length > 1) {
+            parent.notifications('error', "只能选择一条数据");
+            return false;
+        }
+        hm_fn_editFun_load_page(editTitle, winWidth, winHeight, editUrl, ids, winname,this.page);
+    });
+    jQuery("#Batch").click(function () {
+        var ids = jQuery(jqGridId).jqGrid('getGridParam', 'selarrrow');
+        if (ids == '') {
+            parent.notifications('error', "请选择一条数据");
+            return false;
+        }
+
+        //todo  获取选中的ids  (选中的id数组)
+        console.log(ids);
+
+        hm_fn_editFun_load_page(batchTitle, winWidth, winHeight, batchUrl, ids, winname,this.page);
+    });
+    jQuery("#Dis").click(function () {
+        var ids = jQuery(jqGridId).jqGrid('getGridParam', 'selarrrow');
+        if (ids == '') {
+            parent.notifications('error', "请至少选择一条数据");
+            return false;
+        }
+        //获取当前页数
+        var page =  this.page;
+        hm_fn_doAction(jqGridId, dataUrl, disableUrl, ids, disableTitle,page)
+    });
+    jQuery("#Ena").click(function () {
+        var ids = jQuery(jqGridId).jqGrid('getGridParam', 'selarrrow');
+        if (ids == '') {
+            parent.notifications('error', "请至少选择一条数据");
+            return false;
+        }
+        hm_fn_doAction(jqGridId, dataUrl, startUpUrl, ids, startUpTitle)
+    });
+    jQuery("#Auth").click(function () {
+        var ids = jQuery(jqGridId).jqGrid('getGridParam', 'selarrrow');
+        if (ids == '') {
+            parent.notifications('error', "请选择一条数据");
+            return false;
+        }
+        if (ids.length > 1) {
+            parent.notifications('error', "只能选择一条数据");
+            return false;
+        }
+        AdministratorJs.distributeRole(ids, treeUrl, winname)
+    });
+    function showReviewDetail(id) {
+        var ids = [id];
+        hm_fn_viewFun1(showTitle, winWidth, winHeight, showUrl, ids, winname);
+    }
+    jQuery("#getBusy").click(function () {
+
+        $.ajax({
+            async: "true",
+            url: busyUrl,
+            data: "",
+            success: function (data) {
+                if (data.code === 200) {
+                    $("#busy").text(data.data.busy);
+                    $("#free").text(data.data.free);
+                    parent.notifications('success', "刷新成功");
+                    $(jqGridId).jqGrid('setGridParam', {url: dataUrl, page: 1}).trigger("reloadGrid");
+                } else {
+                    parent.notifications('error', data.msg);
+                }
+            },
+            error: function () {
+                parent.notifications('error', "操作失败,请检查网络!");
+            }
+        });
+    });
+
+</script>
+</body>
+</html>

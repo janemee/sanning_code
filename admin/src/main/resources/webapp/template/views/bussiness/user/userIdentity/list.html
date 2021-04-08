@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- 样式文件加载开始 -->
+    <#include "/include/res.html" >
+    <!-- 样式文件加载结束 -->
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title" style="padding:3px 15px 0 20px;">
+                    <div class="col-md-6">
+                        <div class="search-form">
+                            <form>
+                                <div class="input-group">
+                                    <input type="text" name="search_val" placeholder="输入姓名/手机号码进行搜索"
+                                           class="form-control search-input" id="search-input">
+                                    <span class="input-group-btn search-span">
+                                        <button class="btn btn-white btn-sm " type="button"
+                                                onclick="dropdownSearchFun(this)"
+                                                data-url="${cxt!}/s/user/userIdentity/list_json"
+                                                data-tid="table_jq" id="search-btn"><i class="fa fa-search"></i> 查询
+                                        </button>
+                                    </span>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="search-form-adv ml10">
+                            <form>
+                                <input type="hidden" name="fast_search" value="true">
+                                <div class="btn-group" onclick="dropdownSelectHoverFun(this)">
+                                    <button type="button" class="btn btn-white dropdown-select-toggle" data-toggle="#"
+                                            aria-haspopup="true" aria-expanded="false"> 条件查询 <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu search-menu">
+                                        <li class="input-group input-group-sm">
+                                            <span>用户昵称</span>
+                                            <input type="text" name="*userName" class="hm-search-w208">
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>手机号码</span>
+                                            <input type="text" name="*phone" class="hm-search-w208">
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>姓名</span>
+                                            <input type="text" name="*realName" class="hm-search-w208">
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>身份证号码</span>
+                                            <input type="text" name="*idCard" class="hm-search-w208">
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>认证状态</span>
+                                            <select name="*userType" class="hm-search-w208">
+                                                <option value="" selected="selected">全部</option>
+                                                <option value="1">待认证</option>
+                                                <option value="2">审核中</option>
+                                                <option value="3">审核失败</option>
+                                                <option value="11">人工审核通过</option>
+                                                <option value="12">接口审核通过</option>
+                                            </select>
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>申请时间</span>
+                                            <input placeholder="开始日期" class="hm-search-w208 layer-date"
+                                                   name="*applyStartTime" style="width: 100px;"
+                                                   id="apply—start-time">
+                                            <input placeholder="结束日期" class="hm-search-w208 layer-date"
+                                                   name="*applyEndTime" style="width: 100px;" id="apply—end-time">
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>审核时间</span>
+                                            <input placeholder="开始日期" class="hm-search-w208 layer-date"
+                                                   name="*reviewStartTime" style="width: 100px;" id="review—start-time">
+                                            <input placeholder="结束日期" class="hm-search-w208 layer-date"
+                                                   name="*reviewEndTime" style="width: 100px;" id="review—end-time">
+                                        </li>
+                                        <li>
+                                            <span>&nbsp;</span>
+                                            <button class="btn btn-white btn-sm" type="button"
+                                                    onclick="dropdownSearchFun(this)"
+                                                    data-url="${cxt!}/s/user/userIdentity/list_json"
+                                                    data-tid="table_jq" id="search-btn"><i class="fa fa-search"></i> 查询
+                                            </button>
+                                            <button class="btn btn-white btn-sm" type="button"
+                                                    onclick="dropdownSearchCleanFun(this)"
+                                                    data-url="${cxt!}/s/user/userIdentity/list_json"
+                                                    data-tid="table_jq" id="clear-btn"><i class="fa fa-retweet"></i> 清空
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="ibox-tools m-t-xs">
+                        <div class="btn-group">
+                            <@shiro.hasPermission name=':s:user:userIdentity:export'>
+                            <button class="btn btn-white btn-sm" type="button"
+                                    onclick="exportFun(this)"
+                                    data-url="/s/user/userIdentity/export"
+                                    data-tid="table_jq" id="search-btn">
+                                <i class="fa fa-download"></i> 导出
+                            </button>
+                            </@shiro.hasPermission>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="ibox-content">
+                    <table id="table_jq"></table>
+                    <div id="pager_jq"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- js加载-->
+<#include "/include/js.html">
+
+<!--<script type="text/javascript" src="${cxt!}/ui/js/hm/administrator.js"></script>-->
+<!-- Page-Level Scripts -->
+<script>
+
+    var applyStartTime = {
+        elem: "#apply—start-time",
+        format: "YYYY-MM-DD",
+        // min: laydate.now(),
+        max: "2099-06-16 23:59:59",
+        istime: false,
+        istoday: false,
+        festival: true, //是否显示节日
+        choose: function (datas) {
+            applyEndTime.min = datas;
+            applyEndTime.start = datas
+        }
+    };
+    var applyEndTime = {
+        elem: "#apply—end-time",
+        format: "YYYY-MM-DD",
+        // min: laydate.now(),
+        max: "2099-06-16 23:59:59",
+        istime: false,
+        istoday: false,
+        festival: true, //是否显示节日
+        choose: function (datas) {
+            applyStartTime.max = datas
+        }
+    };
+    var reviewStartTime = {
+        elem: "#review—start-time",
+        format: "YYYY-MM-DD",
+        // min: laydate.now(),
+        max: "2099-06-16 23:59:59",
+        istime: false,
+        istoday: false,
+        festival: true, //是否显示节日
+        choose: function (datas) {
+            reviewEndTime.min = datas;
+            reviewEndTime.start = datas
+        }
+    };
+    var reviewEndTime = {
+        elem: "#review—end-time",
+        format: "YYYY-MM-DD",
+        // min: laydate.now(),
+        max: "2099-06-16 23:59:59",
+        istime: false,
+        istoday: false,
+        festival: true, //是否显示节日
+        choose: function (datas) {
+            reviewStartTime.max = datas
+        }
+    };
+    laydate(applyStartTime);
+    laydate(applyEndTime);
+    laydate(reviewStartTime);
+    laydate(reviewEndTime);
+    $("#clear-btn").mousedown(function () {
+        applyStartTime.max ="", applyEndTime.min ="",
+        reviewStartTime.max ="", reviewEndTime.min =""
+    })
+    var winname = window.name;
+    var winWidth = '50%',
+        winHeight = '50%',
+        reviewTitle = "审核",
+        editTitle = "编辑",
+        reviewUrl = "/s/user/userIdentity/showReviewEditor",
+        editUrl = "/s/user/userIdentity/edit",
+        showTitle = "查看",
+        showUrl = "/s/user/userIdentity/showReviewDetail",
+        jqGridId = "#table_jq",
+        jqPageId = "#pager_jq",
+        dataUrl = "/s/user/userIdentity/list_json",
+        formId = "#form";
+
+    $(function () {
+        $.jgrid.defaults.styleUI = "Bootstrap";
+        $(jqGridId).jqGrid({
+            url: dataUrl,
+            datatype: "json",
+            colNames: ['用户昵称', '手机号码', '姓名', '身份证号', '认证状态', '申请时间', '审核时间', '操作'],
+            colModel: [
+                {
+                    name: 'nickName',
+                    index: 'nickName',
+                    width: '150'
+                },
+                {
+                    name: 'phone',
+                    index: 'phone',
+                    width: '150'
+                },
+                {
+                    name: 'realName',
+                    index: 'realName',
+                    width: '150'
+                },
+                {
+                    name: 'idCard',
+                    index: 'idCard',
+                    width: '150',
+                },
+                {
+                    name: 'realNameState',
+                    index: 'realNameState',
+                    width: '150',
+                    formatter: function (cellvalue, options, rowObject) {
+                        var str = '<span class="label ' + rowObject.realNameStateColor + '">' + rowObject.realNameStateFormatter + '</span>';
+                        return str;
+                    }
+                },
+                {
+                    name: 'applyTime',
+                    index: 'applyTime',
+                    width: '150'
+                },
+                {
+                    name: 'reviewTime',
+                    index: 'reviewTime',
+                    width: '150'
+                },
+                {
+                    formatter: function (cellvalue, options, rowObject) {
+                        var str = '';
+                        switch (rowObject.realNameState) {
+                            case 'T1':
+                            case 'T2':
+                                str = "<@shiro.hasPermission name=':s:user:userIdentity:showReviewEditor'>" +
+                                    "<a onclick='showReviewEditor(" + rowObject.id + ")'>审核</a>" +
+                                    "</@shiro.hasPermission>";
+                                break;
+                            default:
+                                str = "<@shiro.hasPermission name=':s:user:userIdentity:showReviewDetail'>" +
+                                    "<a onclick='showReviewDetail(" + rowObject.id + ")'>查看&nbsp;</a>" +
+                                    "</@shiro.hasPermission>" +
+                                    "<@shiro.hasPermission name=':s:user:userIdentity:update'>" +
+                                    "<a onclick='showEditor(" + rowObject.id + ")'>&nbsp;编辑</a>" +
+                                    "</@shiro.hasPermission>";
+                                break;
+
+                        }
+                        return str;
+                    }
+                }
+            ],
+
+            autowidth: true,
+            height: "100%",    // 设为具体数值则会根据实际记录数出现垂直滚动条
+            width: "100%",
+            rowNum: 20,
+            rowList: [20, 30, 50],
+            pager: jqPageId,
+            mtype: "post",
+            viewrecords: true,
+            rownumbers: true,
+            rownumWidth: 50,
+            multiselect: false,
+            cellsubmit: "clientArray",
+            onSelectRow: function (id) {
+                if (id && id !== lastsel) {
+                    jQuery(jqGridId).jqGrid('restoreRow', lastsel);
+                    jQuery(jqGridId).jqGrid('editRow', id, true);
+                    lastsel = id;
+                }
+            },
+            jsonReader: {
+                root: "exhibitDatas",
+                page: "nowPage",
+                total: "pageCount",
+                records: "recordCount",
+                repeatitems: false,
+                id: "0"
+            }
+        });
+
+        jQuery(jqGridId).jqGrid('navGrid', jqPageId, {
+                add: false,
+                del: false,
+                edit: false,
+                search: false,
+                position: 'right'
+            },
+            {},
+            {},
+            {},
+            {});
+
+        jQuery(jqGridId).jqGrid('setLabel', 'rn', '序号', {
+            'text-align': 'center',
+            'vertical-align': 'middle',
+            'width': '50'
+        }, '');
+    });
+
+
+    $(window).bind("resize", function () {
+        var width = $(".ibox-content").width();
+        $("#table_jq").setGridWidth(width);
+    });
+
+    function showReviewEditor(id) {
+        var ids = [id];
+        if (ids === '') {
+            parent.notifications('error', "请选择一条数据");
+            return false;
+        }
+        if (ids.length > 1) {
+            parent.notifications('error', "只能选择一条数据");
+            return false;
+        }
+        hm_fn_editFun(reviewTitle, winWidth, winHeight, reviewUrl, ids, winname);
+    }
+
+    /*编辑*/
+    function showEditor(id) {
+        hm_fn_editFun(editTitle, winWidth, winHeight, editUrl, id, winname);
+    }
+
+    /** 审核弹窗 */
+    function showReviewDetail(id) {
+        var ids = [id];
+        hm_fn_viewFun1(showTitle, winWidth, winHeight, showUrl, ids, winname);
+    }
+
+</script>
+</body>
+</html>

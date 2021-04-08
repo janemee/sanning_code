@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- 样式文件加载开始 -->
+<#include "../../include/res.html" >
+    <style type="text/css">
+        .ui-jqgrid tr.jqgrow td {
+            white-space: normal;
+        }
+    </style>
+    <!-- 样式文件加载结束 -->
+</head>
+<body class="white-bg5">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title" style="padding:3px 15px 0px 20px;">
+                    <div class="col-md-6">
+                        <div class="search-form">
+                            <form>
+                                <div class="input-group">
+                                    <input type="text" name="search_val" placeholder="请输入标题/接收者进行搜索"
+                                           class="form-control search-input" id="search-input">
+                                    <span class="input-group-btn search-span">
+                                    <button class="btn btn-white btn-sm" type="button" onclick="dropdownSearchFun(this)"
+                                        data-url="${cxt!}/modules/system/noticeLog/getDataByAjax" data-tid="table_jq"
+                                        id="search-btn"><i class="fa fa-search"></i> 查询</button>
+                                    </span>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="search-form-adv ml10">
+                            <form id="search-form">
+                                <div class="btn-group" onclick="dropdownSelectHoverFun(this)">
+                                    <button type="button" class="btn btn-white btn-sm dropdown-select-toggle"
+                                            data-toggle="#" aria-haspopup="true" aria-expanded="false"> 条件查询 <span
+                                            class="caret"></span></button>
+                                    <ul class="dropdown-menu search-menu">
+                                        <li class="input-group input-group-sm">
+                                            <span>标题</span>
+                                            <input type="text" id="noticeLog.title" name="noticeLog.title"
+                                                   placeholder="标题" class="hm-search-w208">
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>接收者</span>
+                                            <input type="text" id="noticeLog.receiverid" name="noticeLog.receiverid"
+                                                   placeholder="接收者" class="hm-search-w208">
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>发送方式</span>
+                                            <select class="hm-search-w208" name="noticeLog.type">
+                                                <option value="">全部</option>
+                                                <option value="1">邮件</option>
+                                                <option value="2">短信</option>
+                                                <option value="3">站内信</option>
+                                            </select>
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>发送状态</span>
+                                            <select class="hm-search-w208" name="noticeLog.state">
+                                                <option value="">全部</option>
+                                                <option value="0">发送失败</option>
+                                                <option value="1">发送成功</option>
+                                                <option value="2">发送中</option>
+                                                <option value="3">未读</option>
+                                                <option value="4">已读</option>
+                                            </select>
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>发送时间</span>
+                                            <input placeholder="开始日期" class="hm-search-w208 layer-date" name="startTime"
+                                                   style="width: 100px;" id="start">
+                                            -
+                                            <input placeholder="结束日期" class="hm-search-w208 layer-date" name="endTime"
+                                                   style="width: 100px;" id="end">
+                                        </li>
+                                        <li>
+                                            <span>&nbsp;</span>
+                                            <button class="btn btn-white btn-sm " type="button"
+                                                    onclick="dropdownSearchFun(this)"
+                                                    data-url="${cxt!}/modules/system/noticeLog/getDataByAjax"
+                                                    data-tid="table_jq" id="search-btn"><i class="fa fa-search"></i> 查询
+                                            </button>
+                                            <button class="btn btn-white btn-sm " type="button"
+                                                    onclick="dropdownSearchCleanFun(this)"
+                                                    data-url="${cxt!}/modules/system/noticeLog/getDataByAjax"
+                                                    data-tid="table_jq" id="clear-btn"><i class="fa fa-retweet"></i> 清空
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="ibox-tools m-t-xs">
+                        <div class="btn-group">
+                            <button onclick="deleteByTime(12,'一年以前的')" class="btn btn-white btn-sm" data-index="1-1" title="删除一年以前的数据" >
+                                <i class="fa fa-trash-o"></i>&nbsp;删除一年以前的
+                            </button>
+                            <button onclick="deleteByTime(6,'半年以前的')" class="btn btn-white btn-sm" data-index="1-2"  title="删除半年以前的数据" >
+                                <i class="fa fa-trash-o"></i>&nbsp;删除半年以前的
+                            </button>
+                            <button onclick="deleteByTime(3,'3个月以前的')" class="btn btn-white btn-sm" data-index="1-3"  title="删除3个月以前的数据" >
+                                <i class="fa fa-trash-o"></i>&nbsp;删除3个月以前的
+                            </button>
+                            <#--<button  onclick="deleteByTime(0,'当前查询条件查询出来的数据')"class="btn btn-white btn-sm" data-index="1-4"
+                                    title="删除当前查询条件查询出来的数据">
+                                <i class="fa fa-trash-o"></i>&nbsp;删除当前
+                            </button>-->
+                        </div>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <table id="table_jq"></table>
+                    <div id="pager_jq"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- js加载开始 -->
+<#include "../../include/js.html">
+<!-- js加载结束 -->
+<!-- Page-Level Scripts -->
+<script>
+
+    var start = {
+        elem: "#start",
+        format: "YYYY-MM-DD",
+        // min: laydate.now(),
+        max: "2099-06-16 23:59:59",
+        istime: false,
+        istoday: false,
+        festival: true, //是否显示节日
+        // isclear: false, //是否显示清空
+        choose: function (datas) {
+            end.min = datas;
+            end.start = datas
+        }
+    };
+    var end = {
+        elem: "#end",
+        format: "YYYY-MM-DD",
+        // min: laydate.now(),
+        max: "2099-06-16 23:59:59",
+        istime: false,
+        istoday: false,
+        // isclear: false, //是否显示清空
+        festival: true, //是否显示节日
+        choose: function (datas) {
+            start.max = datas
+        }
+    };
+    laydate(start);
+    laydate(end);
+    $("#clear-btn").mousedown(function () {
+        start.max ="", end.min =""
+    })
+
+
+    var JqGrid,
+            //winWidth = '850px',
+            //winHeight = '500px',
+            jqGridId = "#table_jq",
+            jqPageId = "#pager_jq",
+            dataUrl = "/modules/system/noticeLog/getDataByAjax",
+            deleteUrl = "/modules/system/noticeLog/deleteByTimePoint",
+            formId = "#form",
+            winname = window.name;
+    $(function () {
+        $.jgrid.defaults.styleUI = "Bootstrap";
+        $(jqGridId).jqGrid({
+            url: dataUrl,
+            datatype: "json",
+            colNames: ['ID', '发送方式', '标题', '接收者', '接收地址', '发送状态', '发送时间', '内容'],
+            colModel: [
+                {
+                    name: 'id',
+                    index: 'id',
+                    width: 1,
+                    hidden: true,
+                    key: true
+                },
+                {
+                    name: 'type',
+                    index: 'type',
+                    width: '60',
+                    formatter: function (cellvalue, options, rowObject) {
+                        var str = '';
+                        if (cellvalue == 1) {
+                            str = '<span class="label label-primary">邮件</span>';
+                        } else if (cellvalue == 2) {
+                            str = '<span class="label label-success">短信</span>';
+                        } else if (cellvalue == 3) {
+                            str = '<span class="label label-default">站内信</span>';
+                        }
+                        return str;
+                    }
+                },
+
+                {
+                    name: 'title',
+                    index: 'title',
+                    width: '150'
+                },
+                {
+                    name: 'username',
+                    index: 'username',
+                    width: '100'
+                },
+                {
+                    name: 'receiveaddress',
+                    index: 'receiveaddress',
+                    width: '100'
+                },
+                {
+                    name: 'state',
+                    index: 'state',
+                    width: '100',
+                    formatter: function (cellvalue, options, rowObject) {
+                        var str = '';
+                        if (cellvalue == 0) {
+                            str = '<span class="label label-danger">失败</span>';
+                        } else if (cellvalue == 1) {
+                            str = '<span class="label label-success">成功</span>';
+                        } else if (cellvalue == 2) {
+                            str = '<span class="label label-info">发送中</span>';
+                        } else if (cellvalue == 3) {
+                            str = '<span class="label label-success">未读</span>';
+                        } else if (cellvalue == 4) {
+                            str = '<span class="label label-default">已读</span>';
+                        }
+                        return str;
+                    }
+                },
+                {
+                    name: 'createtime',
+                    index: 'createtime',
+                    width: '150'
+                },
+                {
+                    name: 'content',
+                    index: 'content',
+                    width: '280'
+                }],
+            autowidth: true,
+            height: "auto",    // 设为具体数值则会根据实际记录数出现垂直滚动条
+            width: "100%",
+            rowNum: 20,
+            rowList: [20, 30, 50],
+            pager: jqPageId,
+            mtype: "post",
+            rownumbers: true,
+            viewrecords: true,
+            multiselect: true,
+            jsonReader: {
+                root: "list",
+                page: "page",
+                total: "totalPage",
+                records: "totalRow",
+                repeatitems: false,
+                id: "0"
+            }
+        });
+        jQuery(jqGridId).jqGrid('navGrid', jqPageId, {
+                    add: false,
+                    del : false,
+                    edit: false,
+                    search: false,
+                    position: 'right'
+                },
+                {},
+                {},
+                {},
+                {});
+    });
+
+    function deleteByTime(month,title){
+        var delMsg = "确定删除"+title+"这些记录吗？";
+        var iii = layer.load(2, {
+            shade: [0.1,'#fff']
+        });
+        var i = parent.layer.confirm(delMsg, {
+            icon:0,
+            title:'提示',
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            var datas;
+            if(month > 0){
+                datas = {"month":month}
+            } else {
+                datas = $("#search-form").serialize();
+            }
+
+            $.ajax({
+                url: deleteUrl,
+                async:true,
+                data: datas,
+                success: function(data){
+                    if(data.code == 1){
+                        parent.notifications('success',data.msg);
+                        $(jqGridId).jqGrid('setGridParam', { url : dataUrl, page : 1 }).trigger("reloadGrid");
+                    }else{
+                        parent.notifications('error',data.msg);
+                    }
+                },
+                error:function(){
+                    parent.notifications('error',"操作失败,请检查网络!");
+                },
+                complete:function(){
+                    layer.close(iii);
+                    parent.layer.close(i);
+                }
+            });
+        },function () {
+            layer.close(iii);
+        });
+    }
+
+    $(window).bind("resize", function () {
+        var width = $(".ibox-content").width();
+        $("#table_jq").setGridWidth(width);
+    });
+
+</script>
+
+</body>
+</html>

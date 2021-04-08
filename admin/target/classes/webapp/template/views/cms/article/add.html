@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- 样式文件加载-->
+<#include "../include/res.html" >
+    <!-- 百度Web Uploader -->
+    <link rel="stylesheet" type="text/css" href="${cxt!}/ui/css/plugins/webuploader/webuploader.css">
+</head>
+<body class="white-bg">
+<!-- <div class="wrapper wrapper-content "> -->
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-content">
+                <form class="form-horizontal m-t" id="form" action="${cxt!}/modules/article/saveOrUpdate">
+                <#include "_form.html">
+                    <input name="article.image" type="hidden" id="thumburl">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- </div> -->
+
+
+<#include "../../include/js.html">
+
+<!-- 百度Web Uploader -->
+<script type="text/javascript">
+    //图片服务器地址
+    var webuploader_server = "${imagecxt!}";
+</script>
+<script src="${cxt!}/ui/js/lib/webuploader/webuploader.min.js"></script>
+<script src="${cxt!}/ui/js/hm/webuploader.custom.js"></script>
+<!-- 校验 -->
+<script type="text/javascript" src="${cxt!}/ui/js/hm/article.js"></script>
+<script type="text/javascript">
+    var jqGridId = "#table_jq",
+            dataUrl = "${cxt!}/modules/article/getDataByAjax",
+            formId = "#form",
+            winname = "${winname!}";
+    alert(winname);
+    jQuery(document).ready(function () {
+        ArticleJs.init();
+    });
+    function validateForm() {
+        $(formId).submit();
+    }
+</script>
+<script charset="utf-8" src="${cxt!}/ui/js/lib/kindeditor/kindeditor.js"></script>
+<script charset="utf-8" src="${cxt!}/ui/js/lib/kindeditor/lang/zh_CN.js"></script>
+<script>
+    var editor;
+    KindEditor.ready(function (K) {
+        editor = K.create('#editor_id', {
+            resizeType: 1,
+            allowPreviewEmoticons: false,
+            uploadJson: '${cxt!}/modules/upload/upload_img',
+            allowImageUpload: true,
+            allowFileManager: true,
+            items: [
+                'source', '|', 'fullscreen', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+                'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+                'insertunorderedlist', '|', 'emoticons', 'image', 'link'
+            ],
+            afterBlur: function () {
+                this.sync();
+                K.ctrl(document, 13, function () {
+                    K('#form]')[0].submit();
+                });
+                K.ctrl(this.edit.doc, 13, function () {
+                    K('#form]')[0].submit();
+                });
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

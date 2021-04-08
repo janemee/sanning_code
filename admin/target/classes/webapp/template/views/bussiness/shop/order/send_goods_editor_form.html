@@ -1,0 +1,61 @@
+<div class="form-group">
+    <input id="orderId" type="hidden" name="orderId" value="${data.orderId}" class="form-control" required>
+    <div class="col-sm-12 form-group">
+        <div class="col-sm-12 ">
+            <div class="col-sm-2" style="padding-right: 0px;">
+                <label class="control-label">收货人:</label>
+            </div>
+            <div class="col-sm-8">
+                <p id="receiverName">${data.receiverName}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 form-group">
+        <div class="col-sm-12 ">
+            <div class="col-sm-2">
+                <label class="control-label">联系电话:</label>
+            </div>
+            <div class="col-sm-8 ">
+                <p id="receiverPhone">${data.receiverPhone}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 form-group">
+        <div class="col-sm-12 ">
+            <div class="col-sm-2">
+                <label class="control-label">收货地址:</label>
+            </div>
+            <div class="col-sm-8 ">
+                <p id="receiverAddress">${data.receiverAddress}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-12 form-group">
+        <div class="col-sm-12 ">
+            <div class="col-sm-2">
+                <label class="control-label">物流公司:</label>
+            </div>
+            <div class="col-sm-8 " >
+                <select id="orderShipperId" name="orderShipperId"
+                        class="form-control chosen-select">
+                    <#list data.shipperList as ele>
+                    <option value="${ele.id}">[${ele.code}] ${ele.name}</option>
+                </#list>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-12 form-group">
+        <div class="col-sm-12 ">
+            <div class="col-sm-2">
+                <label class="control-label" >快递单号:</label>
+            </div>
+            <div class="col-sm-8 " >
+                <input id="orderDeliveryNo" type="text" name="orderDeliveryNo" class="form-control" required>
+            </div>
+        </div>
+    </div>
+</div>
+

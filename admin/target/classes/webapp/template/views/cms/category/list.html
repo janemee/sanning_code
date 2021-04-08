@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- 样式文件加载 -->
+		<#include "../../include/res.html" >
+		<link rel="stylesheet" href="${cxt!}/ui/js/plugins/treetable/css/jquery.treetable.css" />
+    	<link rel="stylesheet" href="${cxt!}/ui/js/plugins/treetable/css/jquery.treetable.theme.default.css" />
+	</head>
+	<body class="gray-bg">
+		<div class="wrapper wrapper-content ">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="ibox float-e-margins">
+						<div class="ibox-title" style="padding:3px 15px 0px 20px;">
+							<div class="search">
+								<a class="btn btn-info" href="javascript:;" onclick="CategoryJs.saveSort();">
+									<i class="fa fa-save"></i> 保存排序
+								</a>
+								<a href="javascript:;" onclick="hm_fn_addFun(addTitle,winWidth,winHeight,addUrl,formId)" class="btn btn-info">
+									<i class="fa fa-plus"></i>&nbsp;添加
+								</a>
+							</div>
+						</div>
+						<style>
+							#treetable-category tr{
+								line-height:25px;
+							}
+							#treetable-category tr th{
+								text-align: center;
+							}
+							.juzhong{
+								text-align: center;
+								width:50px;
+							}
+						</style>
+						<div class="ibox-content">
+							<table id="treetable-category">
+								<thead>
+									<tr>
+										<th>栏目名称</th>
+										<th>描述</th>
+										<th>排序</th>
+										<th>显示方式</th>
+										<th>创建时间</th>
+										<th>操作</th>
+									</tr>
+						        </thead>
+						        <tbody>
+						        	<form id="sort">
+						        	<#if categoryList??>
+						        		<#list categoryList as cate>
+								        	<tr data-tt-id='${cate.ids!}' <#if cate.isFirst??><#else> data-tt-parent-id='${cate.parentids}' </#if> >
+								        		<td>
+								        			<#if cate.isParent == 0>
+								        				<span class="folder">${cate.name!}</span>
+								        			<#else>
+								        				<span class="leaf">${cate.name!}</span>
+								        			</#if>
+								        		</td>
+								        		<td style="text-align:center;">${cate.description!}</td>
+								        		<td style="text-align:center;">
+									        			<input type="hidden" name="ids" value="${cate.ids}">
+									        			<input class="juzhong" value="${cate.sort!}" name="sort">
+								        		</td>
+								        		<td style="text-align:center;">
+								        			<#if cate.showmodes?? && cate.showmodes == '0'>
+								        				单页
+								        			<#elseif cate.showmodes?? && cate.showmodes == '1'>
+								        				列表
+													<#elseif cate.showmodes?? && cate.showmodes == '2'>
+														站内链接
+													<#elseif cate.showmodes?? && cate.showmodes == '3'>
+														站外链接
+								        			</#if>
+												</td>
+								        		<td style="text-align:center;">${cate.createdate!}</td>
+								        		<td style="text-align:center;" width="280px;">
+								        			<a class="btn btn-white btn-xs" title="修改" onclick="hm_fn_editFun(editTitle,winWidth,winHeight,editUrl,'${cate.ids}',winname)"><i class="fa fa-edit"></i> 修改</a>
+								        			<a class="btn btn-white btn-xs" title="添加下级栏目" onclick="hm_fn_addSubMenuFun(addTitle,winWidth,winHeight,addUrl,formId,'${cate.ids}',winname)"><i class="fa fa-plus"></i> 添加下级栏目</a>
+								        			<a class="btn btn-white btn-xs" title="删除" onclick="hm_fn_del(jqGridId,dataUrl,deleteUrl,'${cate.ids}')"><i class="fa fa-trash"></i> 删除</a>
+								        		</td>
+								        	</tr>
+							        	</#list>
+						        	</#if>
+						        	</form>
+						        </tbody>
+							</table>
+						</div>
+						<div class="ibox-content">
+							<table id="table_jq"></table>
+							<div id="pager_jq"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- js加载开始 -->
+		<#include "../../include/js.html">
+    	<script src="${cxt!}/ui/js/plugins/treetable/jquery.treetable.js"></script>
+		<script>
+			var winname = window.name;
+			var winWidth =  '860px',
+				winHeight = '456px',
+				addTitle = "添加菜单",
+				dataUrl = "${cxt}/modules/category",
+				addUrl =  "${cxt}/modules/category/add",
+				editTitle = "编辑菜单",
+				editUrl =  "${cxt}/modules/category/edit",
+				deleteUrl = "${cxt}/modules/category/delete",
+				jqGridId = "#table_jq",
+				jqPageId = "#pager_jq",
+				formId = "#form";
+	      	$("#treetable-category").treetable({ 
+	      		expandable: true 
+	      	});
+	      	$("#treetable-category").treetable("expandAll");
+	      
+	      	/* $("#treetable-category tbody").on("mousedown", "tr", function() {
+	        	$(".selected").not(this).removeClass("selected");
+	        	$(this).toggleClass("selected");
+	      	}); */
+	      
+	    </script>
+	    <script type="text/javascript" src="${cxt!}/ui/js/hm/category.js"></script>
+	</body>
+</html>

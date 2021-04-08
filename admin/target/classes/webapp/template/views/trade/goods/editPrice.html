@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- 样式文件加载开始 -->
+	<#include "/include/res.html" >
+	<!-- 样式文件加载结束 -->
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content ">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="ibox float-e-margins">
+				<div>
+				</div>
+				<div class="ibox-content">
+					<form class="form-horizontal m-t" id="form">
+						<div class="form-group">
+							<label class="col-sm-2 control-label">商品名称:</label>
+							<div class="col-sm-3">
+								<input class="form-control" type="text" style="border:none; background-color: transparent;" value="${(goods.name)!}" readonly>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-sm-2 control-label">商品代码:</label>
+							<div class="col-sm-6">
+								<input class="form-control" type="text" style="border:none; background-color: transparent;" value="${(goods.code)!}" readonly>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-sm-2 control-label"> 更改价格:<i class="required-help">*</i></label>
+							<div class="col-sm-3">
+								<input name="lastPrice" class="form-control" type="text" value="${(goods.lastPrice)!}" required>
+							</div>
+							<div class="col-sm-3">
+								<span>更改价格会将挂单价格和最新价不一样的挂单全部撤回</span>
+							</div>
+						</div>
+						<input type="hidden" name="id" value="${(goods.id)!}">
+						<input type="hidden" name="tradeTime" value="${(goods.tradeTime)!}">
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- js加载开始 -->
+<#include "/include/js.html">
+<script type="text/javascript" src="/ui/js/trade/goods.js"></script>
+<script type="text/javascript">
+	var jqGridId = "#table_jq",
+		dataUrl = "${cxt!}/s/trade/goods/json/list",
+		formId = "#form",
+		winname = "${winname!}";
+
+	jQuery(document).ready(function(){
+        GoodsJs.editPrice();
+	});
+	function validateForm(){
+		$(formId).submit();
+	}
+</script>
+</body>
+
+</html>

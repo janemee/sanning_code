@@ -1,0 +1,181 @@
+<div class="form-group">
+
+
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">主键,:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input id="title" type="text" name="id" value="${(user.id)!}" class="form-control" required>
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">版本号,:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input id="title" type="text" name="version" value="${(user.version)!}" class="form-control" required>
+        </div>
+    </div>
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">交易手续费222,:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input id="title" type="text" name="bizFee" value="${(user.bizFee)!}" class="form-control" required>
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">微信openId,:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input id="title" type="text" name="wechatOpenId" value="${(user.wechatOpenId)!}" class="form-control" required>
+        </div>
+    </div>
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">手机号,:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input id="title" type="text" name="phone" value="${(user.phone)!}" class="form-control" required>
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">用户名,:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input id="title" type="text" name="userName" value="${(user.userName)!}" class="form-control" required>
+        </div>
+    </div>
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">昵称,:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input id="title" type="text" name="nickName" value="${(user.nickName)!}" class="form-control" required>
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">真实姓名,:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input id="title" type="text" name="realName" value="${(user.realName)!}" class="form-control" required>
+        </div>
+    </div>
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">1未认证,2审核中,3审核失败,11人工审核通过,12接口审核通过:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+
+            <select id="realNameState" name="realNameState" class="form-control chosen-select" required>
+                <option value="0">请选择方式</option>
+            <#list realNameStateValues as item>
+                <option value="${item.getCode()}" <#if (user.realNameState)?? && (user.realNameState.getCode()) == item.code>selected="selected"</#if> >${item.getValue()}</option>
+            </#list>
+            </select>
+
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">身份证号,:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input id="title" type="text" name="idCard" value="${(user.idCard)!}" class="form-control" required>
+        </div>
+    </div>
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">身份证正面图片,:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input id="title" type="text" name="idCardPicA" value="${(user.idCardPicA)!}" class="form-control" required>
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">身份证背面图片,:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input id="title" type="text" name="idCardPicB" value="${(user.idCardPicB)!}" class="form-control" required>
+        </div>
+    </div>
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">密码,:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input id="title" type="text" name="password" value="${(user.password)!}" class="form-control" required>
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">支付密码,:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input id="title" type="text" name="payPassword" value="${(user.payPassword)!}" class="form-control" required>
+        </div>
+    </div>
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">1男,2女,:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+
+            <select id="sex" name="sex" class="form-control chosen-select" required>
+                <option value="0">请选择方式</option>
+                <#list realNameStateValues as item>
+                <option value="${item.getCode()}" <#if (user.sex)?? && (user.sex.getCode()) == item.code>selected="selected"</#if> >${item.getValue()}</option>
+            </#list>
+            </select>
+
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">头像图片,:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input id="title" type="text" name="avatarUrl" value="${(user.avatarUrl)!}" class="form-control" required>
+        </div>
+    </div>
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">邮箱,:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input id="title" type="text" name="email" value="${(user.email)!}" class="form-control" required>
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">最后登录ip,:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input id="title" type="text" name="lastLoginIp" value="${(user.lastLoginIp)!}" class="form-control" required>
+        </div>
+    </div>
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">最后登录时间,:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input id="title" type="text" name="lastLoginDate" value="" class="form-control" required>
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">失败登录次数,:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input id="title" type="text" name="loginFailCount" value="${(user.loginFailCount)!}" class="form-control" required>
+        </div>
+    </div>
+
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">登录缓存信息:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input id="title" type="text" name="sid" value="${(user.sid)!}" class="form-control" required>
+        </div>
+    </div>
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">创建时间,:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input id="title" type="text" name="createTime" value="" class="form-control" required>
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-sm-6 form-group">
+        <label class="col-sm-4 control-label">修改时间,:<i class="required-help">*</i></label>
+        <div class="col-sm-8">
+            <input id="title" type="text" name="updateTime" value="" class="form-control" required>
+        </div>
+    </div>

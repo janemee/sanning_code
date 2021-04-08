@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <!-- 样式文件加载开始 -->
+    <#include "../include/res.html" >
+    <!-- 样式文件加载结束 -->
+    <title>同城引流</title>
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <div class="alert alert-success">
+                        <b>温馨提示</b>
+                        <br type="background:#66CC33; color:#000000">
+                        同城引流
+                        <br>
+                        <i class="required-help ">注意事项：请勿在2分钟内频繁发送任务，会导致设备接收任务异常。任务发送间隔请保持在2分钟左右。</i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-content">
+                        <form class="form-horizontal m-t" id="form" action="${cxt!}/s/task/json/add">
+                            <input type="text" id="taskType" name="taskType" value="same_city_drainage" hidden="hidden">
+                            <input type="text" id="isLiveHot" name="isLiveHot" value="0" hidden="hidden">
+                            <div class=" form-group col-sm-12">
+                                <label class="col-sm-2 control-label"> 选择执行设备</label>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+                                        <div class="radio radio-info radio-inline">
+                                            <input type="radio" id="equipment" value="equipment" name="deviceStyle"
+                                                   checked="checked">
+                                            <label for="equipment"> 选择设备</label>
+                                        </div>
+                                        <div class="radio radio-info radio-inline">
+                                            <input type="radio" id="grouping" value="grouping" name="deviceStyle">
+                                            <label for="grouping"> 选择分组</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <i class="required-help col-sm-1">*</i>
+                            </div>
+                            <div class=" form-group col-sm-12 equipmentShow">
+                                <label class="col-sm-2 control-label "> 选择设备</label>
+                                <div class="col-sm-8">
+                                    <select title="" id="equipments" name="equipments"
+                                            class="form-control chosen-select"
+                                            multiple="multiple" data-player="">
+                                        <option disabled hidden selected></option>
+                                        <#list equipmentList as type>
+                                            <option value="${type.id}">${type.deviceCode}</option>
+                                        </#list>
+                                    </select>
+                                </div>
+                                <i class="required-help col-sm-1">*</i>
+                            </div>
+                            <div class=" form-group col-sm-12 groupingShow">
+                                <label class="col-sm-2 control-label "> 选择分组</label>
+                                <div class="col-sm-8">
+                                    <select title="" id="equipmentGroups" name="equipmentGroups"
+                                            class="form-control chosen-select"
+                                            multiple="multiple">
+                                        <option disabled hidden selected></option>
+                                        <#list equipmentGroups as type2>
+                                            <option value="${type2.id}">${type2.name}</option>
+                                        </#list>
+                                    </select>
+                                </div>
+                                <i class="required-help col-sm-1">*</i>
+                            </div>
+                            <div class="col-sm-12 form-group">
+                                <label class="col-sm-2 control-label"> 执行方式</label>
+                                <div class="col-sm-10">
+                                    <div class="input-group">
+                                        <div class="radio radio-info radio-inline">
+                                            <input type="radio" id="stateEnable" value="now" name="taskRunCode" checked>
+                                            <label for="stateEnable"> 立即执行</label>
+                                        </div>
+                                        <div class="radio radio-info radio-inline">
+                                            <input type="radio" id="stateDisable" value="delay" name="taskRunCode">
+                                            <label for="stateDisable"> 定时执行</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 form-group selectDate">
+                                <label for="datetime-local" class="col-sm-2 control-label"> 定时日期开始</label>
+                                <div class="col-sm-8">
+                                    <input title="" id="meeting" name="taskStartTime" class="form-control layer-date"
+                                           placeholder="选择日期" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+                                </div>
+                                <i class="required-help col-sm-1">*</i>
+                            </div>
+                            <div class="col-sm-12 form-group">
+                                <label class="col-sm-2 control-label text-right"> 目标城市</label>
+                                <div class="col-sm-8">
+                                    <input title="" id="city" type="text" name="city"
+                                           placeholder="目标城市"
+                                           class="form-control" maxlength="50">
+                                </div>
+                                <i class="required-help col-sm-1">*</i>
+                            </div>
+                            <div class="col-sm-12 form-group">
+                                <label class="col-sm-2 control-label text-right"> 任务时间</label>
+                                <div class="col-sm-8">
+                                    <input title="" id="taskExpectRunning" type="number" name="taskExpectRunning"
+                                           value="${(equipment.deviceCode)!}" placeholder="以'分'为单位,请输入纯数字"
+                                           class="form-control" maxlength="50" min="0">
+                                </div>
+                                <i class="required-help col-sm-1">*</i>
+                            </div>
+                            <div class="col-sm-12 form-group">
+                                <label class="col-sm-2 control-label text-right"> 任务内容</label>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+                                        <div>
+                                            <div class="checkbox checkbox-info checkbox-inline">
+                                                <input title="" id="taskContent1" name="taskContent" type="checkbox"
+                                                       value="点赞"/>
+                                                <label for="taskContent1">点赞</label>
+                                            </div>
+                                            <div class="checkbox checkbox-info checkbox-inline">
+                                                <input title="" id="taskContent2" name="taskContent" type="checkbox"
+                                                       value="关注"/>
+                                                <label for="taskContent2">关注</label>
+                                            </div>
+                                            <div class="checkbox checkbox-info checkbox-inline">
+                                                <input title="" id="taskContent3" name="taskContent" type="checkbox"
+                                                       value="评论"/>
+                                                <label for="taskContent3">评论</label>
+                                            </div>
+                                            <div class="checkbox checkbox-info checkbox-inline">
+                                                <input title="" id="taskContent4" name="taskContent" type="checkbox"
+                                                       value="转发"/>
+                                                <label for="taskContent4">转发</label>
+                                            </div>
+                                            <div class="checkbox checkbox-info checkbox-inline">
+                                                <input title="" id="taskContent5" name="taskContent" type="checkbox"
+                                                       value="查看首页"/>
+                                                <label for="taskContent5">查看首页</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <i class="required-help col-sm-1">*</i>
+                            </div>
+
+
+                            <div class="col-sm-12 form-group ">
+                                <label class="col-sm-2 control-label text-right"> 选择话术</label>
+                                <div class="col-sm-8">
+                                    <select id="commentTemplateId" name="commentTemplateId"
+                                            class="form-control chosen-select"
+                                            required="required">
+                                        <#list commentTemplate as type3>
+                                            <option value="${type3.id}">${type3.name}</option>
+                                        </#list>
+                                    </select>
+                                </div>
+                                <i class="required-help col-sm-1">*</i>
+                            </div>
+
+                        </form>
+                        <button href="javascript:void(0);" onclick="validateForm()"
+                                class="btn btn-warning btn-sm  col-md-offset-6">
+                            <i class="fa fa-save"></i>&nbsp;保存
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- js加载开始 -->
+<#include "../include/js.html">
+<script type="text/javascript" src="${cxt!}/ui/js/hm/matrixPushFlow.js"></script>
+<script type="text/javascript">
+    var jqGridId = "#table_jq",
+        dataUrl = "${cxt!}/s/task/taskType?taskType=sameCityDrainage",
+        formId = "#form",
+        winname = "${winname!}";
+    jQuery(document).ready(function () {
+        matrixPushFlowJs.init();
+    });
+
+    function validateForm() {
+        if (!checkedListOrGroup()) {
+            return;
+        }
+        $(formId).submit();
+    }
+
+
+    var selectText;
+    var selectEquipment = 'equipment';
+    $('.groupingShow').hide();
+    $('.selectDate').hide();
+
+    $("#equipment").click(function () {
+        selectEquipment = 'equipment';
+        $('.equipmentShow').show();
+        $('.groupingShow').hide();
+    });
+    $("#grouping").click(function () {
+        selectEquipment = 'grouping';
+        $('.groupingShow').show();
+        $('.equipmentShow').hide();
+    });
+
+    $("#stateEnable").click(function () {
+        $('.selectDate').hide();
+    });
+    $("#stateDisable").click(function () {
+        $('.selectDate').show();
+    });
+</script>
+</body>
+</html>

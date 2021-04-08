@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- 样式文件加载开始 -->
+    <#include "/include/res.html" >
+    <!-- 样式文件加载结束 -->
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title" style="padding:3px 15px 0px 20px;">
+                    <div class="col-md-6">
+                        <div class="form-group" style="padding-top: 5px;">
+                            <!--<form>-->
+                            <div class="col-sm-4 padding-top-5">
+                                <label class="input-group-addon no-border-left-0"
+                                       style="border:0; margin-left: 0; padding-left: 0;">账户余额
+                                    ${(amount)!}元</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <table id="table_jq"></table>
+                    <div id="pager_jq"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- js加载-->
+<#include "/include/js.html">
+
+<!--<script type="text/javascript" src="${cxt!}/ui/js/hm/administrator.js"></script>-->
+<!-- Page-Level Scripts -->
+<script>
+    var winname = window.name;
+    var winWidth = '850px',
+        winHeight = '500px',
+        jqGridId = "#table_jq",
+        jqPageId = "#pager_jq",
+        dataUrl = "/s/shop/account/list_json",
+        formId = "#form";
+
+    $(function () {
+        $.jgrid.defaults.styleUI = "Bootstrap";
+        $(jqGridId).jqGrid({
+            url: dataUrl,
+            datatype: "json",
+            colNames: ['ID', '类型', '金额(元)', '状态', '手续费', '申请时间', '到账时间', '备注'],
+            colModel: [
+                {
+                    name: 'id',
+                    index: 'id',
+                    width: 1,
+                    hidden: true
+                },
+                {
+                    name: 'type',
+                    index: 'type',
+                    width: '150',
+                    formatter: function (cellvalue, options, rowObject) {
+                        var str = '<span class="label ' + rowObject.typeColor+ '">' + rowObject.typeFormatter + '</span>';
+                        return str;
+                    }
+                },
+                {
+                    name: 'amount',
+                    index: 'amount',
+                    width: '150'
+                },
+                {
+                    name: 'status',
+                    index: 'status',
+                    width: '150',
+                    // formatter: function (cellvalue, options, rowObject) {
+                    //     var str = '<span class="label ' + rowObject.statusColor+ '">' + rowObject.statusFormatter + '</span>';
+                    //     return str;
+                    // }
+                },
+                {
+                    name: 'fee',
+                    index: 'fee',
+                    width: '150'
+                },
+                {
+                    name: 'applyTime',
+                    index: 'applyTime',
+                    width: '150'
+                },
+                {
+                    name: 'receiveTime',
+                    index: 'receiveTime',
+                    width: '150'
+                },
+                {
+                    name: 'remark',
+                    index: 'remark',
+                    width: '150'
+                }
+            ],
+
+            autowidth: true,
+            height: "100%",    // 设为具体数值则会根据实际记录数出现垂直滚动条
+            width: "100%",
+            rowNum: 20,
+            rowList: [20, 30, 50],
+            pager: jqPageId,
+            mtype: "post",
+            viewrecords: true,
+            rownumbers: true,
+            rownumWidth: 50,
+            multiselect: false,
+            cellsubmit: "clientArray",
+            onSelectRow: function (id) {
+                if (id && id !== lastsel) {
+                    jQuery(jqGridId).jqGrid('restoreRow', lastsel);
+                    jQuery(jqGridId).jqGrid('editRow', id, true);
+                    lastsel = id;
+                }
+            },
+            jsonReader: {
+                root: "exhibitDatas",
+                page: "nowPage",
+                total: "pageCount",
+                records: "recordCount",
+                repeatitems: false,
+                id: "0"
+            }
+        });
+
+        jQuery(jqGridId).jqGrid('setLabel', 'rn', '序号', {
+            'text-align': 'center',
+            'vertical-align': 'middle',
+            'width': '50'
+        }, '');
+
+        jQuery(jqGridId).jqGrid('navGrid', jqPageId, {
+                add: false,
+                del : false,
+                edit : false,
+                search: false,
+                position: 'right'
+            },
+            {},
+            {},
+            {},
+            {});
+    });
+
+
+    $(window).bind("resize", function () {
+        var width = $(".ibox-content").width();
+        $("#table_jq").setGridWidth(width);
+    });
+
+</script>
+</body>
+</html>

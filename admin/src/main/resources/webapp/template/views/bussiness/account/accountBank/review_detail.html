@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <!-- 样式文件加载开始 -->
+    <#include "/include/res.html" >
+    <!-- 样式文件加载结束 -->
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox-content">
+
+                <div class="col-sm-12 form-group">
+                    <div class="col-sm-6 form-group">
+                        <label class="col-sm-4 control-label">用户昵称:</label>
+                        <div class="col-sm-8">
+                            <p id="nickName">${(model.nickName)!}</p>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 form-group">
+                        <label class="col-sm-4 control-label">姓名:</label>
+                        <div class="col-sm-8">
+                            <p id="realName">${(model.realName)!}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-12 form-group">
+
+                    <div class="col-sm-6 form-group">
+                        <label class="col-sm-4 control-label">预留手机:</label>
+                        <div class="col-sm-8">
+                            <p id="phone">${(model.phone)!}</p>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 form-group">
+                        <label class="col-sm-4 control-label">身份证号码:</label>
+                        <div class="col-sm-8">
+                            <p id="idCard">${(model.idCard)!}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-12 form-group">
+                    <div class="col-sm-6 form-group">
+                        <label class="col-sm-4 control-label">开户银行:</label>
+                        <div class="col-sm-8">
+                            <p id="bankName">${(model.bankName)!}</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 form-group">
+                        <label class="col-sm-4 control-label">卡号:</label>
+                        <div class="col-sm-8">
+                            <p id="bankNo">${(model.bankNo)!}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-12 form-group">
+                    <div class="col-sm-6 form-group">
+                        <label class="col-sm-4 control-label">认证状态:</label>
+                        <div class="col-sm-8">
+                            <p id="status">${(model.status.getValue())!}</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 form-group">
+                        <label class="col-sm-4 control-label">申请时间:</label>
+                        <div class="col-sm-8">
+                            <p id="applyTime">${((model.applyTime)?datetime)!}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-12 form-group">
+                    <div class="col-sm-6 form-group">
+                        <label class="col-sm-4 control-label">审核时间:</label>
+                        <div class="col-sm-8">
+                            <p id="reviewTime">${((model.reviewTime)?datetime)!}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12 form-group">
+                    <div class="col-sm-12 form-group">
+                        <label class="col-sm-2 control-label">备注:</label>
+                        <div class="col-sm-10">
+                            <textarea id="remark" rows="3" cols="30" disabled="true" class="message" required>${(model.remark)!}</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- js加载开始 -->
+<#include "/include/js.html">
+
+</body>
+
+</html>

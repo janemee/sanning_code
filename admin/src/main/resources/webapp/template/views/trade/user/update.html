@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- 样式文件加载开始 -->
+    <#include "/include/res.html" >
+    <!-- 样式文件加载结束 -->
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox-content">
+                <form class="form-horizontal m-t" id="form">
+                    <input id="userId" name="userId" class="form-control" value="${(tup.userId)!}" type="hidden">
+                    <input id="goodId" name="goodId" class="form-control" value="${(tup.goodId)!}" type="hidden">
+                    <input name="id" class="form-control" value="${(tup.id)!}" type="hidden">
+                    <#include "_form.html">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- js加载开始 -->
+<#include "/include/js.html">
+<script type="text/javascript" src="/ui/js/trade/user.js"></script>
+<script type="text/javascript">
+    var jqGridId = "#table_jq",
+        formId = "#form",
+        winname = "${winname!}";
+
+    jQuery(document).ready(function () {
+        UserJs.init();
+    });
+
+    function validateForm() {
+        $(formId).submit();
+    }
+
+    //选择用户
+    function chooseUser() {
+        parent.layer.open({
+            skin: 'layui-layer-molv',
+            type: 2,
+            scrollbar: false,
+            title: '选择用户',
+            fix: false, //不固定
+            maxmin: true,
+            area: ['50%', '40%'],
+            btn: ['确定', '关闭'],
+            yes: function (index, layero) {
+                window.parent[layero.find('iframe')[0]['name']]
+                    .yesBtn($("#userName"), $("#userPhone"), $("#realName"), $("#userCode"), $("#userId"));
+            },
+            cancel: function (index) {
+            },
+            content: '/s/trade/ration/user/list' //用户列表页
+        });
+    }
+
+    //选择商品
+    function chooseGoods() {
+        parent.layer.open({
+            skin: 'layui-layer-molv',
+            type: 2,
+            scrollbar: false,
+            title: '选择商品',
+            fix: false, //不固定
+            maxmin: true,
+            area: ['50%', '40%'],
+            btn: ['确定', '关闭'],
+            yes: function (index, layero) {
+                window.parent[layero.find('iframe')[0]['name']]
+                    .yesBtn($("#goodName"), $("#goodCode"), '', $("#goodId"));
+            },
+            cancel: function (index) {
+            },
+            content: '/s/trade/ration/goods/list' //商品列表页
+        });
+    }
+</script>
+</body>
+
+</html>

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- 样式文件加载开始 -->
+<#include "../../include/res.html" >
+    <!-- 样式文件加载结束 -->
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title" style="padding:3px 15px 0px 20px;">
+                    <div class="col-md-6">
+                        <div class="search-form">
+                            <form>
+                                <div class="input-group">
+                                    <input type="text" name="search_val" placeholder="请输入登陆账号/手机号码进行搜索"
+                                           class="form-control search-input" id="search-input">
+                                    <span class="input-group-btn search-span">
+                                        <button class="btn btn-white btn-sm " type="button" onclick="dropdownSearchFun(this)"
+                                                data-url="${cxt!}/s/admin/json/list"
+                                                data-tid="table_jq" id="search-btn"><i class="fa fa-search"></i> 查询
+                                        </button>
+                                    </span>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="ibox-tools m-t-xs">
+                    </div>
+                    <div class="ibox-tools m-t-xs">
+                        <div class="btn-group">
+                            <@shiro.hasPermission name=":s:admin:save">
+                            <button href="javascript:void(0);"
+                               onclick="hm_fn_addFun(addTitle,winWidth,winHeight,addUrl,formId,winname)"
+                               class="btn btn-white btn-sm">
+                                <i class="fa fa-plus"></i>&nbsp;添加
+                            </button>
+                            </@shiro.hasPermission>
+                           <@shiro.hasPermission name=":s:admin:edit">
+                            <button href="javascript:void(0);" class="btn btn-white btn-sm" id="Edit">
+                                <i class="fa fa-edit"></i>&nbsp;编辑
+                            </button>
+                            </@shiro.hasPermission>
+                            <@shiro.hasPermission name=":s:admin:forbidden">
+                            <button href="javascript:void(0);" class="btn btn-white btn-sm" id="Dis">
+                                <i class="fa fa-lock"></i>&nbsp;禁用
+                            </button>
+                             </@shiro.hasPermission>
+
+                            <@shiro.hasPermission name=":s:admin:startUsing">
+                            <button href="javascript:void(0);" class="btn btn-white btn-sm" id="Ena">
+                                <i class="fa fa-unlock"></i>&nbsp;启用
+                            </button>
+                            </@shiro.hasPermission>
+
+                            <@shiro.hasPermission name=":s:admin:toZtreeDataPage">
+                            <button href="javascript:void(0);" class="btn btn-white btn-sm" id="Auth">
+                                <i class="fa fa-wrench"></i>&nbsp;授权
+                            </button>
+                            </@shiro.hasPermission>
+
+                            <@shiro.hasPermission name=":s:admin:assignEquipment">
+                            <button href="javascript:void(0);" class="btn btn-white btn-sm" id="Reset">
+                                <i class="fa fa-recycle"></i>&nbsp;分配子用户设备
+                            </button>
+                            </@shiro.hasPermission>
+                        </div>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <table id="table_jq"></table>
+                    <div id="pager_jq"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- js加载-->
+<#include "../../include/js.html">
+
+<script type="text/javascript" src="${cxt!}/ui/js/hm/administrator.js"></script>
+<!-- Page-Level Scripts -->
+<script>
+    var winname = window.name;
+    var     winWidth = '850px',
+            winHeight = '500px',
+            addTitle = "添加操作员",
+            addUrl = "/s/admin/add",
+            editTitle = "编辑操作员",
+            editUrl = "/s/admin/edit",
+            disableTitle = "禁用",
+            disableUrl = "/s/admin/json/forbidden",
+            startUpTitle = "启用",
+            startUpUrl = "/s/admin/json/startUsing",
+            restTitle = "请分配设备数量",
+            resetUrl = "/s/system/admin/assignEquipment",
+            jqGridId = "#table_jq",
+            jqPageId = "#pager_jq",
+            dataUrl = "/s/admin/json/list",
+            treeUrl = "/s/admin/toZtreeDataPage",
+            formId = "#form";
+            lastsel = '';
+    $(function () {
+        $.jgrid.defaults.styleUI = "Bootstrap";
+        $(jqGridId).jqGrid({
+            url: dataUrl,
+            datatype: "json",
+            colNames: ['ID', '用户名','邀请人用户名','手机号码', '角色','最大设备数量',"邀请码",'状态','最后登陆时间','创建时间'/*, '操作'*/],
+            colModel: [
+                {
+                    name: 'id',
+                    index: 'id',
+                    width: 1,
+                    hidden: true,
+                    key: true
+                },
+                {
+                    name: 'username',
+                    index: 'username',
+                    width: '150'
+                },
+                {
+                    name: 'parentName',
+                    index: 'parentName',
+                    width: '150'
+                },
+                {
+                    name: 'mobile',
+                    index: 'mobile',
+                    width: '150'
+                },
+                {
+                    name: 'roleName',
+                    index: 'roleName',
+                    width: '150'
+                },
+                {
+                    name: 'ports',
+                    index: 'ports',
+                    width: '150'
+                },
+                {
+                    name: 'code',
+                    index: 'code',
+                    width: '100'
+                },
+                {
+                    name: 'state',
+                    index: 'state',
+                    width: '150',
+                    formatter: function (cellvalue, options, rowObject) {
+                        var str = '';
+                        if (cellvalue == 1) {
+                            str = '<span class="label label-primary">启用</span>';
+                        } else if (cellvalue == 0) {
+                            str = '<span class="label label-info">禁用</span>';
+                        }
+                        return str;
+                    }
+                },
+                {
+                    name: 'loginTime',
+                    index: 'loginTime',
+                    width: '150'
+                },
+                {
+                    name: 'createTime',
+                    index: 'createTime',
+                    width: '150'
+                }/*,
+                {
+                    name: 'tax',
+                    index: 'tax',
+                    width: '150',
+                    formatter: function (cellvalue, options, rowObject) {
+                        var str = '';
+                        str += '<a style="margin-bottom:0;" class="btn btn-white btn-xs btn-bitbucket" title="编辑" onclick="hm_fn_editFun(editTitle,winWidth,winHeight,editUrl,' + "'" + rowObject.id + "'" + ',winname)"><i class="fa fa-edit"></i></a>&nbsp;';
+                        if (rowObject.status == 1) {
+                            str += '<a style="margin-bottom:0;" class="btn btn-default btn-xs btn-bitbucket" title="禁用" onclick="hm_fn_doAction(jqGridId,dataUrl,disableUrl,' + "'" + rowObject.id + "'" + ',disableTitle)"><i class="fa fa-times"></i></a>&nbsp;';
+                        } else {
+                            str += '<a style="margin-bottom:0;" class="btn btn-white btn-xs btn-bitbucket" title="启用" onclick="hm_fn_doAction(jqGridId,dataUrl,startUpUrl,' + "'" + rowObject.id + "'" + ',startUpTitle)"><i class="fa fa-check-circle-o"></i></a>&nbsp;';
+                        }
+                        str += '<a style="margin-bottom:0;" class="btn btn-white btn-xs btn-bitbucket" title="分配角色" onclick="AdministratorJs.distributeRole(' + "'" + rowObject.id + "'" + ',treeUrl,winname)" ><i class="fa fa-wrench"></i></a>&nbsp;';
+                        str += '<a style="margin-bottom:0;" class="btn btn-white btn-xs btn-bitbucket" title="重置" onclick="hm_fn_resetFun(jqGridId,dataUrl,resetUrl,' + "'" + rowObject.id + "'" + ')"><i class="fa fa-recycle"></i></a>';
+                        return str;
+                    }
+                }*/],
+            autowidth: true,
+            height: "100%",    // 设为具体数值则会根据实际记录数出现垂直滚动条
+            width: "100%",
+            rowNum: 20,
+            rowList: [20, 30, 50],
+            pager: jqPageId,
+            mtype: "post",
+            viewrecords: true,
+            rownumbers: true,
+            multiselect: true,
+            cellsubmit: "clientArray",
+            editurl:editUrl,
+            onSelectRow: function (id) {
+                if (id && id !== lastsel) {
+                    jQuery(jqGridId).jqGrid('restoreRow', lastsel);
+                    jQuery(jqGridId).jqGrid('editRow', id, true);
+                    lastsel = id;
+                }
+            },
+            jsonReader: {
+                root: "exhibitDatas",
+                page: "nowPage",
+                total: "pageCount",
+                records: "recordCount",
+                repeatitems: false,
+                id: "0"
+            }
+        });
+
+        jQuery(jqGridId).jqGrid('navGrid', jqPageId, {
+            add : false,
+            del : false,
+            edit : false,
+            search: false,
+            position : 'right'
+        },
+        {},
+        { },
+        { },
+        {});
+    });
+
+
+    $(window).bind("resize", function () {
+        var width = $(".ibox-content").width();
+        $("#table_jq").setGridWidth(width);
+    });
+
+    jQuery("#Edit").click(function () {
+        var ids = jQuery(jqGridId).jqGrid('getGridParam', 'selarrrow');
+        if (ids == '') {
+            parent.notifications('error', "请选择一条数据");
+            return false;
+        }
+        if (ids.length > 1) {
+            parent.notifications('error', "只能选择一条数据");
+            return false;
+        }
+        hm_fn_editFun(editTitle,winWidth,winHeight,editUrl,ids,winname);
+    });
+    jQuery("#Dis").click(function () {
+        var ids = jQuery(jqGridId).jqGrid('getGridParam', 'selarrrow');
+        if (ids == '') {
+            parent.notifications('error', "请至少选择一条数据");
+            return false;
+        }
+        hm_fn_doAction(jqGridId,dataUrl,disableUrl,ids,disableTitle)
+    });
+    jQuery("#Ena").click(function () {
+        var ids = jQuery(jqGridId).jqGrid('getGridParam', 'selarrrow');
+        if (ids == '') {
+            parent.notifications('error', "请至少选择一条数据");
+            return false;
+        }
+        hm_fn_doAction(jqGridId,dataUrl,startUpUrl,ids,startUpTitle)
+    });
+    jQuery("#Auth").click(function () {
+        var ids = jQuery(jqGridId).jqGrid('getGridParam', 'selarrrow');
+        if (ids == '') {
+            parent.notifications('error', "请选择一条数据");
+            return false;
+        }
+        if (ids.length > 1) {
+            parent.notifications('error', "只能选择一条数据");
+            return false;
+        }
+        AdministratorJs.distributeRole(ids,treeUrl,winname)
+    });
+
+
+    jQuery("#Reset").click(function () {
+        var ids = jQuery(jqGridId).jqGrid('getGridParam', 'selarrrow');
+        if (ids == '') {
+            parent.notifications('error', "请选择一条数据");
+            return false;
+        }
+        if (ids.length > 1) {
+            parent.notifications('error', "只能选择一条数据");
+            return false;
+        }
+        hm_fn_editFun(restTitle,winWidth,winHeight,resetUrl,ids,winname);
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- 样式文件加载开始 -->
+    <#include "/include/res.html" >
+    <!-- 样式文件加载结束 -->
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox-content">
+                <form class="form-horizontal m-t" id="form">
+                    <input type="hidden" name="id" value="${sysBanner.id}">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">标题:<i class="required-help">*</i></label>
+                        <div class="col-sm-6">
+                            <input name="title" class="form-control" type="text" value="${sysBanner.title}" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">图片:</label>
+                        <div class="col-md-9 col-sm-8">
+                            <input type="hidden" id="editPicPath" name="picUrl" value="${sysBanner.picUrl}">
+                            <img src="" id="editPicImg" alt="" class="media-object viewImage" width="100px" height="100px">
+                            <input id="editPic" type="file" name="file" onchange="upload()">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">跳转链接:</label>
+                        <div class="col-sm-6">
+                            <#if (sysBanner.linkUrl)??>
+                                <input name="linkUrl" class="form-control" type="text" value="${sysBanner.linkUrl}">
+                            <#else>
+                            <input name="linkUrl" class="form-control" type="text" value="">
+                        </#if>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">排序:<i class="required-help">*</i></label>
+                        <div class="col-sm-3">
+                            <input name="sort" class="form-control" type="text" value="${sysBanner.sort}" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">是否显示:<i class="required-help">*</i></label>
+                        <div class="col-sm-5">
+                            <div class="input-group">
+                                <div class="radio radio-info radio-inline">
+                                    <input id="show" name="isShow" type="radio" value="1"
+                                            <#if (sysBanner.isShow)?? && (sysBanner.isShow.code) == 1>checked="checked"</#if>
+                                    >
+                                    <label for="show"> 显示</label>
+                                </div>
+                                <div class="radio radio-info radio-inline">
+                                    <input id="notShow" name="isShow" type="radio" value="0"
+                                            <#if (sysBanner.isShow)?? && (sysBanner.isShow.code) == 0>checked="checked"</#if>
+                                    >
+                                    <label for="notShow"> 隐藏</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    <!--<div class="form-group">-->
+        <!--<label class="col-sm-2 control-label">类型:<i class="required-help">*</i></label>-->
+        <!--<div class="col-sm-5">-->
+            <!--<div class="input-group">-->
+                <!--<div class="radio radio-info radio-inline">-->
+                    <!--<input id="type" name="type" type="radio" value="0" <#if (sysBanner.type)?? && (sysBanner.type.code) == 0>checked="checked"</#if>-->
+                <!--&gt;>-->
+                <!--<label for="type">首页</label>-->
+            <!--</div>-->
+            <!--<div class="radio radio-info radio-inline">-->
+                <!--<input id="notType" name="type" type="radio" value="1" <#if (sysBanner.type)?? && (sysBanner.type.code) == 1>checked="checked"</#if>-->
+            <!--&gt;>-->
+            <!--<label for="notType">商城</label>-->
+        <!--</div>-->
+    <!--</div>-->
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- js加载开始 -->
+<#include "/include/js.html">
+<script src="/ui/js/plugins/jquery-ui/jquery-ui.min.js"></script>
+<script src="/public/plugins/fileupload/jquery.fileupload.js"></script>
+<script src="/public/plugins/jquery-thumb/jqthumb.js"></script>
+
+<script type="text/javascript">
+    var jqGridId = "#table_jq",
+        dataUrl = "${cxt!}/s/sysBanner/json/list",
+        formId = "#form",
+        winname = "${winname!}";
+        var funcs = {
+        initForm: function() {
+            if ("${sysBanner.isShow.code}" == 1 || "${sysBanner.isShow.code}" == '1') {
+                $("#radio1").attr("checked", true);
+            } else {
+                $("#radio0").attr("checked", true);
+            }
+            $('#editPicImg').attr('src', "${sysBanner.picUrl}");
+            //图片同比例缩放-编辑
+            _refreshImage();
+        },
+        initSubmit: function (form) {
+            $(formId).validate({
+                errorElement: 'span', //default input error message container
+                errorClass: 'help-block', // default input error message class
+                focusInvalid: false, // do not focus the last invalid input
+                ignore: "",
+                rules: {
+                },
+                invalidHandler: function(event, validator) { //display error alert on form submit
+                },
+                highlight: function(element) { // hightlight error inputs
+                    $(element).closest('.form-group').addClass('has-error'); // set error class to the control group
+                },
+                unhighlight: function(element) { // revert the change done by hightlight
+                    $(element).closest('.form-group').removeClass('has-error'); // set error class to the control group
+                },
+                success: function(label) {
+                    label.closest('.form-group').removeClass('has-error'); // set success class to the control group
+                    label.remove();
+                },
+                submitHandler: function(form) {
+                    var index = parent.layer.getFrameIndex(window.name);
+                    var title = "提示";
+                    //loading层提示
+                    var loading = layer.load(2, {
+                        shade: [0.3, '#fff']
+                    });
+                    $.ajax({
+                        type: "POST",
+                        async: false,
+                        data: $(form).serialize(),
+                        url: "/s/sysBanner/json/update",
+                        success: function(data) {
+                            var successMsg = data.message || "更新成功!",
+                                failedMsg = data.message || "更新失败!";
+
+                            if (data.code == 200) {
+                                parent.notifications('success', successMsg, title);
+                            } else {
+                                parent.notifications('error', failedMsg, title);
+                            }
+                        },
+                        error: function(XMLHttpRequest, textStatus, errorThrown) {
+                            parent.notifications('error', "更新失败,请检查网络!", title);
+                        },
+                        complete: function() {
+                            layer.close(loading);
+                            parent.layer.close(index);
+                        }
+                    });
+                }
+            });
+        }
+        
+    };
+        
+        
+    jQuery(document).ready(function () {
+        funcs.initSubmit();
+        funcs.initForm();
+    });
+
+    function validateForm() {
+        var pic = $('#editPicPath').val();
+        if (pic == '' ){
+            top.layer.alert("请上传图片!", {
+                icon: 5,
+                shadeClose: true
+            });
+            return false;
+        }
+        $(formId).submit();
+    }
+
+    //图片上传
+    function upload() {
+        var data = new FormData();
+        var pic = $('#editPic')[0].files[0];
+        data.append('file', pic);
+        $.ajax({
+            type: "POST",
+            async: false,
+            contentType: false,
+            processData: false,
+            data: data,
+            url: "/s/file/upload",
+            success: function (data) {
+                if (data.code === 200) {
+                    $('#editPicPath').val(data.data);
+                    $('#editPicImg').attr('src', data.data);
+                    parent.notifications('success', '上传成功');
+                } else {
+                    parent.notifications('error', '上传失败');
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                parent.notifications('error', '操作失败,请检查网络!');
+            },
+        });
+    }
+</script>
+</body>
+
+</html>

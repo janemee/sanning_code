@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <!-- 样式文件加载开始 -->
+    <#include "../../include/res.html" >
+    <!-- 样式文件加载结束 -->
+    <title>抢红包</title>
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="panel-heading ">
+                    抢红包
+                </div>
+                <div class="alert alert-success">
+                    <b>温馨提示</b>
+                    <br>
+                    该功能只针对正在执行“超级热度”设备有效。
+                    <br>
+                    抢红包
+                    <br>
+                    <i class="required-help ">注意事项：请勿在2分钟内频繁发送任务，会导致设备接收任务异常。任务发送间隔请保持在2分钟左右。</i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <form class="form-horizontal m-t" id="form" action="/s/kuaiShou/task/redEnvelope/json/add">
+                        <input type="text" id="taskType" name="taskType" value="grab_a_red_envelope" hidden="hidden">
+                        <input type="text" id="isLiveHot" name="isLiveHot" value="1" hidden="hidden">
+                        <div class="form-group col-sm-12 ">
+                            <label class="col-sm-2 control-label ">选择超级热度任务</label>
+                            <div class="col-sm-8">
+                                <select title="" id="hotTaskId" name="heart" data-p class="form-control chosen-select">
+                                                        <#if liveHot?? && (liveHot?size > 0)>
+                                        <#list liveHot as type>
+                                            <option value="${type.id}">${type.taskType}</option>
+                                        </#list>
+                                                        <#else>
+                                        <option value="">暂无超级热度数据</option>
+                                                        </#if>
+                                </select>
+                            </div>
+                            <i class="required-help col-sm-1">*</i>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-group col-sm-12">
+                                <label class="col-sm-2 control-label">选择执行设备</label>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+                                        <div class="radio radio-info radio-inline">
+                                            <input type="radio" id="equipment" value="equipment" name="deviceStyle"
+                                                   checked="checked">
+                                            <label for="equipment"> 选择设备</label>
+                                        </div>
+                                        <div class="radio radio-info radio-inline">
+                                            <input type="radio" id="grouping" value="grouping" name="deviceStyle">
+                                            <label for="grouping"> 选择分组</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 form-group">
+                                <label class="col-sm-2 control-label">设备和分组列表</label>
+                                <div class="col-sm-8 ">
+                                    <input title="" id="equipments" hidden="hidden" readonly="readonly" name="devicesOrGroupsId"  />
+                                    <input type="" id="equipmentsVal" readonly="readonly" name="dsds" class="form-control"" >
+                                    <a href="#" class="btn btn-white equipmentShow" id="iconIframe1" onclick="redEnvelopeJson.chooseEquipment();"> <i class="fa fa-circle-o" id="icon_image"></i>&nbsp;选择 </a>
+                                    <a href="#" class="btn btn-white groupingShow"  id="iconIframe2" onclick="redEnvelopeJson.chooseEquipmentGroup();"> <i class="fa fa-circle-o" id="icon_image"></i>&nbsp;选择 </a>
+                                </div>
+                                <i class="required-help col-sm-1">*</i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12 form-group">
+                                <label class="col-sm-2 control-label text-right"> 抢红包时间</label>
+                                <div class="col-sm-8">
+                                    <input title="" id="redEnvelopeTime" type="number" placeholder="以'秒'为单位,请输入纯数字" min="0" name="redEnvelopeTime"
+                                           value="${(equipment.code)!}"
+                                           class="form-control" maxlength="50">
+                                </div>
+                                <label class="required-help col-sm-1">*</label>
+                            </div>
+                        </div>
+                    </form>
+                    <button href="javascript:void(0);"
+                            onclick="validateForm()"
+                            class="btn btn-warning btn-sm col-md-offset-6">
+                        <i class="fa fa-save"></i>&nbsp;保存
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- js加载开始 -->
+<#include "../../include/js.html">
+<script type="text/javascript" src="${cxt!}/ui/js/hm/redEnvelope.js"></script>
+<script type="text/javascript">
+    var jqGridId = "#table_jq",
+        data = "${cxt!}/s/task/redEnvelope/json/add",
+        formId = "#form",
+        winname = "${winname!}";
+
+    jQuery(document).ready(function () {
+        if($("#hotTaskId").val()=='') {
+            $("#iconIframe1").attr("onclick","");
+            $("#iconIframe2").attr("onclick","");
+        }
+
+        redEnvelopeJson.init();
+    });
+    var selectEquipment = 'equipment';
+    $('.groupingShow').hide();
+    $('.selectDate').hide();
+
+    $("#equipment").click(function () {
+        selectEquipment = 'equipment';
+        $('#equipments').val('');
+        $('.equipmentShow').show();
+        $('.groupingShow').hide();
+    });
+    $("#grouping").click(function () {
+        selectEquipment = 'grouping';
+        $('#equipments').val('');
+        $('.groupingShow').show();
+        $('.equipmentShow').hide();
+    });
+    $("#hotTaskId").change(function () {
+        $('#equipments').val('');
+        $('#equipmentsVal').val('');
+    });
+
+
+    function validateForm() {
+        if (!checkedListOrGroup()) {
+            return;
+        }
+        $(formId).submit();
+    }
+</script>
+<!-- js加载结束 -->
+</body>
+
+
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!-- 样式文件加载 -->
+<#include "../../include/res.html" >
+</head>
+<body>
+	<div class="wrapper wrapper-content ">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-content">
+						<form class="form-horizontal m-t" id="form"
+							action="${cxt!}/modules/category/save"><#include
+							"_form.html"></form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+
+	<!-- 样式文件加载 -->
+	<#include "../../include/js.html" >
+	<script type="text/javascript" src="${cxt!}/ui/js/hm/category.js"></script>
+	<script type="text/javascript">
+			var formId = "#form",
+				winname = "${winname!}";
+		  	jQuery(document).ready(function(){
+		  		CategoryJs.init();
+		  	});
+		  	function validateForm(){
+				$(formId).submit();
+			}
+	    </script>
+</body>
+</html>

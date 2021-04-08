@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- 样式文件加载开始 -->
+    <#include "/include/res.html" >
+    <!-- 样式文件加载结束 -->
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox-content">
+                <form class="form-horizontal m-t" id="form">
+                    <#include "_form.html">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- js加载开始 -->
+<#include "/include/js.html">
+<script type="text/javascript" src="${cxt!}/ui/js/hm/accountLog.js"></script>
+<script type="text/javascript">
+    var jqGridId = "#table_jq",
+        dataUrl = "${cxt!}/s/account/accountLog/list",
+        formId = "#form",
+        winname = "${winname!}";
+        
+        
+        var funcs = {
+        initSubmit: function (form) {
+            $(formId).validate({
+                errorElement: 'span', //default input error message container
+                errorClass: 'help-block', // default input error message class
+                focusInvalid: false, // do not focus the last invalid input
+                ignore: "",
+                rules: {
+                },
+                invalidHandler: function(event, validator) { //display error alert on form submit
+                },
+                highlight: function(element) { // hightlight error inputs
+                    $(element).closest('.form-group').addClass('has-error'); // set error class to the control group
+                },
+                unhighlight: function(element) { // revert the change done by hightlight
+                    $(element).closest('.form-group').removeClass('has-error'); // set error class to the control group
+                },
+                success: function(label) {
+                    label.closest('.form-group').removeClass('has-error'); // set success class to the control group
+                    label.remove();
+                },
+                submitHandler: function(form) {
+                    var index = parent.layer.getFrameIndex(window.name);
+                    //loading层提示
+                    var loading = layer.load(2, {
+                        shade: [0.3, '#fff']
+                    });
+                    $.ajax({
+                        type: "POST",
+                        async: false,
+                        data: $(form).serialize(),
+                        url: "/s/account/accountLog/save",
+                        success: function(data) {
+                            var successMsg = data.message || "操作成功!",
+                                failedMsg = data.message || "操作失败!";
+                            var title = "系统提示";
+                            if (data.result) {
+                                parent.notifications('success', successMsg, title);
+                            } else {
+                                parent.notifications('error', failedMsg, title);
+                            }
+                        },
+                        error: function(XMLHttpRequest, textStatus, errorThrown) {
+                            parent.notifications('error', "操作失败,请检查网络!", title);
+                        },
+                        complete: function() {
+                            layer.close(loading);
+                            parent.layer.close(index);
+                        }
+                    });
+                }
+            });
+        }
+
+    };
+        
+        
+    jQuery(document).ready(function () {
+        funcs.initSubmit();
+    });
+
+    function validateForm() {
+        $(formId).submit();
+    }
+</script>
+</body>
+
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <!-- 样式文件加载开始 -->
+    <#include "../include/res.html" >
+    <!-- 样式文件加载结束 -->
+    <title>实时互动</title>
+    <script src="${cxt!}/ui/js/emoji/lan-emoji.js"></script>
+    <link type="text/css" rel="stylesheet" href="${cxt!}/ui/plugins/emoji/lan-emoji.css">
+    <link type="text/css" rel="stylesheet" href="${cxt!}/ui/plugins/emoji/index.css">
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    实时互动
+                </div>
+                <div class="ibox-content">
+                    <div class="alert alert-success">
+                        <b>温馨提示</b> <br>
+                        该功能只针对正在执行“超级热度”设备有效。 <br>
+                        输入互动话术后，右边显示框可显示已领取话术设备。话术实时更新 <br>
+                        本功能支持随机组合话术 <br> 例：666$888$999$ <br>
+                        该话术组合设置后，所有正在执行任务设备会随机选择三句话术其中一句进行发送，无实时话术时，设备按照“超级热度任务进行互动”。1秒引爆全场
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <form class="form-horizontal m-t" id="form" action="${cxt!}/s/task/interaction/json/add">
+                        <div class="form-group col-sm-12 ">
+                            <input type="text" id="taskType" name="taskType" value="live_chat" hidden="hidden">
+                            <input type="text" id="platform" name="platform" value="${platform}" hidden="hidden">
+                            <label class="col-sm-2 control-label ">选择超级热度任务</label>
+                            <div class="col-sm-8">
+                                <select title="" id="hotTaskId" name="heart" class="form-control chosen-select">
+                                    <#if liveHot?? && (liveHot?size > 0)>
+                                    <#list liveHot as type>
+                                    <option value="${type.id}">${type.taskName}</option>
+                                </#list>
+                                <#else>
+                                <option value="">暂无超级热度数据</option>
+                            </#if>
+                            </select>
+                        </div>
+                        <i class="required-help col-sm-1">*</i>
+                </div>
+                <div class="form-group col-sm-12">
+                    <label class="col-sm-2 control-label">选择设备类型</label>
+                    <div class="col-sm-8 ">
+                        <div class="input-group">
+                            <div class="radio radio-info radio-inline">
+                                <input type="radio" id="grouping" value="grouping" name="deviceStyle" checked="checked">
+                                <label for="grouping"> 分组</label>
+                            </div>
+                            <div class="radio radio-info radio-inline">
+                                <input type="radio" id="equipment" value="equipment" name="deviceStyle">
+                                <label for="equipment"> 设备</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12 form-group">
+                    <label class="col-sm-2 control-label">设备和分组列表</label>
+                    <div class="col-sm-8 ">
+                        <input title="" id="equipments" hidden="hidden" readonly="readonly" name="devicesOrGroupsId"/>
+                        <input type="" id="equipmentsVal" readonly="readonly" name="equipmentsVal" class="form-control">
+                        <a href="#" class="btn btn-white groupingShow" id="iconIframe2"
+                           onclick="InteractionJs.chooseEquipmentGroup();"> <i class="fa fa-circle-o"></i>&nbsp;选择 </a>
+                        <a href="#" class="btn btn-white equipmentShow" id="iconIframe1"
+                           onclick="InteractionJs.chooseEquipment();"> <i class="fa fa-circle-o" id="icon_image"></i>&nbsp;选择
+                        </a>
+                        <a href="#" class="btn btn-white groupingShow" id="selectGroupEquipment"
+                           onclick="InteractionJs.selectGroupEquipment();"> <i class="fa fa-circle-o"></i>&nbsp;查看 </a>
+                    </div>
+                    <i class="required-help col-sm-1">*</i>
+                </div>
+
+
+<!--                <div class="form-group col-sm-12 ">-->
+<!--                    <label class="col-sm-2 control-label"><p id="btn">表情</p></label>-->
+<!--                    <div class="col-sm-8">-->
+<!--                        <div id="emoji"></div>-->
+
+<!--                    </div>-->
+<!--                    <i class="required-help col-sm-1">*</i>-->
+<!--                </div>-->
+<!--                <div class="form-group col-sm-12 ">-->
+<!--                    <label class="col-sm-2 control-label">互动话术：</label>-->
+<!--                    <div class="col-sm-8">-->
+<!--                        <div id="editArea" name="editArea" contenteditable="true"></div>-->
+<!--                    </div>-->
+<!--                    <i class="required-help col-sm-1">*</i>-->
+<!--                </div>-->
+                <div class="form-group col-sm-12 ">
+                    <label class="col-sm-2 control-label">互动话术：</label>
+                    <div class="col-sm-8">
+                                <textarea title="content" id="content" name="content" rows="5" class="form-control"
+                                          type="text"></textarea>
+                    </div>
+                    <i class="required-help col-sm-1">*</i>
+                </div>
+                </form>
+                <button href="javascript:void(0);" onclick="validateForm()"
+                        class="btn btn-warning btn-sm col-md-offset-6">
+                    <i class="fa fa-save"></i>&nbsp;保存
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<!-- js加载开始 -->
+<#include "../include/js.html">
+<script type="text/javascript" src="${cxt!}/ui/js/hm/interaction.js"></script>
+<!--引入jq的emoji表情插件-->
+<!--引入jq的emoji表情插件-->
+<script>
+    function arrays() {
+        return {
+            editor: 'editArea',
+            btn: 'btn',
+            icon: [{
+                path: '${cxt!}/ui/img/tieba',
+                alias: {
+                    1: "hehe",
+                    2: "haha",
+                    3: "tushe",
+                    4: "a",
+                    5: "ku",
+                    6: "lu",
+                    7: "kaixin",
+                    8: "han",
+                    9: "lei",
+                    10: "heixian",
+                    11: "bishi",
+                    12: "bugaoxing",
+                    13: "zhenbang",
+                    14: "qian",
+                    15: "yiwen",
+                    16: "yinxian",
+                    17: "tu",
+                    18: "yi",
+                    19: "weiqu",
+                    20: "huaxin",
+                    21: "hu",
+                    22: "xiaonian",
+                    23: "neng",
+                    24: "taikaixin",
+                    25: "huaji",
+                    26: "mianqiang",
+                    27: "kuanghan",
+                    28: "guai",
+                    29: "shuijiao",
+                    30: "jinku",
+                    31: "shengqi",
+                    32: "jinya",
+                    33: "pen",
+                    34: "aixin",
+                    35: "xinsui",
+                    36: "meigui",
+                    37: "liwu",
+                    38: "caihong",
+                    39: "xxyl",
+                    40: "taiyang",
+                    41: "qianbi",
+                    42: "dnegpao",
+                    43: "chabei",
+                    44: "dangao",
+                    45: "yinyue",
+                    46: "haha2",
+                    47: "shenli",
+                    48: "damuzhi",
+                    49: "ruo",
+                    50: "OK"
+                }
+            }]
+        }
+
+    }
+</script>
+<!--引入jq的emoji表情插件-->
+<script type="text/javascript">
+    var jqGridId = "#table_jq",
+        data = "${cxt!}/s/task/interaction/json/add",
+        formId = "#form",
+        winname = "${winname!}";
+
+
+    jQuery(document).ready(function () {
+        if ($("#hotTaskId").val() == '') {
+            $("#iconIframe1").attr("onclick", "");
+            $("#iconIframe2").attr("onclick", "");
+        }
+        InteractionJs.init();
+
+        var _emoji = new emoji(arrays())
+
+        function emojiChange() {
+            _emoji.emojiChange()
+        }
+
+        function emojiParse() {
+            _emoji.emojiParse(document.querySelectorAll('#editArea'))
+        }
+
+        function emojiToggle() {
+            _emoji.toggle()
+        }
+    });
+
+    $('.equipmentShow').hide();
+    $('.selectDate').hide();
+
+    $("#grouping").click(function () {
+        $('#equipments').val('');
+        $('#equipmentsVal').val('');
+        $('.groupingShow').show();
+        $('.equipmentShow').hide();
+    });
+    $("#equipment").click(function () {
+        $('#equipments').val('');
+        $('#equipmentsVal').val('');
+        $('.equipmentShow').show();
+        $('.groupingShow').hide();
+    });
+
+    $("#hotTaskId").change(function () {
+        $('#equipments').val('');
+        $('#equipmentsVal').val('');
+    });
+
+    function validateForm() {
+        if (!checkedListOrGroup()) {
+            return;
+        }
+        //获取直播话术
+        // var content = $("#editArea").html();
+        // console.log(content);
+      // $("#content").val(content);
+        $(formId).submit();
+    }
+
+</script>
+</body>
+
+</html>

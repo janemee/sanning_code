@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- 样式文件加载开始 -->
+    <#include "/include/res.html" >
+    <!-- 样式文件加载结束 -->
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title" style="padding:3px 15px 0 20px;">
+                    <div class="col-md-6">
+                        <div class="search-form">
+                            <form>
+                                <div class="input-group">
+                                    <input type="text" name="search_val" placeholder="请输入商品名称/商品代码进行搜索"
+                                           class="form-control search-input" id="search-input">
+                                    <span class="input-group-btn search-span">
+                                        <button class="btn btn-white btn-sm " type="button"
+                                                onclick="dropdownSearchFun(this)"
+                                                data-url="${cxt!}/s/trade/goods/json/list"
+                                                data-tid="table_jq" id="search-btn"><i class="fa fa-search"></i> 查询
+                                        </button>
+                                    </span>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="search-form-adv ml10">
+                            <form>
+                                <input type="hidden" name="fast_search" value="true">
+                                <div class="btn-group" onclick="dropdownSelectHoverFun(this)">
+                                    <button type="button" class="btn btn-white dropdown-select-toggle" data-toggle="#"
+                                            aria-haspopup="true" aria-expanded="false"> 条件查询 <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu search-menu">
+                                        <li class="input-group input-group-sm">
+                                            <span>商品名称</span>
+                                            <input type="text" name="*_name" class="hm-search-w208">
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>商品代码</span>
+                                            <input type="text" name="*_code" class="hm-search-w208">
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>挂牌厂家</span>
+                                            <input type="text" name="*_fac_name" class="hm-search-w208">
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>商品状态</span>
+                                            <select name="*=status" class="hm-search-w208">
+                                                <option value="" selected="selected">全部</option>
+                                                <option value="1">待上架</option>
+                                                <option value="2">已上架</option>
+                                            </select>
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>交易状态</span>
+                                            <select name="*=trading_status" class="hm-search-w208">
+                                                <option value="" selected="selected">全部</option>
+                                                <option value="1">正常交易</option>
+                                                <option value="2">已停牌</option>
+                                            </select>
+                                        </li>
+
+                                        <li class="input-group input-group-sm">
+                                            <span>创建时间</span>
+                                            <input placeholder="开始日期" class="hm-search-w208 layer-date"
+                                                   name="*start_create_time" style="width: 100px;" id="start_create_time">
+                                            <input placeholder="结束日期" class="hm-search-w208 layer-date"
+                                                   name="*end_create_time" style="width: 100px;" id="end_create_time">
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>上市时间</span>
+                                            <input placeholder="开始日期" class="hm-search-w208 layer-date"
+                                                   name="*start_open_time" style="width: 100px;" id="start_open_time">
+                                            <input placeholder="结束日期" class="hm-search-w208 layer-date"
+                                                   name="*end_open_time" style="width: 100px;" id="end_open_time">
+                                        </li>
+                                        <li class="input-group input-group-sm">
+                                            <span>下市时间</span>
+                                            <input placeholder="开始日期" class="hm-search-w208 layer-date"
+                                                   name="*start_out_time" style="width: 100px;" id="start_out_time">
+                                            <input placeholder="结束日期" class="hm-search-w208 layer-date"
+                                                   name="*end_out_time" style="width: 100px;" id="end_out_time">
+                                        </li>
+
+                                        <li>
+                                            <span>&nbsp;</span>
+                                            <button class="btn btn-white btn-sm" type="button"
+                                                    onclick="dropdownSearchFun(this)"
+                                                    data-url="${cxt!}/s/trade/goods/json/list"
+                                                    data-tid="table_jq" id="search-btn"><i class="fa fa-search"></i> 查询
+                                            </button>
+                                            <button class="btn btn-white btn-sm" type="button"
+                                                    onclick="dropdownSearchCleanFun(this)"
+                                                    data-url="${cxt!}/s/trade/goods/json/list"
+                                                    data-tid="table_jq" id="clear-btn"><i class="fa fa-retweet"></i> 清空
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="ibox-tools m-t-xs">
+                        <div class="btn-group">
+                            <@shiro.hasPermission name=':s:trade:goods:addOrUpd'>
+                            <button onclick="hm_fn_addFun(addTitle,'60%','60%',addUrl,formId,winname)"
+                                    class="btn btn-white btn-sm" data-index="1-1">
+                                <i class="fa fa-plus-circle"></i> 添加商品
+                            </button>
+                            </@shiro.hasPermission>
+                            <@shiro.hasPermission name=':s:trade:goods:editPrice'>
+                            <button class="btn btn-white btn-sm" id="editPrice">
+                                <i class="fa fa-edit"></i> 更改价格
+                            </button>
+                            </@shiro.hasPermission>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="ibox-content">
+                    <table id="table_jq"></table>
+                    <div id="pager_jq"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- js加载-->
+<#include "/include/js.html">
+<script>
+    var startCreateTime = {
+        elem: "#start_create_time",
+        format: "YYYY-MM-DD",
+        // min: laydate.now(),
+        max: "2099-06-16 23:59:59",
+        istime: false,
+        istoday: false,
+        festival: true, //是否显示节日
+        // isclear: false, //是否显示清空
+        choose: function (datas) {
+            endCreateTime.min = datas;
+            endCreateTime.start = datas
+        }
+    };
+    var endCreateTime = {
+        elem: "#end_create_time",
+        format: "YYYY-MM-DD",
+        // min: laydate.now(),
+        max: "2099-06-16 23:59:59",
+        istime: false,
+        istoday: false,
+        // isclear: false, //是否显示清空
+        festival: true, //是否显示节日
+        choose: function (datas) {
+            startCreateTime.max = datas
+        }
+    };
+    var startOpenTime = {
+        elem: "#start_open_time",
+        format: "YYYY-MM-DD",
+        // min: laydate.now(),
+        max: "2099-06-16 23:59:59",
+        istime: false,
+        istoday: false,
+        festival: true, //是否显示节日
+        // isclear: false, //是否显示清空
+        choose: function (datas) {
+            endOpenTime.min = datas;
+            endOpenTime.start = datas
+        }
+    };
+    var endOpenTime = {
+        elem: "#end_open_time",
+        format: "YYYY-MM-DD",
+        // min: laydate.now(),
+        max: "2099-06-16 23:59:59",
+        istime: false,
+        istoday: false,
+        // isclear: false, //是否显示清空
+        festival: true, //是否显示节日
+        choose: function (datas) {
+            startOpenTime.max = datas
+        }
+    };
+    var startOutTime = {
+        elem: "#start_out_time",
+        format: "YYYY-MM-DD",
+        // min: laydate.now(),
+        max: "2099-06-16 23:59:59",
+        istime: false,
+        istoday: false,
+        festival: true, //是否显示节日
+        // isclear: false, //是否显示清空
+        choose: function (datas) {
+            endOutTime.min = datas;
+            endOutTime.start = datas
+        }
+    };
+    var endOutTime = {
+        elem: "#end_out_time",
+        format: "YYYY-MM-DD",
+        // min: laydate.now(),
+        max: "2099-06-16 23:59:59",
+        istime: false,
+        istoday: false,
+        // isclear: false, //是否显示清空
+        festival: true, //是否显示节日
+        choose: function (datas) {
+            startOutTime.max = datas
+        }
+    };
+
+    laydate(startCreateTime);
+    laydate(endCreateTime);
+    laydate(startOpenTime);
+    laydate(endOpenTime);
+    laydate(startOutTime);
+    laydate(endOutTime);
+
+    //鼠标按下事件，清空选择时间限制
+    $("#clear-btn").mousedown(function () {
+        startCreateTime.max ="", endCreateTime.min ="",
+        startOpenTime.max ="", endOpenTime.min ="",
+        startOutTime.max ="", endOutTime.min =""
+    });
+    var winname = window.name;
+    var formId = "#form",
+        winWidth = '60%',
+        winHeight = '60%',
+        jqGridId = "#table_jq",
+        jqPageId = "#pager_jq",
+        dataUrl = "/s/trade/goods/json/list",
+        addTitle = "添加商品",
+        addUrl = "/s/trade/goods/add",
+        editTitle = "编辑商品",
+        editUrl = "/s/trade/goods/upd",
+        editPrice = "更改价格",
+        editPriceUrl = "/s/trade/goods/editPrice",
+        pubTitle = "上架商品",
+        pubUrl = "/s/trade/goods/json/pub",
+        revTitle = "下架商品",
+        revUrl = "/s/trade/goods/json/rev",
+        delUrl = "/s/trade/goods/json/del",
+        lookTitle = "查看商品",
+        lookUrl = "/s/trade/goods/look",
+        startTitle = "复牌商品",
+        startUrl = "/s/trade/goods/json/start",
+        stopTitle = "停牌商品",
+        stopUrl = "/s/trade/goods/json/stop";
+
+
+    $(function () {
+        $.jgrid.defaults.styleUI = "Bootstrap";
+        $(jqGridId).jqGrid({
+            url: dataUrl,
+            datatype: "json",
+            colNames: ['ID', '商品名称', '商品代码', '挂牌厂家', '市场指导价(元)', '发行量', '交易单位', '当日交易量', '商品状态', '交易状态', '创建时间', '上市时间', '下市时间', '交易时间', '操作'],
+            colModel: [
+                {
+                    name: 'id',
+                    index: 'id',
+                    width: 1,
+                    hidden: true,
+                    key: true
+                },
+                {
+                    name: 'name',
+                    index: 'name',
+                    width: '110'
+                },
+                {
+                    name: 'code',
+                    index: 'code',
+                    width: '110'
+                },
+                {
+                    name: 'facName',
+                    index: 'facName',
+                    width: '110'
+                },
+                {
+                    name: 'lastPrice',
+                    index: 'lastPrice',
+                    width: '160'
+                },
+                {
+                    name: 'quantityIssued',
+                    index: 'quantityIssued',
+                    width: '80',
+                },
+                {
+                    name: 'unit',
+                    index: 'unit',
+                    width: '80',
+                },
+                {
+                    name: 'dailyMaxBuy',
+                    index: 'dailyMaxBuy',
+                    width: '130',
+                },
+                {
+                    name: 'status',
+                    index: 'status',
+                    width: '100',
+                    formatter: function (cellvalue, options, rowObject) {
+                        var str = "";
+                        if (cellvalue === 1) {
+                            str = '<span class="label label-default">待上架</span>';
+                        } else if (cellvalue === 2) {
+                            str = '<span class="label label-primary">已上架</span>';
+                        }
+                        return str;
+                    }
+                },
+                {
+                    name: 'tradingStatus',
+                    index: 'tradingStatus',
+                    width: '100',
+                    formatter: function (cellvalue, options, rowObject) {
+                        var str = "";
+                        if (cellvalue === 1) {
+                            str = '<span class="label label-primary">正常交易</span>';
+                        } else if (cellvalue === 2) {
+                            str = '<span class="label label-default">已停牌</span>';
+                        }
+                        return str;
+                    }
+                },
+                {
+                    name: 'createTime',
+                    index: 'createTime',
+                    width: '150',
+                },
+                {
+                    name: 'openTime',
+                    index: 'openTime',
+                    width: '100',
+                },
+                {
+                    name: 'outTime',
+                    index: 'outTime',
+                    width: '100',
+                },
+                {
+                    name: 'tradeTime',
+                    index: 'tradeTime',
+                    width: '100',
+                },
+                {
+                    width: '200',
+                    formatter: function (cellvalue, options, rowObject) {
+                        var edit = "<@shiro.hasPermission name=':s:trade:goods:addOrUpd'>" +
+                            "<a onclick= 'edit(" + rowObject.id + ")'>&nbsp;编辑&nbsp;</a>" +
+                            "</@shiro.hasPermission>",
+                            del = "<@shiro.hasPermission name=':s:trade:goods:del'>" +
+                                "<a onclick= 'del(" + rowObject.id + ")'>&nbsp;删除&nbsp;</a>" +
+                                "</@shiro.hasPermission>",
+                            up = "<@shiro.hasPermission name=':s:trade:goods:pub'>" +
+                                "<a onclick= 'publish(" + rowObject.id + ")'>&nbsp;上架&nbsp;</a>" +
+                                "</@shiro.hasPermission>",
+                            down = "<@shiro.hasPermission name=':s:trade:goods:rev'>" +
+                                "<a onclick= 'revert(" + rowObject.id + ")'>&nbsp;下架&nbsp;</a>" +
+                                "</@shiro.hasPermission>",
+                            look = "<@shiro.hasPermission name=':s:trade:goods:look'>" +
+                                "<a onclick= 'look(" + rowObject.id + ")'>&nbsp;查看&nbsp;</a>" +
+                                "</@shiro.hasPermission>",
+                            stop = "<@shiro.hasPermission name=':s:trade:goods:stop'>" +
+                                "<a onclick= 'stop(" + rowObject.id + ")'>&nbsp;停牌&nbsp;</a>" +
+                                "</@shiro.hasPermission>",
+                            start = "<@shiro.hasPermission name=':s:trade:goods:start'>" +
+                                "<a onclick= 'start(" + rowObject.id + ")'>&nbsp;复牌&nbsp;</a>" +
+                                "</@shiro.hasPermission>";
+                        if (rowObject.status === 1) {
+                            return edit + up + del + look;
+                        } else {
+                            if (rowObject.tradingStatus == 1) {
+                                return down + stop + look;
+                            } else {
+                                return down + start + look;
+                            }
+
+                        }
+
+                    }
+
+                }],
+
+            autowidth: true,
+            height: "100%",    // 设为具体数值则会根据实际记录数出现垂直滚动条
+            width: "100%",
+            rowNum: 20,
+            rowList: [20, 30, 50],
+            pager: jqPageId,
+            mtype: "post",
+            viewrecords: true,
+            rownumbers: true,
+            rownumWidth: 50,
+            multiselect: true,
+            multiboxonly: true,//只选中一行数据
+            cellsubmit: "clientArray",
+            jsonReader: {
+                root: "exhibitDatas",
+                page: "nowPage",
+                total: "pageCount",
+                records: "recordCount",
+                repeatitems: false,
+                id: "0"
+            }
+        });
+
+        jQuery(jqGridId).jqGrid('setLabel', 'rn', '序号', {
+            'text-align': 'center',
+            'vertical-align': 'middle',
+            'width': '50'
+        }, '');
+
+        jQuery(jqGridId).jqGrid('navGrid', jqPageId, {
+                add: false,
+                del: false,
+                edit: false,
+                search: false,
+                position: 'right'
+            },
+            {}, // add options
+            {}, // del options
+            {}, // edit options
+            {});
+    });
+
+
+    $(window).bind("resize", function () {
+        var width = $(".ibox-content").width();
+        $("#table_jq").setGridWidth(width);
+    });
+
+    //编辑
+    function edit(id) {
+        hm_fn_editFun(editTitle, winWidth, winHeight, editUrl, id, winname)
+    }
+
+    //更改价格
+    jQuery("#editPrice").click(function () {
+        //获取选中多行id
+        var ids = jQuery(jqGridId).jqGrid('getGridParam', 'selarrrow');
+        //获取选中单行id
+        var rowid = jQuery(jqGridId).jqGrid("getGridParam", "selrow");
+        //获取单行数据
+        var rowData = jQuery(jqGridId).jqGrid("getRowData", rowid);
+        if (ids.length < 1) {
+            parent.notifications('error', "请选择一条数据");
+            return false;
+        }
+        if (ids.length > 1) {
+            parent.notifications('error', "只能选择一条数据");
+            return false;
+        }
+        // if (rowData.status == '<span class="label label-primary">已上架</span>') {
+        //     parent.notifications('error', "已上架商品不能修改价格");
+        //     return false;
+        // }
+        hm_fn_editFun(editPrice, winWidth, winHeight, editPriceUrl, ids, winname)
+    });
+
+    //停牌
+    function stop(id) {
+        hm_fn_doAction(jqGridId, dataUrl, stopUrl, id, stopTitle);
+    }
+
+    //复牌
+    function start(id) {
+        hm_fn_doAction(jqGridId, dataUrl, startUrl, id, startTitle);
+    }
+
+    //上架
+    function publish(id) {
+        hm_fn_doAction(jqGridId, dataUrl, pubUrl, id, pubTitle);
+    }
+
+    //下架
+    function revert(id) {
+        if (id == undefined || id == '') {
+            layer.alert('id获取异常', {icon: 5, skin: 'layer-ext-moon'});
+            return;
+        }
+        var i = parent.layer.confirm('下架商品会将改商品的所有挂单记录全部撤回，确定下架商品吗？', {
+            // skin: 'layui-layer-molv',
+            icon: 0,
+            title: '提示',
+            btn: ['确定', '取消'] //按钮
+        }, function () {
+            $.ajax({
+                async: "true",
+                url: revUrl,
+                data: "ids=" + id,
+                success: function (data) {
+                    if (data.code === 200) {
+                        parent.notifications('success', revTitle + "成功");
+                        $(jqGridId).jqGrid('setGridParam', {url: dataUrl, page: 1}).trigger("reloadGrid");
+                    } else {
+                        parent.notifications('error', data.message);
+                    }
+                },
+                error: function () {
+                    parent.notifications('error', revTitle + "失败,请检查网络!");
+                },
+                complete: function () {
+                    parent.layer.close(i);
+                }
+            });
+        });
+    }
+
+    //查看
+    function look(id) {
+        hm_fn_viewFun1(lookTitle, '60%', '80%', lookUrl, id)
+    }
+
+    //删除
+    function del(id) {
+        hm_fn_del(jqGridId, dataUrl, delUrl, id)
+    }
+</script>
+</body>
+</html>

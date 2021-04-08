@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- 样式文件加载开始 -->
+    <#include "/include/res.html" >
+    <!-- 样式文件加载结束 -->
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox-content">
+                <form class="form-horizontal m-t" id="form">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">商品:<i class="required-help">*</i> </label>
+                        <div class="col-sm-3">
+                            <button class="btn btn-sm btn-white" type="button"
+                                    onclick="chooseGoods()"><i class="fa fa-gift"></i> 选择商品
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">商品名称:<i class="required-help">*</i></label>
+                            <div class="col-sm-8">
+                                <input id="goodName" name="name" class="form-control" type="text" readonly>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">商品代码:<i class="required-help">*</i></label>
+                            <div class="col-sm-8">
+                                <input id="goodCode" name="code" class="form-control" type="text" readonly>
+                            </div>
+                        </div>
+                        <input id="goodId" name="goodId" class="form-control" type="hidden">
+                    </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-6 form-group">
+                                <label class="col-sm-4 control-label">出货账号:<i class="required-help">*</i></label>
+                                <div class="col-sm-5">
+                                    <input id="sellUser" class="form-control" type="text" readonly>
+                                    <input id="sellUserId" name="sellUserId" class="form-control" type="hidden">
+                                </div>
+                                <div class="col-sm-2">
+                                    <button class="btn btn-sm btn-white" type="button"
+                                            onclick="chooseSellUser()"><i class="fa fa-user"></i> 选择用户
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 form-group">
+                                <label class="col-sm-4 control-label">可批发数量:<i class="required-help">*</i></label>
+                                <div class="col-sm-8">
+                                    <input id="holdCount" name="surplusCount" class="form-control" type="text" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-6 form-group">
+                                <label class="col-sm-4 control-label">用户:<i class="required-help">*</i></label>
+                            <div class="col-sm-5">
+                                <input id="userPhone" class="form-control" type="text" readonly>
+                                <input id="userId" name="userId" class="form-control" type="hidden">
+                            </div>
+                            <div class="col-sm-2">
+                                <button class="btn btn-sm btn-white" type="button"
+                                    onclick="chooseUser()"><i class="fa fa-user"></i> 选择用户
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">批发价格:<i class="required-help">*</i></label>
+                            <div class="col-sm-8">
+                                <input id="price" name="price" class="form-control" type="text" placeholder="请输入批发价格(元)" onchange="countMoney()" onkeyup = "this.value=/^\d+\.?\d{0,5}$/.test(this.value) ? this.value : this.value.substring(0,this.value.length-1)" required>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">批发数量:<i class="required-help">*</i></label>
+                            <div class="col-sm-8">
+                                <input id="count" name="count" class="form-control" type="number" placeholder="请输入批发数量"
+                                       onchange="countMoney()" min="1" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">锁仓数量:<i class="required-help">*</i></label>
+                            <div class="col-sm-8">
+                                <input name="lockCount" class="form-control" type="number" placeholder="请输入锁仓数量" required>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 form-group">
+                            <label class="col-sm-4 control-label">批发金额:<i class="required-help">*</i></label>
+                            <div class="col-sm-8">
+                                <input id="money" name="money" class="form-control" type="text" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- js加载开始 -->
+<#include "/include/js.html">
+<script type="text/javascript" src="/ui/js/trade/ration.js"></script>
+<script type="text/javascript">
+    var jqGridId = "#table_jq",
+        dataUrl = "${cxt!}/s/trade/goods/json/list",
+        formId = "#form",
+        winname = "${winname!}";
+
+    jQuery(document).ready(function () {
+        RationJs.init();
+    });
+
+    function validateForm() {
+        $(formId).submit();
+    }
+    //选择出货用户
+    function chooseSellUser() {
+        var goodId = $("#goodId").val();
+        if (goodId == null || goodId == ''){
+            top.layer.alert("请先选择商品!", {
+                icon: 5,
+                shadeClose: true
+            });
+            return false;
+        }
+        parent.layer.open({
+            skin: 'layui-layer-molv',
+            type: 2,
+            scrollbar: false,
+            title: '选择用户',
+            fix: false, //不固定
+            maxmin: true,
+            area: ['50%', '40%'],
+            btn: ['确定', '关闭'],
+            yes: function (index, layero) {
+                window.parent[layero.find('iframe')[0]['name']]
+                    .yesBtn('', $("#sellUser"), '', '', $("#sellUserId"));
+                $.ajax({
+                    type:'post',
+                    url:'/s/trade/ration/json/getSellNumber',
+                    data:{
+                        userId:$("#sellUserId").val(),
+                        goodId:$("#goodId").val()
+                    },
+                    success:function (data) {
+                        if (data.code == 200){
+                            $("#holdCount").val(data.data)
+                        } else {
+                            parent.notifications('error', data.message);
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        parent.notifications('error', "操作失败,请检查网络!", title);
+                    },
+                })
+            },
+            cancel: function (index) {
+            },
+            content: '/s/trade/ration/sellUser/list?goodId='+goodId //用户列表页
+        });
+    }
+
+    //选择用户
+    function chooseUser() {
+        parent.layer.open({
+            skin: 'layui-layer-molv',
+            type: 2,
+            scrollbar: false,
+            title: '选择用户',
+            fix: false, //不固定
+            maxmin: true,
+            area: ['50%', '40%'],
+            btn: ['确定', '关闭'],
+            yes: function (index, layero) {
+                window.parent[layero.find('iframe')[0]['name']]
+                    .yesBtn($("#userName"), $("#userPhone"), '', $("#userCode"), $("#userId"));
+            },
+            cancel: function (index) {
+            },
+            content: '/s/trade/ration/user/list' //用户列表页
+        });
+    }
+
+    //选择商品
+    function chooseGoods() {
+        $("#holdCount").val("");
+        $("#sellUser").val("");
+        $("#sellUserId").val("");
+        parent.layer.open({
+            skin: 'layui-layer-molv',
+            type: 2,
+            scrollbar: false,
+            title: '选择用户',
+            fix: false, //不固定
+            maxmin: true,
+            area: ['50%', '40%'],
+            btn: ['确定', '关闭'],
+            yes: function (index, layero) {
+                window.parent[layero.find('iframe')[0]['name']]
+                    .yesBtn($("#goodName"), $("#goodCode"),'', $("#goodId"));
+            },
+            cancel: function (index) {
+            },
+            content: '/s/trade/ration/goods/list' //商品列表页
+        });
+    }
+
+    function countMoney() {
+        var a = $("#price").val();
+        var b = $("#count").val();
+        if (a === '' || b === ''){
+            $("#money").val('');
+        }else {
+            $("#money").val((a * b).toFixed(2));
+        }
+    }
+</script>
+</body>
+
+</html>
