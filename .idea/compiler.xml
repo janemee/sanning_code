@@ -14,10 +14,10 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="admin" target="1.8" />
-      <module name="apis" target="1.5" />
-      <module name="common" target="1.5" />
-      <module name="core" target="1.5" />
-      <module name="sanning_code" target="1.5" />
+      <module name="apis" target="1.8" />
+      <module name="common" target="1.8" />
+      <module name="core" target="1.8" />
+      <module name="sanning_code" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

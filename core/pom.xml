@@ -50,7 +50,7 @@
         <dependency>
             <groupId>com.google.zxing</groupId>
             <artifactId>core</artifactId>
-            <version>3.2.1</version>
+            <version>3.4.0</version>
         </dependency>
 
         <dependency>
@@ -58,17 +58,17 @@
             <artifactId>commons-beanutils</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>lialianPay.api</groupId>
-            <artifactId>lianpay-api</artifactId>
-            <version>1</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>lialianPay.api</groupId>-->
+<!--            <artifactId>lianpay-api</artifactId>-->
+<!--            <version>1</version>-->
+<!--        </dependency>-->
 
-        <dependency>
-            <groupId>com.lianlian.security</groupId>
-            <artifactId>security</artifactId>
-            <version>1</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.lianlian.security</groupId>-->
+<!--            <artifactId>security</artifactId>-->
+<!--            <version>1</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>commons-httpclient</groupId>
@@ -81,22 +81,22 @@
             <artifactId>commons-io</artifactId>
             <version>2.5</version>
         </dependency>
-        <!-- 支付 -->
-        <dependency>
-            <groupId>com.yyzf</groupId>
-            <artifactId>yyzfCertSign</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.yyzf</groupId>
-            <artifactId>topesa</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.yyzf</groupId>
-            <artifactId>javacertapi</artifactId>
-            <version>3.0.1</version>
-        </dependency>
+<!--        &lt;!&ndash; 支付 &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>com.yyzf</groupId>-->
+<!--            <artifactId>yyzfCertSign</artifactId>-->
+<!--            <version>1.0</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.yyzf</groupId>-->
+<!--            <artifactId>topesa</artifactId>-->
+<!--            <version>1.0</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.yyzf</groupId>-->
+<!--            <artifactId>javacertapi</artifactId>-->
+<!--            <version>3.0.1</version>-->
+<!--        </dependency>-->
 
         <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
         <dependency>
